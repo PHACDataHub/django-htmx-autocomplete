@@ -1,0 +1,212 @@
+.phac_aspc_form_autocomplete {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    user-select: none;
+    width: 100%;
+}
+
+.phac_aspc_form_autocomplete * {
+    box-sizing: border-box;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 0 5px;
+    width: 100%;
+    height: auto;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    background-image: linear-gradient(#eee 1%, #fff 15%);
+    cursor: text;    
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li {
+    float: left;
+    list-style: none;    
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li > ul {
+    padding: 0;
+    float: left;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip {
+    position: relative;
+    margin: 3px 5px 3px 0;
+    padding: 3px 20px 3px 5px;
+    border: 1px solid #aaa;
+    max-width: 100%;
+    border-radius: 3px;
+    background-color: #eeeeee;
+    background-image: linear-gradient(#f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%);
+    background-size: 100% 19px;
+    background-repeat: repeat-x;
+    background-clip: padding-box;
+    box-shadow: 0 0 2px #fff inset, 0 1px 0 rgb(0 0 0 / 5%);
+    color: #333;
+    line-height: 13px;
+    cursor: default;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip span {
+    word-wrap: break-word;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip a {
+    position: absolute;
+    top: 4px;
+    right: 3px;
+    display: block;
+    width: 12px;
+    height: 12px;
+    font-size: 1px;    
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip a svg {
+    user-select: none;
+    cursor: pointer;
+    font-size: 12px;
+    margin: -2.5px 0px 0 0px;
+    top: 0;
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    color: rgba(0, 0, 0, 0.26);
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip a svg:hover {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.input {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li input.textinput {
+    margin: 1px 0;
+    padding: 0;
+    height: 25px;
+    outline: 0;
+    border: 0 !important;
+    background: transparent !important;
+    color: #6c757d;
+    box-shadow: none;
+    font-size: 100%;
+    line-height: normal;
+    border-radius: 0;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.search-indicator svg{
+    max-width:25px;
+    max-height:25px;
+}
+.phac_aspc_form_autocomplete ul.ac_container li.search-indicator svg .magnify {
+    fill:#000;
+    animation:search 1s infinite ease;
+}
+.phac_aspc_form_autocomplete ul.ac_container li.search-indicator svg .doc{
+    fill:#444;
+    animation:flyby 1s infinite ease;
+}
+  
+  
+@keyframes search {
+0%{
+    transform:translate(40px, 40px) scale(.6);
+}
+50%{
+    transform:translate(20px, 20px) scale(.6);
+}
+100%{
+    transform:translate(40px, 40px) scale(.6);
+}
+}
+
+@keyframes flyby {
+0%{
+    transform:translate(-20px, 20px) scale(.2);
+    opacity:0
+}
+50%{
+    transform:translate(30px, 20px) scale(.5);
+    opacity:1
+}
+100%{
+    transform:translate(100px, 20px) scale(.2);
+    opacity:0
+}
+}
+
+.phac_aspc_form_autocomplete .more-results {
+    border-top: 1px dashed #ccc;
+}
+
+.phac_aspc_form_autocomplete .more-results span {
+    white-space: nowrap;
+    display: block;
+    font-size: 0.8em;
+    opacity: 0.8;
+    padding: 10px 30px 0 30px;
+}
+
+
+.phac_aspc_form_autocomplete .results {
+    max-height: 240px;
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: 0.375rem;
+}
+
+.phac_aspc_form_autocomplete .results.show {
+    display: block;
+}
+
+.phac_aspc_form_autocomplete .results .item {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;    
+}
+
+.phac_aspc_form_autocomplete .results .item:focus,
+.phac_aspc_form_autocomplete .results .item:hover {
+    color: #1e2125;
+    background-color: #e9ecef;
+}
+
+.phac_aspc_form_autocomplete .results .item.selected:focus,
+.phac_aspc_form_autocomplete .results .item.selected:hover {
+    color: #ccc;
+    background-color: initial;
+}
+
+.phac_aspc_form_autocomplete .results .item.selected {
+    cursor: default;
+    display: list-item;
+    color: #ccc;
+}

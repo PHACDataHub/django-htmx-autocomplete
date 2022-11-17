@@ -1,0 +1,5 @@
+{# Hidden input elements used to maintain the component's state #}
+{# and used when submitting forms #}
+{% for value in values %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}" />
+{% endfor %}

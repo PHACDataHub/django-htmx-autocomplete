@@ -1,0 +1,13 @@
+<div class="results {{ show|yesno:'show,' }}" id="{{ route_name }}__items">
+    {% for item in items %}
+        {% include "./item.html" %}
+    {% endfor %}
+    {% if not items %}
+    <span class="item">{{ no_result_text }}</span>
+    {% endif %}
+    {% if items|length != total_results %}
+    <div class="more-results">
+        <span>{{ narrow_search_text }}</span>
+    </div>
+    {% endif %}
+</div>
