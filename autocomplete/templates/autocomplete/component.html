@@ -1,0 +1,62 @@
+{% load static %}
+{% comment %} 
+This is the main component template that creates the basic HTML structure.
+{% endcomment %}
+<div
+    id="{{ route_name }}__container"
+    class="phac_aspc_form_autocomplete"
+>
+    {# Hidden input elements used to maintain the component's state #}
+    {# and used when submitting forms #}
+    <div id="{{ route_name }}">
+        {% include "./values.html" %}
+    </div>
+
+    {# Data element used to store component state data #}
+    <span
+        id="{{ route_name }}__data"
+        {% if not multiselect and selected_items|length == 1 %}
+        data-phac-aspc-autocomplete="{{ selected_items.0.label }}"
+        {% endif %}
+    ></span>
+
+    {% if label is not None %}
+    <label for="{{ route_name }}__textinput" class="form-label">{{ label }}</label>
+    {% endif %}
+
+    <ul class="ac_container">
+        {% if multiselect %}
+        <li id="{{ route_name }}__selected_items">
+            {% include "./chip_list.html" with items=selected_items %}
+        </li>
+        {% endif %}
+        <li class="input">
+            {% include "./textinput.html" %}
+        </li>
+        <li class="search-indicator">
+          <div class="htmx-indicator">
+            {% include "./indicator-icon.html" %}
+          </div>
+        </li>
+    </ul>
+    <div class="dropdown-menu" id="{{ route_name }}__items"></div>
+    {% comment %} <div class="htmx-indicator">
+        <img src="https://htmx.org/img/bars.svg" />
+    </div> {% endcomment %}
+</div>
+{# This code snippet loads the required CSS and JS if not already loaded. #}
+<script>
+    (function () {
+        const sc = document.createElement('script');
+        sc.src = '{% static "autocomplete/js/autocomplete.js" %}';
+        if (!Array.from(document.querySelectorAll('script')).map(s => s.src).includes(sc.src)) {
+            document.body.appendChild(sc);
+        }
+        const ln = document.createElement('link');
+        ln.href = '{% static 'autocomplete/css/autocomplete.css' %}';
+        ln.rel = 'stylesheet';
+        if (!Array.from(document.querySelectorAll('link')).map(s => s.href).includes(ln.href)) {
+            document.getElementsByTagName('head')[0].appendChild(ln);
+        }
+    })();
+</script>

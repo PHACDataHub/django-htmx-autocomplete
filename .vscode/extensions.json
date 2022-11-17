@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "batisteo.vscode-django",
+        "ms-python.pylint"
+    ]
+}

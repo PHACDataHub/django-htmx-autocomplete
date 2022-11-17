@@ -1,0 +1,12 @@
+{
+    "markdown-preview-github-styles.colorTheme": "light",
+    "editor.rulers": [
+        88
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black",
+    "cSpell.words": [
+        "htmx"
+    ]
+}

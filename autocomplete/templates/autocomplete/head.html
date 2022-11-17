@@ -1,0 +1,60 @@
+{% if bootstrap %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+{% endif %}
+
+<style type="text/css">
+    .phac_aspc_form_autocomplete {
+        outline: 0px solid transparent;
+    }
+
+    .phac_aspc_form_autocomplete .dropdown-item {
+        cursor: pointer;
+    }
+
+    .selected {
+        font-weight: bold;
+    }
+
+    .ac_container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .textinput {
+        display: flex;
+    }
+
+    .textinput .htmx-indicator {
+        position: relative;
+        left: -60px;
+        top: 5px;
+    }
+
+    .chip {
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        display: inline-block;
+        padding: 5px 5px 5px 10px;
+        margin-left: 15px;
+        border-radius: 15px;
+        background-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .chip svg {
+        user-select: none;
+        cursor: pointer;
+        font-size: 22px;
+        margin: -2.5px 0px 0 0px;
+        top: 0;
+        width: 1em;
+        height: 1em;
+        fill: currentColor;
+        color: rgba(0, 0, 0, 0.26);
+    }
+
+    .chip svg:hover {
+        color: rgba(0, 0, 0, 0.4);
+    }
+</style>
