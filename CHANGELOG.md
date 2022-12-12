@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.1.1...v0.1.2) (2022-12-12)
+
+
+### Bug Fixes
+
+* Improved blur handling ([5681830](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/5681830810ef3425e019a140dff1b03a024c5c18)), closes [#4](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/4)
+
 ## [0.1.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.1.0...v0.1.1) (2022-12-09)
 
 
