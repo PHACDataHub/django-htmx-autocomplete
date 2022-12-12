@@ -6,8 +6,9 @@ This template renders a selected item or chip.
     <span>{{ item.label }}</span>
     <a
         hx-put="{% url route_name method='toggle' %}"
-        hx-vals='{"remove": true, "item": "{{ item.value|urlencode }}"}'
-        hx-include="#{{ route_name }} > input[name='{{ name }}']"
+        hx-params="{{ route_name }},item,remove"
+        hx-vals='{"remove": true, "item": "{{ item.value|escapejs }}"}'
+        hx-include="#{{ route_name }}"
         hx-swap="delete"
         tabindex="-1"
     >

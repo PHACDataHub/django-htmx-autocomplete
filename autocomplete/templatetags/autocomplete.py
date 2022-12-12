@@ -1,14 +1,22 @@
 """
 Django template tags to facilitate rendering of the component
 """
+import hashlib
+
 from django import template
 from django import urls
 from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.template import loader
+from django.template.defaultfilters import stringfilter
 
 register = template.Library()
 
+@register.filter
+@stringfilter
+def make_id(value):
+    """Generate an ID given a string, to use as element IDs in HTML"""
+    return hashlib.sha1(value.encode('utf-8')).hexdigest()
 
 @register.simple_tag
 def autocomplete(name, selected=None):

@@ -1,16 +1,18 @@
+{% load autocomplete %}
 <a
-    id="{{ route_name }}__item__{{ item.value|urlencode }}"
+    id="{{ route_name }}__item__{{ item.value|make_id }}"
     class="item {{ item.selected|yesno:'selected,' }}"
     onblur="phac_aspc_autocomplete_blur_handler('{{ route_name }}', {{ multiselect|yesno:'false,true' }})"
     {% if not item.selected %}
     href="#"
     hx-put="{% url route_name method='toggle' %}"
-    hx-include="#{{ route_name }} > input[name='{{ name }}']"
-    hx-vals='{"item": "{{ item.value|urlencode }}"}'
+    hx-params="{{ route_name }},item"
+    hx-include="#{{ route_name }}"
+    hx-vals='{"item": "{{ item.value|escapejs }}"}'
     {% endif %}
     hx-swap="outerHTML"
     {% if swap_oob %}
-    hx-swap-oob="outerHTML:#{{ route_name }}__item__{{ item.value|urlencode }}"
+    hx-swap-oob="outerHTML:#{{ route_name }}__item__{{ item.value|make_id }}"
     {% endif %}
 >
     {{ item.label }}

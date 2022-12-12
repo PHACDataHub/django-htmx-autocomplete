@@ -14,6 +14,7 @@ class Autocomplete(Widget):
         name (str):   The name of the component (must be unique)
         options (dict): See [autocomplete.py](../autocomplete.py) for more info
             label                   (str)
+            required                (bool) Defaults to false
             placeholder             (str)
             no_result_text          (str) Defaults to "No results found."
             narrow_search_text      (str) Defaults to
@@ -41,6 +42,7 @@ class Autocomplete(Widget):
         super().__init__(attrs)
         config = {
             'name': name,
+            'required': opts.get('required', None),
             'route_name': opts.get('route_name', None),
             'label': opts.get('label', None),
             'placeholder': opts.get('placeholder', None),
@@ -98,11 +100,12 @@ class Autocomplete(Widget):
         )
 
         context['name'] = self.a_c.name
+        context['required'] = self.a_c.required
         context['route_name'] = self.a_c.get_route_name()
         context['label'] = self.a_c.label
         context['placeholder'] = self.a_c.placeholder
         context['multiselect'] = self.a_c.multiselect
-        context['values'] = self.a_c.item_values(self.a_c, selected_options)
-        context['selected_items'] = selected_options
+        context['values'] = list(self.a_c.item_values(self.a_c, selected_options))
+        context['selected_items'] = list(selected_options)
 
         return context

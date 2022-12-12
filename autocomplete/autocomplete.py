@@ -75,6 +75,8 @@ class HTMXAutoComplete(View):
     placeholder (str or None):    The placeholder text used on the component
                                   Defaults to None.
 
+    required (bool):              If set the control is marked as required.
+
     no_result_text (str):         The string displayed when no results are found.
                                   Defaults to "No results found."
 
@@ -107,6 +109,9 @@ class HTMXAutoComplete(View):
 
     # The placeholder text.  (Typically something like "Type to search...")
     placeholder = None
+
+    # If set to True the HTML control will be marked as required
+    required = False
 
     # The minimum search length to perform a search and show the dropdown.
     minimum_search_length = 3
@@ -428,11 +433,12 @@ class HTMXAutoComplete(View):
                 template.render(
                     {
                         "name": self.name,
+                        "required": self.required,
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
                         "route_name": self.get_route_name(),
                         "multiselect": self.multiselect,
-                        "values": self.item_values(items, True),
+                        "values": list(self.item_values(items, True)),
                         "item": target_item,
                         "toggle": items,
                         "swap_oob": data.get("remove", False),
@@ -497,12 +503,13 @@ class HTMXAutoComplete(View):
                 template.render(
                     {
                         "name": self.name,
+                        "required": self.required,
                         "route_name": self.get_route_name(),
                         "label": self.label,
                         "placeholder": self.placeholder,
                         "multiselect": self.multiselect,
-                        "values": self.item_values(selected_options),
-                        "selected_items": selected_options,
+                        "values": list(self.item_values(selected_options)),
+                        "selected_items": list(selected_options),
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
                     },
@@ -527,11 +534,12 @@ class HTMXAutoComplete(View):
                 template.render(
                     {
                         "name": self.name,
+                        "required": self.required,
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
                         "route_name": self.get_route_name(),
                         "show": show,
-                        "items": items,
+                        "items": list(items),
                         "total_results": total_results,
                     },
                     request,
