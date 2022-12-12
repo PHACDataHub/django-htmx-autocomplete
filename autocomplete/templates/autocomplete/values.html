@@ -3,3 +3,6 @@
 {% for value in values %}
         <input type="hidden" name="{{ name }}" value="{{ value }}" />
 {% endfor %}
+{% if required and values|length == 0 %}
+<input type="text" name="{{ name }}" required class="ac_required_input">
+{% endif %}

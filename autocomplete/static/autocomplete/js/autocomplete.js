@@ -7,9 +7,7 @@ function phac_aspc_autocomplete_blur_handler(name, sync=false) {
             if (!sync)  {
                 el.value = '';
             } else {
-                console.log('setting value!');
                 el.value = data_el.getAttribute('data-phac-aspc-autocomplete');
-                console.log(el.value);
             }
             document.getElementById(name + '__items').classList.remove('show');
         }

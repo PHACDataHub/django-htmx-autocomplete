@@ -11,9 +11,12 @@
     {% if not multiselect and selected_items|length == 1 %}
     value="{{ selected_items.0.label }}"
     {% endif %}
+    {% if selected_items|length == 0 %}
+    required
+    {% endif %}
     hx-get="{% url route_name method='items' %}"
     hx-trigger="keyup changed delay:250ms,click,focus,search"
-    hx-include="#{{ route_name }} > input[name='{{ name }}']"
+    hx-include="#{{ route_name }}"
     hx-target="#{{ route_name }}__items"
     hx-swap="outerHTML"
     {% if swap_oob %}
