@@ -5,16 +5,17 @@ from django.forms import Widget
 
 from .autocomplete import HTMXAutoComplete
 
+
 class Autocomplete(Widget):
     """
     Django forms compatible autocomplete widget
 
     Parameters:
 
-        name (str):   The name of the component (must be unique)
+        name (str):     The name of the component (must be unique)
+        attrs (dict):   disabled and required attributes are supported
         options (dict): See [autocomplete.py](../autocomplete.py) for more info
             label                   (str)
-            required                (bool) Defaults to false
             indicator               (bool) Defaults to false
             placeholder             (str)
             no_result_text          (str) Defaults to "No results found."
@@ -30,8 +31,8 @@ class Autocomplete(Widget):
             get_items               (func)
 
     """
-    template_name = 'autocomplete/component.html'
 
+    template_name = "autocomplete/component.html"
 
     def __init__(
         self,
@@ -43,39 +44,36 @@ class Autocomplete(Widget):
 
         super().__init__(attrs)
         config = {
-            'name': name,
-            'required': opts.get('required', None),
-            'indicator': opts.get('indicator', None),
-            'route_name': opts.get('route_name', None),
-            'label': opts.get('label', None),
-            'placeholder': opts.get('placeholder', None),
-            'no_result_text': opts.get('no_result_text', 'No results found.'),
-            'narrow_search_text': opts.get(
-                'narrow_search_text',
-                'Narrow your search for more results.'
+            "name": name,
+            "disabled": attrs.get("disabled", False) if attrs else False,
+            "required": attrs.get("required", False) if attrs else False,
+            "indicator": opts.get("indicator", None),
+            "route_name": opts.get("route_name", None),
+            "label": opts.get("label", None),
+            "placeholder": opts.get("placeholder", None),
+            "no_result_text": opts.get("no_result_text", "No results found."),
+            "narrow_search_text": opts.get(
+                "narrow_search_text", "Narrow your search for more results."
             ),
-            'max_results': opts.get('max_results', None),
-            'minimum_search_length' : opts.get('minimum_search_length', 3),
-            'multiselect': opts.get('multiselect', False),
+            "max_results": opts.get("max_results", None),
+            "minimum_search_length": opts.get("minimum_search_length", 3),
+            "multiselect": opts.get("multiselect", False),
         }
 
-        if model := opts.get('model', None):
+        if model := opts.get("model", None):
             mdl_config = {"model": model}
-            if item_value := opts.get('item_value', None):
+            if item_value := opts.get("item_value", None):
                 mdl_config["item_value"] = item_value
-            if item_label := opts.get('item_label', None):
+            if item_label := opts.get("item_label", None):
                 mdl_config["item_label"] = item_label
-            if lookup := opts.get('lookup', None):
+            if lookup := opts.get("lookup", None):
                 mdl_config["lookup"] = lookup
 
             config["Meta"] = type("Meta", (object,), mdl_config)
         else:
-            config["get_items"] = opts.get(
-                'get_items', HTMXAutoComplete.get_items
-            )
+            config["get_items"] = opts.get("get_items", HTMXAutoComplete.get_items)
 
         self.a_c = type(f"HtmxAc__{name}", (HTMXAutoComplete,), config)
-
 
     def value_from_datadict(self, data, files, name):
         try:
@@ -84,34 +82,38 @@ class Autocomplete(Widget):
             getter = data.get
         return getter(name)
 
-
     def value_omitted_from_data(self, data, files, name):
         # An unselected <select multiple> doesn't appear in POST data, so it's
         # never known if the value is actually omitted.
         return []
 
-
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
 
-        items_selected = [] if value is None else \
-            [value] if not isinstance(value, list) else value
+        items_selected = (
+            [] if value is None else [value] if not isinstance(value, list) else value
+        )
         selected_options = self.a_c.map_items(
             self.a_c,
-            self.a_c.get_items(
-                self.a_c,
-                values=[str(x) for x in items_selected]
-            )
+            self.a_c.get_items(self.a_c, values=[str(x) for x in items_selected]),
         )
 
-        context['name'] = self.a_c.name
-        context['indicator'] = self.a_c.indicator
-        context['required'] = self.a_c.required
-        context['route_name'] = self.a_c.get_route_name()
-        context['label'] = self.a_c.label
-        context['placeholder'] = self.a_c.placeholder
-        context['multiselect'] = self.a_c.multiselect
-        context['values'] = list(self.a_c.item_values(self.a_c, selected_options))
-        context['selected_items'] = list(selected_options)
+        context["name"] = self.a_c.name
+        context["disabled"] = attrs.get(
+            "disabled", self.attrs.get("disabled", self.a_c.disabled)
+        )
+        context["indicator"] = self.a_c.indicator
+        context["required"] = attrs.get(
+            "required", self.attrs.get("required", self.a_c.required)
+        )
+        context["route_name"] = self.a_c.get_route_name()
+        context["label"] = self.a_c.label
+        context["placeholder"] = self.a_c.placeholder
+        context["multiselect"] = self.a_c.multiselect
+        context["values"] = list(self.a_c.item_values(self.a_c, selected_options))
+        context["selected_items"] = list(selected_options)
+
+        self.a_c.required = context["required"]
+        self.a_c.disabled = context["disabled"]
 
         return context

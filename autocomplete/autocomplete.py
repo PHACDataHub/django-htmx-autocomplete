@@ -120,6 +120,9 @@ class HTMXAutoComplete(View):
     # If set to True the HTML control will be marked as required
     required = False
 
+    # If true the component will be disabled
+    disabled = False
+
     # If enabled an indicator will be displayed while waiting for a network response
     indicator = False
 
@@ -462,6 +465,7 @@ class HTMXAutoComplete(View):
                         "name": self.name,
                         "search": "",
                         "indicator": self.indicator,
+                        "placeholder": self.placeholder,
                         "required": self.required,
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
@@ -530,6 +534,7 @@ class HTMXAutoComplete(View):
                 template.render(
                     {
                         "name": self.name,
+                        "disabled": self.disabled,
                         "required": self.required,
                         "indicator": self.indicator,
                         "route_name": self.get_route_name(),
@@ -561,6 +566,7 @@ class HTMXAutoComplete(View):
                     {
                         "name": self.name,
                         "required": self.required,
+                        "placeholder": self.placeholder,
                         "indicator": self.indicator,
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
