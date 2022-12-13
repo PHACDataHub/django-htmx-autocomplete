@@ -1,9 +1,10 @@
 <input
     class="textinput"
     id="{{ route_name }}__textinput"
+    onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
     name="search"
     class="form-control col-auto"
-    onblur="phac_aspc_autocomplete_blur_handler('{{ route_name }}', {{ multiselect|yesno:'false,true' }})"
+    onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ route_name }}', {{ multiselect|yesno:'false,true' }})"
     {% if placeholder %}
     placeholder="{{ placeholder }}"
     {% endif %}
@@ -22,5 +23,7 @@
     {% if swap_oob %}
     hx-swap-oob="outerHTML:#{{ route_name }}__textinput"
     {% endif %}
+    {% if indicator %}
     hx-indicator="#{{ route_name }}__container .htmx-indicator"
+    {% endif %}
 >

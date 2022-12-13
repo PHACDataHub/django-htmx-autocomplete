@@ -1,0 +1,22 @@
+{% comment %}
+This draws the list of selected items as chips as well as the text input box
+{% endcomment %}
+<ul
+    class="ac_container"
+    id="{{ route_name }}_ac_container"
+    hx-swap-oob="{{ route_name }}_ac_container"
+>
+    {% if multiselect %}
+    {% include "./chip_list.html" with items=selected_items %}
+    {% endif %}
+    <li class="input">
+        {% include "./textinput.html" %}
+    </li>
+    {% if indicator %}
+    <li class="search-indicator">
+      <div class="htmx-indicator">
+        {% include "./indicator-icon.html" %}
+      </div>
+    </li>
+    {% endif %}
+</ul>

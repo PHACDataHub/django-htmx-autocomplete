@@ -5,7 +5,6 @@ This is the main component template that creates the basic HTML structure.
 <div
     id="{{ route_name }}__container"
     class="phac_aspc_form_autocomplete"
-    hx-include="unset"
 >
     {# Hidden input elements used to maintain the component's state #}
     {# and used when submitting forms #}
@@ -25,21 +24,7 @@ This is the main component template that creates the basic HTML structure.
     <label for="{{ route_name }}__textinput" class="form-label">{{ label }}</label>
     {% endif %}
 
-    <ul class="ac_container">
-        {% if multiselect %}
-        <li id="{{ route_name }}__selected_items">
-            {% include "./chip_list.html" with items=selected_items %}
-        </li>
-        {% endif %}
-        <li class="input">
-            {% include "./textinput.html" %}
-        </li>
-        <li class="search-indicator">
-          <div class="htmx-indicator">
-            {% include "./indicator-icon.html" %}
-          </div>
-        </li>
-    </ul>
+    {% include "./ac_container.html" %}
     <div class="dropdown-menu" id="{{ route_name }}__items"></div>
 </div>
 {# This code snippet loads the required CSS and JS if not already loaded. #}
@@ -56,10 +41,10 @@ This is the main component template that creates the basic HTML structure.
         if (!Array.from(document.querySelectorAll('link')).map(s => s.href).includes(ln.href)) {
             document.getElementsByTagName('head')[0].appendChild(ln);
         }
-        document.querySelector('#{{ route_name }}__container .ac_container').addEventListener(
+        document.querySelector('#{{ route_name }}__container').addEventListener(
             'click',
             function(evt) {
-                if (evt.target === this) {
+                if (evt.target === this || evt.target.classList.contains('ac_container')) {
                     document.getElementById('{{ route_name }}__textinput').focus();
                 }
             }

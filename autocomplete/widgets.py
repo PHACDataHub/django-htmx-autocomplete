@@ -15,6 +15,7 @@ class Autocomplete(Widget):
         options (dict): See [autocomplete.py](../autocomplete.py) for more info
             label                   (str)
             required                (bool) Defaults to false
+            indicator               (bool) Defaults to false
             placeholder             (str)
             no_result_text          (str) Defaults to "No results found."
             narrow_search_text      (str) Defaults to
@@ -25,6 +26,7 @@ class Autocomplete(Widget):
             model                   (str)
             item_value              (str)
             item_label              (str)
+            lookup                  (str)
             get_items               (func)
 
     """
@@ -43,6 +45,7 @@ class Autocomplete(Widget):
         config = {
             'name': name,
             'required': opts.get('required', None),
+            'indicator': opts.get('indicator', None),
             'route_name': opts.get('route_name', None),
             'label': opts.get('label', None),
             'placeholder': opts.get('placeholder', None),
@@ -62,6 +65,8 @@ class Autocomplete(Widget):
                 mdl_config["item_value"] = item_value
             if item_label := opts.get('item_label', None):
                 mdl_config["item_label"] = item_label
+            if lookup := opts.get('lookup', None):
+                mdl_config["lookup"] = lookup
 
             config["Meta"] = type("Meta", (object,), mdl_config)
         else:
@@ -100,6 +105,7 @@ class Autocomplete(Widget):
         )
 
         context['name'] = self.a_c.name
+        context['indicator'] = self.a_c.indicator
         context['required'] = self.a_c.required
         context['route_name'] = self.a_c.get_route_name()
         context['label'] = self.a_c.label
