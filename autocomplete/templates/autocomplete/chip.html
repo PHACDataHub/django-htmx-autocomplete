@@ -4,6 +4,7 @@ This template renders a selected item or chip.
 
 <li class="chip">
     <span>{{ item.label }}</span>
+    {% if not disabled %}
     <a
         hx-put="{% url route_name method='toggle' %}"
         hx-params="{{ route_name }},item,remove"
@@ -18,4 +19,5 @@ This template renders a selected item or chip.
             </path>
         </svg>
     </a>
+    {% endif %}
 </li>

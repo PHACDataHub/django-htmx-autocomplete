@@ -4,7 +4,7 @@ This is the main component template that creates the basic HTML structure.
 {% endcomment %}
 <div
     id="{{ route_name }}__container"
-    class="phac_aspc_form_autocomplete"
+    class="phac_aspc_form_autocomplete {{ disabled|yesno:'disabled,' }}"
 >
     {# Hidden input elements used to maintain the component's state #}
     {# and used when submitting forms #}
