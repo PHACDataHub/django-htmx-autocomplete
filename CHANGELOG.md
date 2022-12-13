@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.1.2...v0.2.0) (2022-12-13)
+
+
+### Features
+
+* Added keyboard navigation support ([44d15c7](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/44d15c7996b1e3e45f20c5f5fdc78cb9e34a4187))
+* Added support for disabled attribute ([c29bde1](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/c29bde163fcbb7e3f7b7c29f0c5d9b707e78be01))
+
 ## [0.1.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.1.1...v0.1.2) (2022-12-12)
 
 
