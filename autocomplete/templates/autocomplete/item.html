@@ -2,8 +2,9 @@
 <a
     id="{{ route_name }}__item__{{ item.value|make_id }}"
     class="item {{ item.selected|yesno:'selected,' }}"
-    onblur="phac_aspc_autocomplete_blur_handler('{{ route_name }}', {{ multiselect|yesno:'false,true' }})"
     {% if not item.selected %}
+    onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ route_name }}', {{ multiselect|yesno:'false,true' }})"
+    onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
     href="#"
     hx-put="{% url route_name method='toggle' %}"
     hx-params="{{ route_name }},item"
@@ -15,7 +16,7 @@
     hx-swap-oob="outerHTML:#{{ route_name }}__item__{{ item.value|make_id }}"
     {% endif %}
 >
-    {{ item.label }}
+    {{ item.label|search_highlight:search }}
 </a>
 
 {% if toggle is not None %}
@@ -23,12 +24,7 @@
         {% include "./values.html" %}
     </div>
     {% if multiselect %}
-        <div
-            id="{{ route_name }}__selected_items"
-            hx-swap-oob="#{{ route_name }}__selected_items"
-        >
-            {% include "./chip_list.html" with items=toggle %}
-        </div>
+        {% include "./ac_container.html" with selected_items=toggle %}
     {% else %}
         <span
             id="{{ route_name }}__data"

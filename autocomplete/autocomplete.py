@@ -53,10 +53,14 @@ class HTMXAutoComplete(View):
             item_value:  The column string or DeferredAttribute that will be
                          used as the item value.  (Defaults to the PK)
 
-            item_label: The column string or DeferredAttribute that will be
+            item_label:  The column string or DeferredAttribute that will be
                          used as the item's label and used for searches.
                          Defaults to the first CharField, or the first field if
                          no CharFields exist.
+
+            lookup:     Lookup method used for search.  This text will be added to
+                        item_label property to perform searches.
+                        Defaults to 'icontains'.
 
         For more fine-grained control over what items are available, you can
         also override the `get_items` function.
@@ -74,6 +78,9 @@ class HTMXAutoComplete(View):
 
     placeholder (str or None):    The placeholder text used on the component
                                   Defaults to None.
+
+    indicator (bool):             If enabled will display a search indicator.
+                                  Defaults to False
 
     required (bool):              If set the control is marked as required.
 
@@ -113,6 +120,9 @@ class HTMXAutoComplete(View):
     # If set to True the HTML control will be marked as required
     required = False
 
+    # If enabled an indicator will be displayed while waiting for a network response
+    indicator = False
+
     # The minimum search length to perform a search and show the dropdown.
     minimum_search_length = 3
 
@@ -133,6 +143,9 @@ class HTMXAutoComplete(View):
 
     # Used internally to reference the `label` field returned by `get_items`
     _item_label = "label"
+
+    # Used internally as the field lookup for model searches in `get_items`
+    _lookup = "icontains"
 
     @classmethod
     def url_dispatcher(cls, route):
@@ -233,7 +246,7 @@ class HTMXAutoComplete(View):
                 raise ImproperlyConfigured(f"Error loading '{meta.model}'") from exp
         elif not isinstance(meta.model, models.base.ModelBase):
             raise ImproperlyConfigured(
-                "Meta.model should be an object or string in the format \"app.model\""
+                'Meta.model should be an object or string in the format "app.model"'
             )
         return meta.model
 
@@ -280,6 +293,19 @@ class HTMXAutoComplete(View):
         return all_fields[0].name
 
     @classmethod
+    def _get_and_verify_lookup(cls, meta):
+        """Get the lookup value"""
+        if hasattr(meta, "lookup"):
+            if not isinstance(meta.lookup, str):
+                raise ImproperlyConfigured(
+                    "If Meta.lookup is defined it must be a field lookup string"
+                )
+
+            return meta.lookup
+
+        return 'icontains'
+
+    @classmethod
     def verify_config(cls):
         """Verify that the component is correctly configured.
 
@@ -295,6 +321,7 @@ class HTMXAutoComplete(View):
             cls.Meta.model = cls._get_and_verify_model(cls.Meta)
             cls._item_value = cls._get_and_verify_item_value(cls.Meta)
             cls._item_label = cls._get_and_verify_item_label(cls.Meta)
+            cls._lookup = cls._get_and_verify_lookup(cls.Meta)
 
     @classmethod
     def get_route_name(cls):
@@ -331,7 +358,7 @@ class HTMXAutoComplete(View):
         """
         items = None
         if search is not None:
-            search_dict = {self._item_label + "__icontains": search}
+            search_dict = {f"{self._item_label}__{self._lookup}": search}
             # pylint: disable=no-member
             items = self.Meta.model.objects.filter(**search_dict)
 
@@ -433,6 +460,8 @@ class HTMXAutoComplete(View):
                 template.render(
                     {
                         "name": self.name,
+                        "search": "",
+                        "indicator": self.indicator,
                         "required": self.required,
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
@@ -494,9 +523,7 @@ class HTMXAutoComplete(View):
         items_selected = request.GET.getlist(self.name)
 
         if method == "component":
-            template = loader.get_template(
-                "autocomplete/component.html"
-            )
+            template = loader.get_template("autocomplete/component.html")
             selected_options = self.map_items(self.get_items(values=items_selected))
 
             return HttpResponse(
@@ -504,6 +531,7 @@ class HTMXAutoComplete(View):
                     {
                         "name": self.name,
                         "required": self.required,
+                        "indicator": self.indicator,
                         "route_name": self.get_route_name(),
                         "label": self.label,
                         "placeholder": self.placeholder,
@@ -518,9 +546,7 @@ class HTMXAutoComplete(View):
             )
 
         if method == "items":
-            template = loader.get_template(
-                "autocomplete/item_list.html"
-            )
+            template = loader.get_template("autocomplete/item_list.html")
             search = request.GET.get("search", "")
             show = len(search) >= self.minimum_search_length
             items = (
@@ -528,17 +554,19 @@ class HTMXAutoComplete(View):
             )
             total_results = len(items)
             if self.max_results is not None and len(items) > self.max_results:
-                items = items[:self.max_results]
+                items = items[: self.max_results]
 
             return HttpResponse(
                 template.render(
                     {
                         "name": self.name,
                         "required": self.required,
+                        "indicator": self.indicator,
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
                         "route_name": self.get_route_name(),
                         "show": show,
+                        "search": search,
                         "items": list(items),
                         "total_results": total_results,
                     },
