@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.3.0...v0.4.0) (2022-12-15)
+
+
+### Features
+
+* Added navigation using home, end, pageup and pagedown keys ([2457d9e](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/2457d9e16404abb2b2df43c0065e05d49bfbfa42))
+
 ## [0.3.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.2.0...v0.3.0) (2022-12-15)
 
 
