@@ -442,6 +442,14 @@ class HTMXAutoComplete(View):
                 self.get_items(values=items_selected + [item]), items_selected
             )
 
+            def sort_items(item):
+                try:
+                    return items_selected.index(f"{item.get('value')}")
+                except ValueError:
+                    return len(items_selected)
+
+            items.sort(key=sort_items)
+
             target_item = next((x for x in items if x.get("value") == item), None)
 
             if target_item is None:

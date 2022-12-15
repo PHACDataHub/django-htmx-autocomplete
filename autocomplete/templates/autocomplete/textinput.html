@@ -2,33 +2,33 @@
 <input
     class="textinput"
     id="{{ route_name }}__textinput"
+    autocomplete="off"
+    type="text"
+    onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
+    onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ route_name|escapejs }}', {{ multiselect|yesno:'false,true' }})"
+    hx-get="{% url route_name method='items' %}"
+    hx-trigger="click,input delay:250ms"
+    hx-include="#{{ route_name }}"
+    hx-target="#{{ route_name }}__items"
+    hx-vals="js:{search: document.getElementById('{{ route_name|escapejs }}__textinput').value}"
+    hx-swap="outerHTML"
+    {% if indicator %}
+    hx-indicator="#{{ route_name }}__container .htmx-indicator"
+    {% endif %}
     {% if disabled %}
     disabled
     {% endif %}
-    onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
-    name="search"
-    class="form-control col-auto"
-    onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ route_name }}', {{ multiselect|yesno:'false,true' }})"
     {% if placeholder and selected_items|length == 0 %}
     placeholder="{{ placeholder }}"
     {% endif %}
-    type="search"
     {% if not multiselect and selected_items|length == 1 %}
     value="{{ selected_items.0.label }}"
     {% endif %}
     {% if required and selected_items|length == 0 %}
     required
     {% endif %}
-    hx-get="{% url route_name method='items' %}"
-    hx-trigger="keyup changed delay:250ms,click,focus,search"
-    hx-include="#{{ route_name }}"
-    hx-target="#{{ route_name }}__items"
-    hx-swap="outerHTML"
     {% if swap_oob %}
     hx-swap-oob="outerHTML:#{{ route_name }}__textinput"
-    {% endif %}
-    {% if indicator %}
-    hx-indicator="#{{ route_name }}__container .htmx-indicator"
     {% endif %}
 >
 {% endif %}
