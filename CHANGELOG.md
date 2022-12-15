@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.2.0...v0.3.0) (2022-12-15)
+
+
+### Features
+
+* Added backspace keyboard navigation ([49f2c64](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/49f2c645be011d3063ad1259b4ddd4cbb371b869))
+
 ## [0.2.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.1.2...v0.2.0) (2022-12-13)
 
 
