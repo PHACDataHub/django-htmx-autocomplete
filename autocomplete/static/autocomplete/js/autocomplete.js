@@ -23,17 +23,24 @@ const phac_aspc_autocomplete_keydown_debounce = {};
 function phac_aspc_autocomplete_keydown_handler(event) {
     // Handler responsible for keyboard navigation (up, down, esc and backspace)
     const debounce = phac_aspc_autocomplete_keydown_debounce;
-    const whereTo = (element, down=true, skip_element=true) => {
+    const whereTo = (element, down=true, skip_element=true, count=1) => {
         // This function determines which element should receive focus
         if (!element) return null;
         const dir = down ?
             elem => elem.nextElementSibling : elem => elem.previousElementSibling;
 
         let el = skip_element ? dir(element) : element;
-        while (el) {
-            if (el.getAttribute('href')) return el;
+        let last_el = el;
+        let counter = count;
+        while (el && counter > 0) {
+            if (el.getAttribute('href')) {
+                if (counter === 1) return el;
+                last_el = el;
+            }
+            if (counter !== 1) counter -= 1;
             el = dir(el);
         }
+        if (last_el && counter > 0) return last_el;
         return null;
     }
     const focusWhenResultsShown = (container, timeout) => {
@@ -58,22 +65,80 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         if (next) next.focus();
     }
 
+    const getPageSize = (container, element) => {
+        const r1 = container.getBoundingClientRect();
+        const r2 = element.getBoundingClientRect();
+        return Math.floor((r1.bottom - r1.top) / (r2.bottom - r2.top));
+    }
+
+    const container = event.target.closest('.phac_aspc_form_autocomplete');
+    const results = container.querySelector('.results');
     if (event.keyCode === 27) {
-        // Escape key
-        event.target.blur();
+        // Escape key on text input or item
+        if (results && results.classList.contains('show')) {
+            results.classList.remove('show');
+        } else if (event.target.tagName.toUpperCase() === 'INPUT') {
+            event.target.value = '';
+        } 
+        if (event.target.tagName.toUpperCase() !== 'INPUT') {
+            container.querySelector('.textinput').focus();
+        }
     } else if (
         event.target.tagName.toUpperCase() === 'INPUT' &&
         event.keyCode === 8 &&
         event.target.value.length === 0
     ) {
         // Backspace key on text input
-        const container = event.target.closest('.phac_aspc_form_autocomplete');
         const chip = container.querySelectorAll('.chip a');
         if (chip.length > 0) chip[chip.length - 1].dispatchEvent(new Event('click'));
+    } else if (event.target.tagName.toUpperCase() !== 'INPUT' && event.keyCode === 36) {
+        // Home key
+        if (results) {
+            const top = whereTo(
+                results.querySelector('a:first-child'),
+                true,
+                false
+            );
+            if (top) top.focus();
+            return false;
+        }
+    } else if (event.target.tagName.toUpperCase() !== 'INPUT' && event.keyCode === 35) {
+        // End key
+        if (results) {
+            const bottom = whereTo(
+                results.querySelector('a:last-child'),
+                false,
+                false
+            );
+            if (bottom) bottom.focus();
+            return false;
+        }
+    } else if (event.target.tagName.toUpperCase() !== 'INPUT' && event.keyCode === 33) {
+        // Page up key
+        if (results) {
+            const prev = whereTo(
+                event.target,
+                false,
+                true,
+                getPageSize(results, event.target)
+            );
+            if (prev) prev.focus();
+            return false;
+        }
+    } else if (event.target.tagName.toUpperCase() !== 'INPUT' && event.keyCode === 34) {
+        // Page down key
+        if (results) {
+            const next = whereTo(
+                event.target,
+                true,
+                true,
+                getPageSize(results, event.target)
+            );
+            if (next) next.focus();
+            return false;
+        }
     } else if (event.keyCode === 40 && event.target.tagName.toUpperCase() === 'INPUT') {
         // down arrow on text element
-        const container = event.target.closest('.phac_aspc_form_autocomplete');
-        const results = container.querySelector('.results');
         // Open the results if they are not shown
         if (!results || !results.classList.contains('show'))
             event.target.dispatchEvent(new Event('input'));
