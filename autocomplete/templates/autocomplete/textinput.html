@@ -7,7 +7,7 @@
     onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
     onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ route_name|escapejs }}', {{ multiselect|yesno:'false,true' }})"
     hx-get="{% url route_name method='items' %}"
-    hx-trigger="click,input delay:250ms"
+    hx-trigger="focus,click,input delay:250ms"
     hx-include="#{{ route_name }}"
     hx-target="#{{ route_name }}__items"
     hx-vals="js:{search: document.getElementById('{{ route_name|escapejs }}__textinput').value}"

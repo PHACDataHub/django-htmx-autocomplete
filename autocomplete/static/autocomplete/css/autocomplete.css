@@ -9,7 +9,7 @@
 .phac_aspc_form_autocomplete {
     display: block;
     width: 100%;
-    padding: .375rem 2.25rem 0.375rem 0.75rem;
+    padding: calc(.375rem - 2px) 2.25rem calc(0.375rem - 2px) 0.75rem;
     -moz-padding-start: calc(0.75rem - 3px);
     font-weight: 400;
     line-height: 1.5;
@@ -23,6 +23,7 @@
     border-radius: .375rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     appearance: none;
+    min-height: 38px;
 }
 
 .phac_aspc_form_autocomplete.disabled {
@@ -45,7 +46,7 @@
     position: relative;
     overflow: hidden;
     margin: 0;
-    padding: 0 5px;
+    padding: 0;
     width: 100%;
     height: auto;
     cursor: text;
@@ -71,7 +72,7 @@
     background-clip: padding-box;
     box-shadow: 0 0 2px #fff inset, 0 1px 0 rgb(0 0 0 / 5%);
     color: #333;
-    line-height: 13px;
+    line-height: 14px;
     cursor: default;
 }
 
@@ -112,9 +113,12 @@
 .phac_aspc_form_autocomplete ul.ac_container li.input {
     margin: 0;
     padding: 0;
+    min-width: 10px;
     white-space: nowrap;
     flex: 1;
     display: flex;
+    flex-wrap: nowrap;
+    line-height: 14px;
 }
 
 .phac_aspc_form_autocomplete ul.ac_container li input.textinput {
@@ -130,6 +134,7 @@
     line-height: normal;
     border-radius: 0;
     flex: 1;
+    max-width: 100%;
 }
 
 .phac_aspc_form_autocomplete .ac_required_input {
@@ -250,4 +255,8 @@
     cursor: default;
     display: list-item;
     color: #ccc;
+}
+
+.phac_aspc_form_autocomplete li.input.ac-active {
+    min-width: 50px !important;
 }
