@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.0...v0.4.1) (2022-12-20)
+
+
+### Bug Fixes
+
+* hide extra row unless necessary; styling improvements ([#11](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/11)) ([c627620](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/c62762093974f5d1c1ee43d45364a70fbd502a35))
+
 ## [0.4.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.3.0...v0.4.0) (2022-12-15)
 
 
