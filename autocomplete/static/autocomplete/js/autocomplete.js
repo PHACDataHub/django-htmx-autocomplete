@@ -5,6 +5,7 @@ function phac_aspc_autocomplete_blur_handler(event, name, sync=false, item=false
     requestAnimationFrame(function () {
         const parent = document.getElementById(`${name}__container`);
         if (!parent.contains(document.activeElement)) {
+            // We are now outside the component
             const el = document.getElementById(name + '__textinput');
             const data_el = document.getElementById(name + '__data');
             if (!sync)  {
@@ -15,12 +16,24 @@ function phac_aspc_autocomplete_blur_handler(event, name, sync=false, item=false
             // Reset focus back to textbox if a search result item triggered the blur
             if (item) el.focus();
             document.getElementById(name + '__items').classList.remove('show');
+            // Change the min-width of the text input back to the (small) default
+            parent.querySelector('.textinput')
+                    .parentElement.classList.remove('ac-active');
         }
     });
 }
 
 const phac_aspc_autocomplete_keydown_debounce = {};
 function phac_aspc_autocomplete_keydown_handler(event) {
+    if (event.target.classList.contains('textinput') && event.keyCode > 47) {
+        // Expands the min-width of text input to a reasonable size when typing
+        event.target.parentElement.classList.add('ac-active');
+    } else if (event.target.classList.contains('textinput') && event.keyCode === 8
+                && event.target.value.length === 1) {
+        // Shrinks the min-width of text input back to the (small) default if
+        // the text input is empty due to backspacing
+        event.target.parentElement.classList.remove('ac-active');
+    }
     // Handler responsible for keyboard navigation (up, down, esc and backspace)
     const debounce = phac_aspc_autocomplete_keydown_debounce;
     const whereTo = (element, down=true, skip_element=true, count=1) => {
