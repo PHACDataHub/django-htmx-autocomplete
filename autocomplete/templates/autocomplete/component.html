@@ -30,17 +30,22 @@ This is the main component template that creates the basic HTML structure.
 {# This code snippet loads the required CSS and JS if not already loaded. #}
 <script>
     (function () {
-        const sc = document.createElement('script');
-        sc.src = '{% static "autocomplete/js/autocomplete.js" %}';
-        if (!Array.from(document.querySelectorAll('script')).map(s => s.src).includes(sc.src)) {
-            document.body.appendChild(sc);
-        }
+        // Add CSS if not already added
         const ln = document.createElement('link');
         ln.href = '{% static 'autocomplete/css/autocomplete.css' %}';
         ln.rel = 'stylesheet';
         if (!Array.from(document.querySelectorAll('link')).map(s => s.href).includes(ln.href)) {
             document.getElementsByTagName('head')[0].appendChild(ln);
         }
+        {% if not disabled %}
+        {% comment %} If component is disabled no JS is required {% endcomment %}
+        // Add JS if not already added
+        const sc = document.createElement('script');
+        sc.src = '{% static "autocomplete/js/autocomplete.js" %}';
+        if (!Array.from(document.querySelectorAll('script')).map(s => s.src).includes(sc.src)) {
+            document.body.appendChild(sc);
+        }
+        // Add click handler on container to set focus on <input> box
         document.querySelector('#{{ route_name }}__container').addEventListener(
             'click',
             function(evt) {
@@ -49,5 +54,6 @@ This is the main component template that creates the basic HTML structure.
                 }
             }
         );
+        {% endif %}        
     })();
 </script>

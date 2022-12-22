@@ -15,9 +15,6 @@
     {% if indicator %}
     hx-indicator="#{{ route_name }}__container .htmx-indicator"
     {% endif %}
-    {% if disabled %}
-    disabled
-    {% endif %}
     {% if placeholder and selected_items|length == 0 %}
     placeholder="{{ placeholder }}"
     {% endif %}

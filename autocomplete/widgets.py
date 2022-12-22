@@ -99,13 +99,11 @@ class Autocomplete(Widget):
         )
 
         context["name"] = self.a_c.name
-        context["disabled"] = attrs.get(
-            "disabled", self.attrs.get("disabled", self.a_c.disabled)
-        )
+
+        context["disabled"] = attrs.get("disabled", self.attrs.get("disabled", False))
+        context["required"] = attrs.get("required", self.attrs.get("required", False))
+
         context["indicator"] = self.a_c.indicator
-        context["required"] = attrs.get(
-            "required", self.attrs.get("required", self.a_c.required)
-        )
         context["route_name"] = self.a_c.get_route_name()
         context["label"] = self.a_c.label
         context["placeholder"] = self.a_c.placeholder
