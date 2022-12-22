@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.1...v0.4.2) (2022-12-22)
+
+
+### Bug Fixes
+
+* Blur now hides the results under htmx race conditions ([b08a678](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/b08a6789dedeb1503d94d1628fab9b14d2f515bc))
+* Widget uses disabled and required from attributes only ([b7a0da4](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/b7a0da46ce2d3d123380daa5582ee05904970111))
+
 ## [0.4.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.0...v0.4.1) (2022-12-20)
 
 
