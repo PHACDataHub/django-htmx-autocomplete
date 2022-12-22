@@ -1,24 +1,45 @@
 function phac_aspc_autocomplete_blur_handler(event, name, sync=false, item=false) {
     // Handler responsible for blur events
     // Will remove the results when focus is not longer on the component, and update
-    // the textbox value when multiselect is false
+    // the <input> box value when multiselect is false
     requestAnimationFrame(function () {
         const parent = document.getElementById(`${name}__container`);
         if (!parent.contains(document.activeElement)) {
-            // We are now outside the component
+            // Focus has left the component
+
+            // Get reference to <input> box
             const el = document.getElementById(name + '__textinput');
+
+            // Abort active HTMX operations on the input box to avoid race conditions
+            htmx.trigger(el, 'htmx:abort');
+
+            // Set the text input value
             const data_el = document.getElementById(name + '__data');
             if (!sync)  {
                 el.value = '';
             } else {
                 el.value = data_el.getAttribute('data-phac-aspc-autocomplete');
             }
-            // Reset focus back to textbox if a search result item triggered the blur
+
+            // Reset focus back to <input> box if a menu item triggered the blur
             if (item) el.focus();
-            document.getElementById(name + '__items').classList.remove('show');
+
+            // Get reference to list of results
+            const results = document.getElementById(name + '__items');
+
+            // Test if HTMX is currently in the process of swapping
+            if (results.classList.contains('htmx-swapping')) {
+                // To ensure the results are hidden, wait for HTMX to finish, then hide.
+                results.addEventListener(
+                    'htmx:afterSettle', () => results.classList.remove('show')
+                );
+            }
+            // Hide the results
+            results.classList.remove('show');
+
             // Change the min-width of the text input back to the (small) default
             parent.querySelector('.textinput')
-                    .parentElement.classList.remove('ac-active');
+                .parentElement.classList.remove('ac-active');
         }
     });
 }
@@ -92,7 +113,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
             results.classList.remove('show');
         } else if (event.target.tagName.toUpperCase() === 'INPUT') {
             event.target.value = '';
-        } 
+        }
         if (event.target.tagName.toUpperCase() !== 'INPUT') {
             container.querySelector('.textinput').focus();
         }
