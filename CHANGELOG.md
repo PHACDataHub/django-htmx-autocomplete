@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.3](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.2...v0.4.3) (2022-12-23)
+
+
+### Bug Fixes
+
+* flash of unstyled SVG; disabled field height ([#15](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/15)) ([31dd027](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/31dd027ddefe4c75dac310e9d92a6d4732d80228))
+* ignore htmx directives when reloaded from another process ([63a2f78](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/63a2f78f025868be3b22b7a4e6489343110b1cec))
+
 ## [0.4.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.1...v0.4.2) (2022-12-22)
 
 
