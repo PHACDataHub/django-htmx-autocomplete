@@ -1,6 +1,8 @@
 {
     "recommendations": [
         "batisteo.vscode-django",
-        "ms-python.pylint"
+        "ms-python.pylint",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-preview-github-styles"
     ]
 }

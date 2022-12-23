@@ -6,12 +6,48 @@ name: release-please
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    environment: production-pypi
     steps:
       - uses: google-github-actions/release-please-action@v3
         with:
           release-type: python
           package-name: django-htmx-autocomplete
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          python-version: '3.10'
+      - name: Build source and wheel distributions
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          python -m pip install --upgrade build twine
+          python -m build
+          twine check --strict dist/*
+      - name: Publish distribution to PyPI
+        if: ${{ steps.release.outputs.release_created }}
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Upload Release Assets 1/2
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./dist/django-htmx-autocomplete-${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}.tar.gz
+          asset_name: django-htmx-autocomplete-${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}.tar.gz
+          asset_content_type: application/gzip          
+      - name: Upload Release Assets 2/2
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./dist/django-htmx-autocomplete-${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}-py3-none-any.whl
+          asset_name: django-htmx-autocomplete-${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}-py3-none-any.whl
+          asset_content_type: application/x-wheel+zip          
       - name: tag major and minor versions
         if: ${{ steps.release.outputs.release_created }}
         run: |
@@ -25,4 +61,4 @@ jobs:
           git tag -a v${{ steps.release.outputs.major }} -m "Release v${{ steps.release.outputs.major }}"
           git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
           git push origin v${{ steps.release.outputs.major }}
-          git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}          
+          git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}

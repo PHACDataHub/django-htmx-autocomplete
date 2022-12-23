@@ -1,2 +1,6 @@
+[MASTER]
+load-plugins=pylint_django
+django-settings-module=autocomplete
+
 [FORMAT]
 max-line-length=88
