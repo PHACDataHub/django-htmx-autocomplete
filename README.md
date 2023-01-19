@@ -35,6 +35,10 @@ This Django app provides a client-side autocomplete component powered by
 1. Use either the widget or class to create components!
 
     ```python
+    from django forms
+    from django.db import models
+    from autocomplete import HTMXAutoComplete, widgets 
+    
     # Example models
     class Person(models.Model):
         name = models.CharField(max_length=60)
