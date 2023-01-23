@@ -3,30 +3,30 @@
 This is the main component template that creates the basic HTML structure.
 {% endcomment %}
 <div
-    id="{{ route_name }}__container"
+    id="{{ component_id }}__container"
     class="phac_aspc_form_autocomplete {{ disabled|yesno:'disabled,' }}"
     hx-preserve
 >
     {# Hidden input elements used to maintain the component's state #}
     {# and used when submitting forms #}
-    <div id="{{ route_name }}">
+    <div id="{{ component_id }}">
         {% include "./values.html" %}
     </div>
 
     {# Data element used to store component state data #}
     <span
-        id="{{ route_name }}__data"
+        id="{{ component_id }}__data"
         {% if not multiselect and selected_items|length == 1 %}
         data-phac-aspc-autocomplete="{{ selected_items.0.label }}"
         {% endif %}
     ></span>
 
     {% if label is not None %}
-    <label for="{{ route_name }}__textinput" class="form-label">{{ label }}</label>
+    <label for="{{ component_id }}__textinput" class="form-label">{{ label }}</label>
     {% endif %}
 
     {% include "./ac_container.html" %}
-    <div class="results" id="{{ route_name }}__items"></div>
+    <div class="results" id="{{ component_id }}__items"></div>
 </div>
 {# This code snippet loads the required CSS and JS if not already loaded. #}
 <script>
@@ -47,11 +47,11 @@ This is the main component template that creates the basic HTML structure.
             document.body.appendChild(sc);
         }
         // Add click handler on container to set focus on <input> box
-        document.querySelector('#{{ route_name }}__container').addEventListener(
+        document.querySelector('#{{ component_id }}__container').addEventListener(
             'click',
             function(evt) {
                 if (evt.target === this || evt.target.classList.contains('ac_container')) {
-                    document.getElementById('{{ route_name }}__textinput').focus();
+                    document.getElementById('{{ component_id }}__textinput').focus();
                 }
             }
         );

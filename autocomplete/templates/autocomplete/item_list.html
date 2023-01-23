@@ -1,4 +1,4 @@
-<div class="results {{ show|yesno:'show,' }}" id="{{ route_name }}__items">
+<div class="results {{ show|yesno:'show,' }}" id="{{ component_id }}__items">
     {% for item in items %}
         {% include "./item.html" %}
     {% endfor %}
