@@ -111,6 +111,9 @@ class HTMXAutoComplete(View):
     # If specified use this string instead of name for the route name
     route_name = None
 
+    # If specified use this string instead of route_name for the component ID in HTML
+    component_id = None
+
     # The component label passed to the template.
     label = None
 
@@ -223,6 +226,25 @@ class HTMXAutoComplete(View):
             )
 
     @classmethod
+    def _verify_component_id(cls):
+        """Test that component_id is valid and unique"""
+
+        if cls.component_id is not None and not re.match(NAME_PATTERN, cls.component_id):
+            raise ImproperlyConfigured(
+                f"`component_id` must match regex pattern: {NAME_PATTERN}"
+            )
+
+        if cls.get_component_id() in [
+            cl.get_component_id() if cl is not cls else ""
+            for cl in HTMXAutoComplete.__subclasses__()
+        ]:
+            raise ImproperlyConfigured(
+                "Autocomplete components must have a unique id.  The "
+                f"id {cls.get_component_id()}` is already in defined."
+            )
+
+
+    @classmethod
     def _verify_model_or_get_items(cls):
         """Test for meta options or get_items"""
         if not hasattr(cls, "Meta") and HTMXAutoComplete.get_items == cls.get_items:
@@ -318,6 +340,7 @@ class HTMXAutoComplete(View):
         cls._verify_label()
         cls._verify_name()
         cls._verify_route_name()
+        cls._verify_component_id()
         cls._verify_model_or_get_items()
 
         if hasattr(cls, "Meta"):
@@ -334,6 +357,18 @@ class HTMXAutoComplete(View):
             str: Name to use for routes
         """
         return cls.route_name if cls.route_name else cls.name
+
+    @classmethod
+    def get_component_id(cls, override_id=None):
+        """Return the component id used by the template HTML to render the component
+
+        Returns:
+            str: Component ID
+        """
+        if override_id:
+            return override_id
+        return cls.component_id if cls.component_id else cls.get_route_name()
+
 
     def get_items(self, search=None, values=None):
         """Get available items based on search or values.
@@ -420,6 +455,7 @@ class HTMXAutoComplete(View):
             Context:
                 name (str): Name of this component (for html elements)
                 route_name (str): Name to use to get routes
+                component_id (str): ID to use on component
                 multiselect (bool): Can the user select multiple items?
                 values (list): Updated list of values
                 item (dict): The item object being toggled
@@ -432,6 +468,7 @@ class HTMXAutoComplete(View):
         """
         data = QueryDict(request.body)
         items_selected = data.getlist(self.name)
+        override_component_id = data.get("component_id", "")
 
         if method == "toggle":
             item = data.get("item", None)
@@ -478,6 +515,7 @@ class HTMXAutoComplete(View):
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
                         "route_name": self.get_route_name(),
+                        "component_id": self.get_component_id(override_component_id),
                         "multiselect": self.multiselect,
                         "values": list(self.item_values(items, True)),
                         "item": target_item,
@@ -510,6 +548,7 @@ class HTMXAutoComplete(View):
                 Context:
                     name (str): Name of this component
                     route_name (str): Name to use to get routes
+                    component_id (str): ID to use in HTML
                     label (str): The label of the control (or None)
                     placeholder (str): The placeholder text (or None)
                     multiselect (bool): Can the user selected multiple items?
@@ -528,11 +567,14 @@ class HTMXAutoComplete(View):
                 Context:
                     name (str): Name of this component
                     route_name (str): Name to use to get routes
+                    component_id (str): ID of the component
                     search (str): The search string (if any)
                     show (bool): Whether or not the dropdown should be shown
                     items (dict[]): List of items
         """
         items_selected = request.GET.getlist(self.name)
+
+        override_component_id = request.GET.get("component_id", "")
 
         if method == "component":
             template = loader.get_template("autocomplete/component.html")
@@ -546,6 +588,7 @@ class HTMXAutoComplete(View):
                         "required": self.required,
                         "indicator": self.indicator,
                         "route_name": self.get_route_name(),
+                        "component_id": self.get_component_id(override_component_id),
                         "label": self.label,
                         "placeholder": self.placeholder,
                         "multiselect": self.multiselect,
@@ -579,6 +622,7 @@ class HTMXAutoComplete(View):
                         "no_result_text": self.no_result_text,
                         "narrow_search_text": self.narrow_search_text,
                         "route_name": self.get_route_name(),
+                        "component_id": self.get_component_id(override_component_id),
                         "show": show,
                         "search": search,
                         "items": list(items),

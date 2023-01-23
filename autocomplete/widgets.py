@@ -14,8 +14,10 @@ class Autocomplete(Widget):
 
         name (str):     The name of the component (must be unique)
         attrs (dict):   disabled and required attributes are supported
+        use_ac Autocomplete:  Optional.  Use existing autocomplete class
         options (dict): See [autocomplete.py](../autocomplete.py) for more info
             label                   (str)
+            component_id            (str) Defaults to None
             indicator               (bool) Defaults to false
             placeholder             (str)
             no_result_text          (str) Defaults to "No results found."
@@ -36,44 +38,50 @@ class Autocomplete(Widget):
 
     def __init__(
         self,
-        name,
+        name="",
+        use_ac=None,
         options=None,
         attrs=None,
     ):
         opts = options or {}
 
         super().__init__(attrs)
-        config = {
-            "name": name,
-            "disabled": attrs.get("disabled", False) if attrs else False,
-            "required": attrs.get("required", False) if attrs else False,
-            "indicator": opts.get("indicator", None),
-            "route_name": opts.get("route_name", None),
-            "label": opts.get("label", None),
-            "placeholder": opts.get("placeholder", None),
-            "no_result_text": opts.get("no_result_text", "No results found."),
-            "narrow_search_text": opts.get(
-                "narrow_search_text", "Narrow your search for more results."
-            ),
-            "max_results": opts.get("max_results", None),
-            "minimum_search_length": opts.get("minimum_search_length", 3),
-            "multiselect": opts.get("multiselect", False),
-        }
 
-        if model := opts.get("model", None):
-            mdl_config = {"model": model}
-            if item_value := opts.get("item_value", None):
-                mdl_config["item_value"] = item_value
-            if item_label := opts.get("item_label", None):
-                mdl_config["item_label"] = item_label
-            if lookup := opts.get("lookup", None):
-                mdl_config["lookup"] = lookup
+        if use_ac is None:
+            config = {
+                "name": name,
+                "disabled": attrs.get("disabled", False) if attrs else False,
+                "required": attrs.get("required", False) if attrs else False,
+                "indicator": opts.get("indicator", None),
+                "route_name": opts.get("route_name", None),
+                "component_id": opts.get("component_id", None),
+                "label": opts.get("label", None),
+                "placeholder": opts.get("placeholder", None),
+                "no_result_text": opts.get("no_result_text", "No results found."),
+                "narrow_search_text": opts.get(
+                    "narrow_search_text", "Narrow your search for more results."
+                ),
+                "max_results": opts.get("max_results", None),
+                "minimum_search_length": opts.get("minimum_search_length", 3),
+                "multiselect": opts.get("multiselect", False),
+            }
 
-            config["Meta"] = type("Meta", (object,), mdl_config)
+            if model := opts.get("model", None):
+                mdl_config = {"model": model}
+                if item_value := opts.get("item_value", None):
+                    mdl_config["item_value"] = item_value
+                if item_label := opts.get("item_label", None):
+                    mdl_config["item_label"] = item_label
+                if lookup := opts.get("lookup", None):
+                    mdl_config["lookup"] = lookup
+
+                config["Meta"] = type("Meta", (object,), mdl_config)
+            else:
+                config["get_items"] = opts.get("get_items", HTMXAutoComplete.get_items)
+
+            self.a_c = type(f"HtmxAc__{name}", (HTMXAutoComplete,), config)
         else:
-            config["get_items"] = opts.get("get_items", HTMXAutoComplete.get_items)
-
-        self.a_c = type(f"HtmxAc__{name}", (HTMXAutoComplete,), config)
+            self.a_c = use_ac
 
     def value_from_datadict(self, data, files, name):
         try:
@@ -105,6 +113,9 @@ class Autocomplete(Widget):
 
         context["indicator"] = self.a_c.indicator
         context["route_name"] = self.a_c.get_route_name()
+        context["component_id"] = self.a_c.get_component_id(
+            attrs.get("component_id", self.attrs.get("component_id", None))
+        )
         context["label"] = self.a_c.label
         context["placeholder"] = self.a_c.placeholder
         context["multiselect"] = self.a_c.multiselect
