@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.3...v0.5.0) (2023-01-26)
+
+
+### Features
+
+* Added configuration option for component_id ([f675405](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/f6754059f238b1a3c5c2ee4599df61dd72fa4f40))
+
+
+### Documentation
+
+* add missing imports in readme ([b61cb85](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/b61cb85eddfe363f177b445329bd131e9dc99285))
+
 ## [0.4.3](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.2...v0.4.3) (2022-12-23)
 
 
