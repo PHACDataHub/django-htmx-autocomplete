@@ -7,7 +7,7 @@
     onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
     href="#"
     hx-put="{% url route_name method='toggle' %}"
-    hx-params="{{ component_id }},item,component_id"
+    hx-params="{{ name }},item,component_id"
     hx-include="#{{ component_id }}"
     hx-vals='{"component_id": "{{ component_id|escapejs }}", "item": "{{ item.value|escapejs }}"}'
     {% endif %}
