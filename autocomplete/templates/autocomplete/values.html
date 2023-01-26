@@ -5,6 +5,4 @@
 {% endfor %}
 {% if required and values|length == 0 %}
 <input type="text" name="{{ name }}" required class="ac_required_input">
-{% elif values|length == 0 %}
-MUFFIN
 {% endif %}
