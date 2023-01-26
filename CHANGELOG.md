@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.5.0...v0.5.1) (2023-01-26)
+
+
+### Bug Fixes
+
+* Allow adding elements when original input element is missing ([a359982](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/a3599828030df7045b836be4650b13b9dc59264b))
+* Fix multi-select issue when component id and name don't match ([42d0a88](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/42d0a8889d9ea018a19eaf94a2b38750d1345515))
+* Removed erroneous text ([3eb2179](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/3eb21798e90ae172b0f85eac8c27d0410180c2f0))
+
 ## [0.5.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.4.3...v0.5.0) (2023-01-26)
 
 
