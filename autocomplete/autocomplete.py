@@ -135,6 +135,9 @@ class HTMXAutoComplete(View):
     # The maximum number of search results to return to the frontend, or None for all
     max_results = None
 
+    # Values in this set are stripped from any toggle operation.
+    strip_values = set(["undefined"])
+
     # Text to display when the results are cut off due to max_results.
     narrow_search_text = "Narrow your search for more results"
 
@@ -229,7 +232,9 @@ class HTMXAutoComplete(View):
     def _verify_component_id(cls):
         """Test that component_id is valid and unique"""
 
-        if cls.component_id is not None and not re.match(NAME_PATTERN, cls.component_id):
+        if cls.component_id is not None and not re.match(
+            NAME_PATTERN, cls.component_id
+        ):
             raise ImproperlyConfigured(
                 f"`component_id` must match regex pattern: {NAME_PATTERN}"
             )
@@ -242,7 +247,6 @@ class HTMXAutoComplete(View):
                 "Autocomplete components must have a unique id.  The "
                 f"id {cls.get_component_id()}` is already in defined."
             )
-
 
     @classmethod
     def _verify_model_or_get_items(cls):
@@ -328,7 +332,7 @@ class HTMXAutoComplete(View):
 
             return meta.lookup
 
-        return 'icontains'
+        return "icontains"
 
     @classmethod
     def verify_config(cls):
@@ -368,7 +372,6 @@ class HTMXAutoComplete(View):
         if override_id:
             return override_id
         return cls.component_id if cls.component_id else cls.get_route_name()
-
 
     def get_items(self, search=None, values=None):
         """Get available items based on search or values.
@@ -469,6 +472,11 @@ class HTMXAutoComplete(View):
         data = QueryDict(request.body)
         items_selected = data.getlist(self.name)
         override_component_id = data.get("component_id", "")
+
+        if items_selected == [""]:
+            items_selected = []
+
+        items_selected = [a for a in items_selected if a not in self.strip_values]
 
         if method == "toggle":
             item = data.get("item", None)
