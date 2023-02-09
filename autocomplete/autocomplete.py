@@ -91,9 +91,17 @@ class HTMXAutoComplete(View):
                                   frontend, or None for all.
                                   Defaults to None.
 
-    narrow_search_text (str):     Text to display when the results are cut off due to
-                                  max_results.
-                                  Default: "Narrow your search for more results."
+    custom_strings (dict):        Dictionary containing custom strings to use for this
+                                  instance.  Available keys are:
+                                    - no_results        The string displayed when no
+                                                        results are found.
+                                    - more_results      Text to display when the results
+                                                        are cut off due to max_results.
+                                    - available_results Text anounced to sceen readers
+                                                        when results are available.  If
+                                                        max_results is set, the
+                                                        more_results text is spoken
+                                                        instead.
 
     minimum_search_length (int):  The minimum search length to perform a search
                                   and show the dropdown.
@@ -138,11 +146,8 @@ class HTMXAutoComplete(View):
     # Values in this set are stripped from any toggle operation.
     strip_values = set(["undefined"])
 
-    # Text to display when the results are cut off due to max_results.
-    narrow_search_text = "Narrow your search for more results"
-
-    # The text displayed when no results are found.
-    no_result_text = "No results found."
+    # String overrides
+    custom_strings = dict()
 
     # If True will allow the user to select multiple items
     multiselect = False
@@ -501,15 +506,17 @@ class HTMXAutoComplete(View):
                 print("ERROR: Requested item to toggle not found.")
                 return HttpResponseNotFound()
 
-            if not self.multiselect:
-                for item in items:
-                    item["selected"] = False
-
             if target_item.get("selected"):
                 items.remove(target_item)
                 target_item["selected"] = False
             else:
                 target_item["selected"] = True
+
+            if not self.multiselect:
+                for item in items:
+                    if item != target_item:
+                        item["selected"] = False
+
 
             template = loader.get_template("autocomplete/item.html")
             return HttpResponse(
@@ -520,12 +527,12 @@ class HTMXAutoComplete(View):
                         "indicator": self.indicator,
                         "placeholder": self.placeholder,
                         "required": self.required,
-                        "no_result_text": self.no_result_text,
-                        "narrow_search_text": self.narrow_search_text,
+                        "custom_strings": self.custom_strings,
                         "route_name": self.get_route_name(),
                         "component_id": self.get_component_id(override_component_id),
                         "multiselect": self.multiselect,
                         "values": list(self.item_values(items, True)),
+                        "item_as_list": [target_item],
                         "item": target_item,
                         "toggle": items,
                         "swap_oob": data.get("remove", False),
@@ -581,6 +588,8 @@ class HTMXAutoComplete(View):
                     items (dict[]): List of items
         """
         items_selected = request.GET.getlist(self.name)
+        if items_selected == [""]:
+            items_selected = []
 
         override_component_id = request.GET.get("component_id", "")
 
@@ -602,8 +611,7 @@ class HTMXAutoComplete(View):
                         "multiselect": self.multiselect,
                         "values": list(self.item_values(selected_options)),
                         "selected_items": list(selected_options),
-                        "no_result_text": self.no_result_text,
-                        "narrow_search_text": self.narrow_search_text,
+                        "custom_strings": self.custom_strings,
                     },
                     request,
                 )
@@ -627,8 +635,8 @@ class HTMXAutoComplete(View):
                         "required": self.required,
                         "placeholder": self.placeholder,
                         "indicator": self.indicator,
-                        "no_result_text": self.no_result_text,
-                        "narrow_search_text": self.narrow_search_text,
+                        "custom_strings": self.custom_strings,
+                        "multiselect": self.multiselect,
                         "route_name": self.get_route_name(),
                         "component_id": self.get_component_id(override_component_id),
                         "show": show,
