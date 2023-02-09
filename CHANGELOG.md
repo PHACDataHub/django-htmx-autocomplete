@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.5.1...v0.6.0) (2023-02-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* `no_result_text` and `narrow_search_text` replaced by the `custom_strings` dictionary.
+
+### Features
+
+* Component is now WCAG 2.1 compliant ([3c040f3](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/3c040f344682a2d3801db2d072611520a3e0dfc1))
+
 ## [0.5.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.5.0...v0.5.1) (2023-01-26)
 
 
