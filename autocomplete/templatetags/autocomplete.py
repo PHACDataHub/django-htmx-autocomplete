@@ -30,12 +30,34 @@ def search_highlight(value, search):
     try:
         pos = value.lower().index(search.lower())
         start = escape(value[:pos])
-        match = escape(value[pos:pos+len(search)])
-        end = escape(value[pos+len(search):])
-        return mark_safe(f"{start}<span class=\"highlight\">{match}</span>{end}")
+        match = escape(value[pos : pos + len(search)])
+        end = escape(value[pos + len(search) :])
+        return mark_safe(f'{start}<span class="highlight">{match}</span>{end}')
     except ValueError:
         pass
     return value
+
+
+@register.simple_tag(takes_context=True)
+def use_string(context, name, strings):
+    """
+    Loads the string from a template or via the variable dict `strings` if the `name`
+    key is defined within.  This allows strings to be overriden in 2 ways, either by
+    user defined templates which will override *all* instances, or via the
+    `custom_strings` property of the Autocomplete instance which allows individual
+    customization.
+
+    When `name` is not found in `strings`, the template name becomes:
+
+    autocomplete/strings/{name}.html
+
+    """
+    if name in strings:
+        return strings[name]
+
+    return loader.get_template(
+        f"autocomplete/strings/{name}.html", using="django"
+    ).render(context.flatten())
 
 
 @register.simple_tag

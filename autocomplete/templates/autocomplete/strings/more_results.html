@@ -1,0 +1,6 @@
+{% load i18n %}
+{% blocktranslate trimmed with count=items|length count counter=items|length %}
+Displaying maximum {{ count }} out of {{ total_results }} results.
+{% plural %}
+Displaying maximum {{ count }} out of {{ total_results }} results.
+{% endblocktranslate %}

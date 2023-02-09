@@ -1,13 +1,34 @@
-<div class="results {{ show|yesno:'show,' }}" id="{{ component_id }}__items">
+{% load autocomplete %}
+<div
+    class="results {{ show|yesno:'show,' }}"
+    id="{{ component_id }}__items"
+    role="listbox"
+    {% if multiselect %}
+    aria-description="{% use_string "multiselect" custom_strings %}"
+    aria-multiselectable="true"
+    {% endif %}
+>
     {% for item in items %}
         {% include "./item.html" %}
     {% endfor %}
     {% if not items %}
-    <span class="item">{{ no_result_text }}</span>
+    <span class="item">
+        {% use_string "no_results" custom_strings %}
+    </span>
     {% endif %}
     {% if items|length != total_results %}
     <div class="more-results">
-        <span>{{ narrow_search_text }}</span>
+        <span>
+            {% use_string "more_results" custom_strings %}
+        </span>
     </div>
     {% endif %}
 </div>
+
+<div hx-swap-oob="innerHTML" id="{{ component_id }}__info">
+    {% if items|length != total_results %}
+    {% use_string "more_results" custom_strings %}
+    {% else %}
+    {% use_string "available_results" custom_strings %}
+    {% endif %}
+</div>  

@@ -2,12 +2,24 @@
 <input
     class="textinput"
     id="{{ component_id }}__textinput"
-    autocomplete="off"
     type="text"
+
+    autocomplete="off"
+    autocapitalize="none"
+
+    role="combobox"
+    aria-autocomplete="list"
+    aria-controls="{{ component_id }}__items"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    
     onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
+    onkeyup="return phac_aspc_autocomplete_keyup_handler(event)"
     onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ component_id|escapejs }}', {{ multiselect|yesno:'false,true' }})"
+    onfocus="return phac_aspc_autocomplete_focus_handler(event)"
+
     hx-get="{% url route_name method='items' %}"
-    hx-trigger="focus,click once,input changed delay:250ms"
+    hx-trigger="phac_aspc_autocomplete_trigger"
     hx-include="#{{ component_id }}"
     hx-target="#{{ component_id }}__items"
     hx-vals="js:{component_id: '{{ component_id|escapejs }}', search: document.getElementById('{{ component_id|escapejs }}__textinput').value}"
@@ -15,6 +27,10 @@
     {% if indicator %}
     hx-indicator="#{{ component_id }}__container .htmx-indicator"
     {% endif %}
+    {% if swap_oob %}
+    hx-swap-oob="outerHTML:#{{ component_id }}__textinput"
+    {% endif %}
+
     {% if placeholder and selected_items|length == 0 %}
     placeholder="{{ placeholder }}"
     {% endif %}
@@ -24,8 +40,8 @@
     {% if required and selected_items|length == 0 %}
     required
     {% endif %}
-    {% if swap_oob %}
-    hx-swap-oob="outerHTML:#{{ component_id }}__textinput"
-    {% endif %}
 >
+{% endif %}
+{% if disabled %}
+<output id="{{ component_id }}__textinput"></output>
 {% endif %}
