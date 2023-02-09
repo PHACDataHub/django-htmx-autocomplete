@@ -5,7 +5,6 @@ from django.forms import Widget
 
 from .autocomplete import HTMXAutoComplete
 
-
 class Autocomplete(Widget):
     """
     Django forms compatible autocomplete widget

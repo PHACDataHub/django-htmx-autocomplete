@@ -2,3 +2,4 @@ include LICENSE
 include README.md
 recursive-include autocomplete/templates *
 recursive-include autocomplete/static *
+recursive-include autocomplete/locale *

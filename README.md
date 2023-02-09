@@ -101,3 +101,35 @@ This Django app provides a client-side autocomplete component powered by
       </body>
     </html>
     ```
+
+## Customization
+
+### Strings
+
+The strings listed in the table below can be overriden by creating the appropriate 
+template in your own project, matching the `autocomplete/strings/{name}.html` pattern.
+By default all strings are available in both French and English.  
+
+| Name              | Description                                                                                                                 | Default English                                                    | Default French                                                      |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| no_results        | Text displayed when no results are found.                                                                                   | No results found.                                                  | Aucun résultat trouvé.                                              |
+| more_results      | When `max_results` is set, text displayed when there are additional results available.                                      | Displaying maximum {{ count }} out of {{ total_results }} results. | Affichage maximum de {{ count }} résultats sur {{ total_results }}. |
+| available_results | Text anounced to sceen readers when results are available.  If max_results is set, the more_results text is spoken instead. | {{ count }} results available.                                     | {{ count }} résultats disponibles.                                  |
+| nothing_selected  | Text anounced to screen readers when there are no selections.                                                               | Nothing selected.                                                  | Rien de sélectionné.                                                |
+
+Individual instances can override strings by providing a dictionary of `custom_strings`.
+
+```python
+    class GetItemsMultiAutoComplete(HTMXAutoComplete):
+        name = "members"
+        multiselect = True
+        custom_strings = {
+            "no_results": "no results text",
+            "more_results": _("More results text")
+        }        
+
+        class Meta:
+            model = Person
+
+
+```
