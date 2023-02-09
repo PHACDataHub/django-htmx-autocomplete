@@ -11,6 +11,17 @@
 
 * Component is now WCAG 2.1 compliant ([da08b46](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/da08b461a4b88561e927c88a655c96f24fb76108))
 
+## [1.0.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.5.1...v1.0.0) (2023-02-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* `no_result_text` and `narrow_search_text` replaced by the `custom_strings` dictionary.
+
+### Features
+
+* Component is now WCAG 2.1 compliant ([da08b46](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/da08b461a4b88561e927c88a655c96f24fb76108))
+
 ## [0.5.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.5.0...v0.5.1) (2023-01-26)
 
 
