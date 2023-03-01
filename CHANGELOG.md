@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.6.0...v0.6.1) (2023-03-01)
+
+
+### Bug Fixes
+
+* Removed chips from accessible content ([a5e06e2](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/a5e06e212a9faafe54e3bb5d4a224c2e755dd55b))
+
 ## [0.6.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.5.1...v0.6.0) (2023-02-09)
 
 
