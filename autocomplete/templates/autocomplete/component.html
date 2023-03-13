@@ -48,7 +48,22 @@ This is the main component template that creates the basic HTML structure.
         {% else %}
             {% use_string "nothing_selected" custom_strings %}
         {% endif %}
-    </div>  
+    </div>
+    {# This div provides screen readers information about selected items #}
+    {% if multiselect %}
+    <div class="sr_description sr-only" id="{{ component_id }}__sr_description"
+         style="height:0; overflow:hidden;">
+        {% if selected_items|length > 0 %}
+            {{ selected_items|length }} {% use_string "selected" custom_strings %}
+            {% for item in selected_items %}
+            {% with item=item.label %}
+                {% use_string "item_selected" custom_strings %}
+            {% endwith %}
+            {% endfor %}
+            {% use_string "backspace_instruction" custom_strings %}
+        {% endif %}
+    </div>
+    {% endif %}
   </div>
 </div>
 {# This code snippet loads the required CSS and JS if not already loaded. #}

@@ -25,10 +25,19 @@ msgid_plural "%(count)s results available."
 msgstr[0] "%(count)s résultat disponible"
 msgstr[1] "%(count)s résultats disponibles"
 
+#: templates/autocomplete/strings/backspace_instruction.html:2
+msgid "Press backspace to delete the last selected item."
+msgstr "Appuyez sur retour arrière pour supprimer le dernier élément sélectionné."
+
 #: templates/autocomplete/strings/item_selected.html:2
 #, python-format
 msgid "%(item)s selected,"
 msgstr "%(item)s sélectionné"
+
+#: templates/autocomplete/strings/selected.html:2
+#, python-format
+msgid "selected."
+msgstr "sélectionné."
 
 #: templates/autocomplete/strings/more_results.html:2
 #, python-format
