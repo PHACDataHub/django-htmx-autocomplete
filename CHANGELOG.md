@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.6.1...v0.6.2) (2023-03-14)
+
+
+### Bug Fixes
+
+* **a11y:** no-styles support, SR improvements for multiselect ([#30](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/30)) ([4be3b5a](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/4be3b5ae98fb1514c9b5b987c25918eb9a1871ec))
+
 ## [0.6.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.6.0...v0.6.1) (2023-03-01)
 
 
