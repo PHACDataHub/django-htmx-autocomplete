@@ -37,6 +37,17 @@
     
     {% if multiselect %}
         {% include "./ac_container.html" with selected_items=toggle %}
+        <div hx-swap-oob="innerHTML" id="{{ component_id }}__sr_description">
+            {% if toggle|length > 0 %}
+                {{ toggle|length }} {% use_string "selected" custom_strings %}
+                {% for item in toggle %}
+                {% with item=item.label %}
+                    {% use_string "item_selected" custom_strings %}
+                {% endwith %}
+                {% endfor %}
+                {% use_string "backspace_instruction" custom_strings %}
+            {% endif %}
+        </div>
     {% else %}
         {% if item.selected %}
             {% include "./textinput.html" with selected_items=item_as_list swap_oob=True %}

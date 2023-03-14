@@ -1,8 +1,8 @@
-{# Hidden input elements used to maintain the component's state #}
-{# and used when submitting forms #}
+{% comment %} Hidden input elements used to maintain the component's state {% endcomment %}
+{% comment %} and used when submitting forms {% endcomment %}
 {% for value in values %}
 <input type="hidden" name="{{ name }}" value="{{ value }}" />
 {% endfor %}
 {% if required and values|length == 0 %}
-<input type="text" name="{{ name }}" required class="ac_required_input" tabindex="-1" aria-hidden="true">
+<input type="hidden" type="text" name="{{ name }}" required class="ac_required_input" tabindex="-1" aria-hidden="true">
 {% endif %}
