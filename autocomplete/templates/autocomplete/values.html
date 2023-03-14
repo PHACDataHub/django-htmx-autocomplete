@@ -1,5 +1,5 @@
-{# Hidden input elements used to maintain the component's state #}
-{# and used when submitting forms #}
+{% comment %} Hidden input elements used to maintain the component's state {% endcomment %}
+{% comment %} and used when submitting forms {% endcomment %}
 {% for value in values %}
 <input type="hidden" name="{{ name }}" value="{{ value }}" />
 {% endfor %}
