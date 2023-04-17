@@ -48,7 +48,7 @@ class Autocomplete(Widget):
 
         if use_ac is None:
             config = {
-                "name": name,
+                "name": opts.get("route_name", name),
                 "disabled": attrs.get("disabled", False) if attrs else False,
                 "required": attrs.get("required", False) if attrs else False,
                 "indicator": opts.get("indicator", None),
@@ -105,7 +105,7 @@ class Autocomplete(Widget):
             self.a_c.get_items(self.a_c, values=[str(x) for x in items_selected]),
         )
 
-        context["name"] = self.a_c.name
+        context["name"] = attrs.get("name", self.attrs.get("name", self.a_c.name))
 
         context["disabled"] = attrs.get("disabled", self.attrs.get("disabled", False))
         context["required"] = attrs.get("required", self.attrs.get("required", False))
