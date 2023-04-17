@@ -477,6 +477,7 @@ class HTMXAutoComplete(View):
         data = QueryDict(request.body)
         items_selected = data.getlist(self.name)
         override_component_id = data.get("component_id", "")
+        component_name = data.get("name", self.name)
 
         if items_selected == [""]:
             items_selected = []
@@ -522,7 +523,7 @@ class HTMXAutoComplete(View):
             return HttpResponse(
                 template.render(
                     {
-                        "name": self.name,
+                        "name": component_name,
                         "search": "",
                         "indicator": self.indicator,
                         "placeholder": self.placeholder,
@@ -592,6 +593,7 @@ class HTMXAutoComplete(View):
             items_selected = []
 
         override_component_id = request.GET.get("component_id", "")
+        component_name = request.GET.get("name", self.name)
 
         if method == "component":
             template = loader.get_template("autocomplete/component.html")
@@ -600,7 +602,7 @@ class HTMXAutoComplete(View):
             return HttpResponse(
                 template.render(
                     {
-                        "name": self.name,
+                        "name": component_name,
                         "disabled": self.disabled,
                         "required": self.required,
                         "indicator": self.indicator,
@@ -631,7 +633,7 @@ class HTMXAutoComplete(View):
             return HttpResponse(
                 template.render(
                     {
-                        "name": self.name,
+                        "name": component_name,
                         "required": self.required,
                         "placeholder": self.placeholder,
                         "indicator": self.indicator,

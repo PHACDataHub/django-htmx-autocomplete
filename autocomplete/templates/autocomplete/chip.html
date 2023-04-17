@@ -7,8 +7,8 @@ This template renders a selected item or chip.
     {% if not disabled %}
     <a
         hx-put="{% url route_name method='toggle' %}"
-        hx-params="{{ name }},item,remove,component_id"
-        hx-vals='{"component_id": "{{ component_id|escapejs }}", "remove": true, "item": "{{ item.value|escapejs }}"}'
+        hx-params="{{ name }},name,item,remove,component_id"
+        hx-vals='{"name": "{{ name|escapejs }}", "component_id": "{{ component_id|escapejs }}", "remove": true, "item": "{{ item.value|escapejs }}"}'
         hx-include="#{{ component_id }}"
         hx-swap="delete"
         tabindex="-1"
