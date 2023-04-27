@@ -45,6 +45,9 @@ class SingleFormModel(forms.ModelForm):
 
         model = Team
         fields = ["name", "members"]
+        field_classes = {
+            "members": forms.ModelChoiceField
+        }
         widgets = {
             "members": widgets.Autocomplete(
                 name="members", options=dict(model=Person, minimum_search_length=0)
