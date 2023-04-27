@@ -5,6 +5,7 @@ from django.forms import Widget
 
 from .autocomplete import HTMXAutoComplete
 
+
 class Autocomplete(Widget):
     """
     Django forms compatible autocomplete widget
@@ -48,7 +49,7 @@ class Autocomplete(Widget):
 
         if use_ac is None:
             config = {
-                "name": opts.get("route_name", name),
+                "name": name,
                 "disabled": attrs.get("disabled", False) if attrs else False,
                 "required": attrs.get("required", False) if attrs else False,
                 "indicator": opts.get("indicator", None),
@@ -87,7 +88,17 @@ class Autocomplete(Widget):
             getter = data.getlist
         except AttributeError:
             getter = data.get
-        return getter(name)
+        buf = getter(name)
+
+        if not self.a_c.multiselect:
+            try:
+                return buf[0]
+            except IndexError:
+                return -1
+            except TypeError:
+                pass
+
+        return buf
 
     def value_omitted_from_data(self, data, files, name):
         # An unselected <select multiple> doesn't appear in POST data, so it's

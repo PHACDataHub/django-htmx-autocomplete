@@ -11,7 +11,6 @@ from .forms import (
 
 
 def index(request):
-    print(request.POST)
     template = loader.get_template("index.html")
     single_form_get_item = SingleFormGetItem({"name": "Team Pickle", "company": [2]})
     single_form_model = SingleFormModel({"name": "Team Pickles", "members": [1]})
