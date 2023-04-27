@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.6.2...v0.7.0) (2023-04-27)
+
+
+### Features
+
+* Allow name field to be overriden ([725524d](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/725524d94c5b00ef3bb805dede5995a96e0af161))
+
+
+### Bug Fixes
+
+* Fix handling of return widget return values when using ModelChoiceField ([17ccdb6](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/17ccdb6540cec7ccc5cf019eeeee7bef3ff9488f)), closes [#33](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/33)
+
 ## [0.6.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.6.1...v0.6.2) (2023-03-14)
 
 
