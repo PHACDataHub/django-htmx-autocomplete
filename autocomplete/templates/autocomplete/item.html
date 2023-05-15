@@ -70,4 +70,8 @@
             {% endif %}
         {% endfor %}
     {% endif %}
+    <script data-componentid="{{ component_id }}">
+        phac_aspc_autocomplete_trigger_change(document.currentScript.dataset.componentid + '__container');
+    </script>
+
 {% endif %}

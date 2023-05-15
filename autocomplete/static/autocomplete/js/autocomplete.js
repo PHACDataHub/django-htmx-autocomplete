@@ -1,3 +1,10 @@
+function phac_aspc_autocomplete_trigger_change(container_id) {
+    setTimeout(() => {
+        const container = document.getElementById(container_id);
+        const el = container.querySelector('.textinput');
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    }, 0)
+}
 
 function phac_aspc_autocomplete_clear_focus(container, activate_ring) {
     const hasFocus = container.querySelectorAll('.hasFocus'); 
