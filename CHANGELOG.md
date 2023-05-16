@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.7.0...v0.7.1) (2023-05-16)
+
+
+### Bug Fixes
+
+* Handles forms that was on change ([de6820c](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/de6820c30b480ca5453f367942da7ecd4526c344)), closes [#38](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/38)
+
 ## [0.7.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.6.2...v0.7.0) (2023-04-27)
 
 
