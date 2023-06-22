@@ -13,12 +13,12 @@ class TestAutocomplete(unittest.TestCase):
         class Test(HTMXAutoComplete): # pylint: disable=unused-variable
             """test case 1"""
             name = "test1"
-            def get_items(self, search=None, values=None):
+            def get_items(self, search=None, values=None, request=None):
                 return []
         class Test2(HTMXAutoComplete): # pylint: disable=unused-variable
             """test case 2"""
             name = "test"
-            def get_items(self, search=None, values=None):
+            def get_items(self, search=None, values=None, request=None):
                 return []
 
         urls = HTMXAutoComplete.url_dispatcher('test')

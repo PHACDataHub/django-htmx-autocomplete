@@ -378,7 +378,7 @@ class HTMXAutoComplete(View):
             return override_id
         return cls.component_id if cls.component_id else cls.get_route_name()
 
-    def get_items(self, search=None, values=None):
+    def get_items(self, search=None, values=None, request=None):
         """Get available items based on search or values.
 
         If search is specified, only items who's label contain the search
@@ -395,9 +395,15 @@ class HTMXAutoComplete(View):
         return an array of dictionaries where each item has the `label` and
         value` keys defined.
 
+        IMPORTANT: When used as a widget in a form, django will call the get_items
+        method in order to validate the selected items are truly part of the list - in
+        this context the request object is not available so it is important to be aware
+        of this when customizing the get_items method.
+
         Parameters:
         search (str): The search term
         values (str[]): Array of values
+        request (HttpRequest): Django request object
 
         Returns:
         array of dictionaries
@@ -490,7 +496,8 @@ class HTMXAutoComplete(View):
                 return HttpResponseBadRequest()
 
             items = self.map_items(
-                self.get_items(values=items_selected + [item]), items_selected
+                self.get_items(values=items_selected + [item], request=request),
+                items_selected,
             )
 
             def sort_items(item):
@@ -517,7 +524,6 @@ class HTMXAutoComplete(View):
                 for item in items:
                     if item != target_item:
                         item["selected"] = False
-
 
             template = loader.get_template("autocomplete/item.html")
             return HttpResponse(
@@ -597,7 +603,9 @@ class HTMXAutoComplete(View):
 
         if method == "component":
             template = loader.get_template("autocomplete/component.html")
-            selected_options = self.map_items(self.get_items(values=items_selected))
+            selected_options = self.map_items(
+                self.get_items(values=items_selected, request=request)
+            )
 
             return HttpResponse(
                 template.render(
@@ -624,7 +632,9 @@ class HTMXAutoComplete(View):
             search = request.GET.get("search", "")
             show = len(search) >= self.minimum_search_length
             items = (
-                self.map_items(self.get_items(search), items_selected) if show else []
+                self.map_items(self.get_items(search=search, request=request), items_selected)
+                if show
+                else []
             )
             total_results = len(items)
             if self.max_results is not None and len(items) > self.max_results:
