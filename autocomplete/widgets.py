@@ -84,21 +84,19 @@ class Autocomplete(Widget):
             self.a_c = use_ac
 
     def value_from_datadict(self, data, files, name):
-        try:
-            getter = data.getlist
-        except AttributeError:
-            getter = data.get
-        buf = getter(name)
-
-        if not self.a_c.multiselect:
+        if self.a_c.multiselect:
             try:
-                return buf[0]
-            except IndexError:
-                return -1
-            except TypeError:
-                pass
+                # classic POSTs go though django's QueryDict structure
+                # which has a getlist method
+                value = data.getlist(name)
+            except AttributeError:
+                # some clients just provide lists in JSON
+                value = data.get(name)
 
-        return buf
+        else:
+            value = data.get(name)
+
+        return value
 
     def value_omitted_from_data(self, data, files, name):
         # An unselected <select multiple> doesn't appear in POST data, so it's
