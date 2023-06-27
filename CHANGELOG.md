@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.7.1...v0.8.0) (2023-06-27)
+
+
+### Features
+
+* Ability to filter items based on current user ([be8bcc7](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/be8bcc72b10630493e7523960a90efbd86580920))
+
+
+### Bug Fixes
+
+* str-based IDs break when non-multiselect ([1a1d883](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/1a1d883075d71597e831eb92ed07ca323c34a150))
+
 ## [0.7.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.7.0...v0.7.1) (2023-05-16)
 
 
