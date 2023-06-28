@@ -60,7 +60,7 @@ class GetItemsAutoComplete(HTMXAutoComplete):
     name = "getitems"
     minimum_search_length = 0
 
-    def get_items(self, search=None, values=None, request=None):
+    def get_items(self, search=None, values=None):
         if values:
             return list(filter(lambda x: x.get("value") in values, data))
 
@@ -86,7 +86,7 @@ class GetItemsMultiAutoComplete(HTMXAutoComplete):
     multiselect = True
     minimum_search_length = 0
 
-    def get_items(self, search=None, values=None, request=None):
+    def get_items(self, search=None, values=None):
         if values:
             return list(filter(lambda x: x.get("value") in values, data))
 

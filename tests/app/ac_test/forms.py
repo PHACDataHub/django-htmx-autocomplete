@@ -12,7 +12,7 @@ class SingleFormGetItem(forms.Form):
     """Form used for single select using get_items"""
 
     @staticmethod
-    def get_items(search=None, values=None, request=None):
+    def get_items(search=None, values=None):
         """Example function used to provide list of options to widget
 
         Args:
@@ -59,7 +59,7 @@ class MultipleFormGetItem(forms.Form):
     """Form used for multiple select using get_items"""
 
     @staticmethod
-    def get_items(search=None, values=None, request=None):
+    def get_items(search=None, values=None):
         """Example function used to provide list of options to widget
 
         Args:
