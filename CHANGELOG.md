@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.0...v0.8.1) (2023-06-28)
+
+
+### Reverts
+
+* Ability to filter items based on current user ([bf3d343](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/bf3d343fcdd7d800d2b98eeee57e2f3f6d5ef024))
+
 ## [0.8.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.7.1...v0.8.0) (2023-06-27)
 
 
