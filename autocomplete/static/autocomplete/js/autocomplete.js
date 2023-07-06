@@ -358,6 +358,8 @@ function phac_aspc_autocomplete_keydown_handler(event) {
             if (prev) switchFocus(prev, container);
         }
         return false;
+    } else {
+        phac_aspc_autocomplete_closed[id] = false;
     }
     phac_aspc_autocomplete_clear_focus(container, true);
     return true;
