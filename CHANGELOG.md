@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.1...v0.8.2) (2023-07-07)
+
+
+### Bug Fixes
+
+* escape key was hiding autocomplete even after subsequent letter presses ([6e737e3](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/6e737e339b62c4d7f252f2d126f6cbc9f6bfb064))
+
 ## [0.8.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.0...v0.8.1) (2023-06-28)
 
 
