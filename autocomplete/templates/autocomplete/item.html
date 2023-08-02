@@ -12,9 +12,7 @@
     hx-include="#{{ component_id }}"
     hx-vals='{"name": "{{ name|escapejs }}", "component_id": "{{ component_id|escapejs }}", "item": "{{ item.value|escapejs }}"}'
     hx-swap="outerHTML"
-    {% if swap_oob %}
-    hx-swap-oob="outerHTML:#{{ component_id }}__item__{{ item.value|make_id }}"
-    {% endif %}
+   {% if swap_oob %} hx-swap-oob="outerHTML:#{{ component_id }}__item__{{ item.value|make_id }}" {% else %} hx-target="this" {% endif %}>
 >
     {{ item.label|search_highlight:search }}
 </a>
