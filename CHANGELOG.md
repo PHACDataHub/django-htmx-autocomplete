@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.3](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.2...v0.8.3) (2023-08-04)
+
+
+### Bug Fixes
+
+* selecting an item swaps its inherited hx-target ([c018677](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/c018677925033c35abd4bb4c0e99699bce96d75a))
+
 ## [0.8.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.1...v0.8.2) (2023-07-07)
 
 
