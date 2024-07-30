@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.4](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.3...v0.8.4) (2024-07-30)
+
+
+### Bug Fixes
+
+* chip should have hx-target this ([#55](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/55)) ([5e39f63](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/5e39f63e1f9f86baa1f5d5c6c0e213534795cf4d))
+
 ## [0.8.3](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.2...v0.8.3) (2023-08-04)
 
 
