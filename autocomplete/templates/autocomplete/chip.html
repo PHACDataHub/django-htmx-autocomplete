@@ -11,6 +11,7 @@ This template renders a selected item or chip.
         hx-vals='{"name": "{{ name|escapejs }}", "component_id": "{{ component_id|escapejs }}", "remove": true, "item": "{{ item.value|escapejs }}"}'
         hx-include="#{{ component_id }}"
         hx-swap="delete"
+        hx-target="this"
         tabindex="-1"
         href="#"
     >
