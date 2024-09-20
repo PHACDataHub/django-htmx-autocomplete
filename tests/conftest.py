@@ -1,4 +1,4 @@
-import pytest 
+import pytest
 
 from django.db import transaction
 
@@ -23,4 +23,3 @@ def globally_scoped_fixture_helper(django_db_setup, django_db_blocker):
                 raise Exception
         except Exception:
             pass
-
