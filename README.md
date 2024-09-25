@@ -133,3 +133,20 @@ Individual instances can override strings by providing a dictionary of `custom_s
 
 
 ```
+
+# Contributing
+
+To set up the development environment, follow these steps:
+
+```bash
+# from root of project,
+pip install -r requirements.txt
+
+# running tests,
+python manage.py test tests/
+
+# running app locally
+python manage.py migrate
+python manage.py runscript sample_app.dev_script
+python manage.py runserver
+```

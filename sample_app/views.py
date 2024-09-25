@@ -1,16 +1,22 @@
+from django import forms
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.template import loader
-from django.http import HttpResponse
+
+from autocomplete.widgets import Autocomplete
 
 from . import ac_controls
 from .forms import (
-    SingleFormGetItem,
-    SingleFormModel,
     MultipleFormGetItem,
     MultipleFormModel,
+    SingleFormGetItem,
+    SingleFormModel,
 )
+from .models import Person, Team
 
 
 def index(request):
+    # example with 4 ACs
     template = loader.get_template("index.html")
     single_form_get_item = SingleFormGetItem({"name": "Team Pickle", "company": [2]})
     single_form_model = SingleFormModel({"name": "Team Pickles", "members": [1]})
@@ -29,3 +35,36 @@ def index(request):
             request,
         )
     )
+
+
+class TeamForm(forms.ModelForm):
+    # this form isn't meant to work for saving, we're using different "names"
+    class Meta:
+        model = Team
+        fields = ["team_lead", "members"]
+        widgets = {
+            "team_lead": Autocomplete(
+                name="team_lead_ac",
+                options=dict(model=Person, minimum_search_length=0),
+            ),
+            "members": Autocomplete(
+                name="members_ac",
+                options=dict(
+                    multiselect=True,
+                    model=Person,
+                    minimum_search_length=0,
+                ),
+            ),
+        }
+
+
+def edit_team(request, team_id=None):
+    team = Team.objects.get(id=team_id)
+
+    form = TeamForm(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})

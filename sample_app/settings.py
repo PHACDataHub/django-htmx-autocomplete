@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "autocomplete",
     "sample_app",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
