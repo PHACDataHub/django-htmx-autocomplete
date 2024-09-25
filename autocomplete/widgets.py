@@ -130,7 +130,4 @@ class Autocomplete(Widget):
         context["values"] = list(self.a_c.item_values(self.a_c, selected_options))
         context["selected_items"] = list(selected_options)
 
-        self.a_c.required = context["required"]
-        self.a_c.disabled = context["disabled"]
-
         return context
