@@ -64,7 +64,7 @@ class TeamForm(forms.ModelForm):
             ),
             "members": AutocompleteWidget(
                 ac_class=PersonAutocomplete,
-                options={"multiselect": True, "component_id": "members"},
+                options={"multiselect": True},
             ),
         }
 

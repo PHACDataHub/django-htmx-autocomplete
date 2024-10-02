@@ -63,13 +63,13 @@ def test_render_widget_in_form_empty():
     assert focus_ring
 
     component_container = focus_ring.select_one(
-        "div.phac_aspc_form_autocomplete#PersonAC4__container"
+        "div.phac_aspc_form_autocomplete#team_lead__container"
     )
     assert component_container
 
     # 1. hidden input are in #<component_id>
     # it starts out empty without even a name
-    component = component_container.select_one("#PersonAC4")
+    component = component_container.select_one("#team_lead")
     inputs = component.select('span > input[type="hidden"]')
     assert len(inputs) == 1
     assert inputs[0].attrs["name"] == "team_lead"
@@ -78,12 +78,12 @@ def test_render_widget_in_form_empty():
     # 2. script
     scripts = soup.select("script")
     assert len(scripts) == 1
-    assert scripts[0].attrs["data-componentid"] == "PersonAC4"
+    assert scripts[0].attrs["data-componentid"] == "team_lead"
     assert scripts[0].attrs["data-toggleurl"] == reverse(
         "autocomplete:toggle", args=["PersonAC4"]
     )
 
-    ac_container_ul = soup.select_one("ul#PersonAC4_ac_container.ac_container")
+    ac_container_ul = soup.select_one("ul#team_lead_ac_container.ac_container")
     assert ac_container_ul
 
     lis = ac_container_ul.select("li")
@@ -91,16 +91,16 @@ def test_render_widget_in_form_empty():
     actual_input_field = lis[0].select_one("input")
     assert actual_input_field.attrs["type"] == "text"
     assert "name" not in actual_input_field.attrs
-    assert actual_input_field.attrs["aria-controls"] == "PersonAC4__items"
+    assert actual_input_field.attrs["aria-controls"] == "team_lead__items"
     assert actual_input_field.attrs["hx-get"] == reverse(
         "autocomplete:items", args=["PersonAC4"]
     )
-    assert actual_input_field.attrs["hx-include"] == "#PersonAC4"
-    assert actual_input_field.attrs["hx-target"] == "#PersonAC4__items"
+    assert actual_input_field.attrs["hx-include"] == "#team_lead"
+    assert actual_input_field.attrs["hx-target"] == "#team_lead__items"
     assert (
-        "getElementById('PersonAC4__textinput')" in actual_input_field.attrs["hx-vals"]
+        "getElementById('team_lead__textinput')" in actual_input_field.attrs["hx-vals"]
     )
-    assert "component_id: 'PersonAC4', " in actual_input_field.attrs["hx-vals"]
+    assert "component_prefix: '', " in actual_input_field.attrs["hx-vals"]
     assert "field_name: 'team_lead', " in actual_input_field.attrs["hx-vals"]
     assert "value" not in actual_input_field.attrs
 
@@ -129,11 +129,11 @@ def test_render_widget_in_form_non_empty():
     soup = soup_from_str(rendered)
 
     # check input is populated,
-    input = soup.select_one("#PersonAC4  span > input[type='hidden']")
+    input = soup.select_one("#team_lead  span > input[type='hidden']")
     assert input.attrs["name"] == "team_lead"
     assert input.attrs["value"] == str(lead.id)
 
-    ac_container_ul = soup.select_one("ul#PersonAC4_ac_container.ac_container")
+    ac_container_ul = soup.select_one("ul#team_lead_ac_container.ac_container")
     assert ac_container_ul
 
     lis = ac_container_ul.select("li")
@@ -188,7 +188,7 @@ def test_render_widget_multi_non_empty():
 
     soup = soup_from_str(rendered)
 
-    component = soup.select_one("#PersonAC4")
+    component = soup.select_one("#members")
     hidden_inputs = component.select('span > input[type="hidden"]')
 
     assert len(hidden_inputs) == 2
@@ -197,7 +197,7 @@ def test_render_widget_multi_non_empty():
     assert values == {people[0].id, people[1].id}
 
     # check untoggle buttons,
-    ac_items = soup.select("ul#PersonAC4_ac_container.ac_container > li.chip")
+    ac_items = soup.select("ul#members_ac_container.ac_container > li.chip")
     assert len(ac_items) == 2
     for li in ac_items:
         assert li.select_one("span").text in {people[0].name, people[1].name}
@@ -207,11 +207,11 @@ def test_render_widget_multi_non_empty():
         )
         assert (
             delete_button.attrs["hx-params"]
-            == "members,field_name,item,remove,component_id,multiselect,required"
+            == "members,field_name,item,remove,component_prefix,multiselect,required"
         )
         assert "multiselect" in delete_button.attrs["hx-vals"]
         assert delete_button.attrs["hx-vals"]
-        assert delete_button.attrs["hx-include"] == "#PersonAC4"
+        assert delete_button.attrs["hx-include"] == "#members"
         assert delete_button.attrs["hx-swap"] == "delete"
         assert delete_button.attrs["hx-target"] == "this"
         assert delete_button.attrs["href"] == "#"

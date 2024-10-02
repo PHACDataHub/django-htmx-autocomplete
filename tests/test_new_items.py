@@ -34,7 +34,7 @@ def test_items_response_non_multi(client):
     qs_dict.update(
         {
             "field_name": "myfield_name",
-            "component_id": "component_name",
+            "component_prefix": "component_name",
             "search": "abcd",
         }
     )
@@ -46,7 +46,7 @@ def test_items_response_non_multi(client):
     soup = get_soup(response)
 
     listbox = soup.select_one("div[role='listbox']")
-    assert listbox.attrs["id"] == "component_name__items"
+    assert listbox.attrs["id"] == "component_namemyfield_name__items"
     assert "aria-multiselectable" not in listbox.attrs
 
     # abcd should match two people,
@@ -57,14 +57,14 @@ def test_items_response_non_multi(client):
 
     assert json.loads(options[0].attrs["hx-vals"]) == {
         "field_name": "myfield_name",
-        "component_id": "component_name",
+        "component_prefix": "component_name",
         "item": str(searchable_person.id),
         "required": False,
         "multiselect": False,
     }
     assert json.loads(options[1].attrs["hx-vals"]) == {
         "field_name": "myfield_name",
-        "component_id": "component_name",
+        "component_prefix": "component_name",
         "item": str(searchable_person2.id),
         "required": False,
         "multiselect": False,
@@ -76,9 +76,11 @@ def test_items_response_non_multi(client):
     assert options[0].attrs["hx-get"] == reverse(
         "autocomplete:toggle", kwargs={"ac_name": "PersonAC"}
     )
-    assert options[0].attrs["hx-params"] == "myfield_name,field_name,item,component_id"
-    assert options[0].attrs["hx-include"] == "#component_name"
-    assert "component_name__item__" in options[0].attrs["id"]
+    assert (
+        options[0].attrs["hx-params"] == "myfield_name,field_name,item,component_prefix"
+    )
+    assert options[0].attrs["hx-include"] == "#component_namemyfield_name"
+    assert "component_namemyfield_name__item__" in options[0].attrs["id"]
     assert not options[1].attrs["id"] == options[0].attrs["id"]
 
 
@@ -108,7 +110,7 @@ def test_items_response_multi(client):
     qs_dict.update(
         {
             "field_name": "myfield_name",
-            "component_id": "component_name",
+            "component_prefix": "component_name",
             "search": "abcd",
             "multiselect": True,
         }
@@ -121,7 +123,7 @@ def test_items_response_multi(client):
     soup = get_soup(response)
 
     listbox = soup.select_one("div[role='listbox']")
-    assert listbox.attrs["id"] == "component_name__items"
+    assert listbox.attrs["id"] == "component_namemyfield_name__items"
     assert listbox.attrs["aria-multiselectable"] == "true"
     assert listbox.attrs["aria-description"] == "multiselect"
 
@@ -133,14 +135,14 @@ def test_items_response_multi(client):
 
     assert json.loads(options[0].attrs["hx-vals"]) == {
         "field_name": "myfield_name",
-        "component_id": "component_name",
+        "component_prefix": "component_name",
         "item": str(searchable_person.id),
         "required": False,
         "multiselect": True,
     }
     assert json.loads(options[1].attrs["hx-vals"]) == {
         "field_name": "myfield_name",
-        "component_id": "component_name",
+        "component_prefix": "component_name",
         "item": str(searchable_person2.id),
         "required": False,
         "multiselect": True,
@@ -154,10 +156,10 @@ def test_items_response_multi(client):
     )
     assert (
         options[0].attrs["hx-params"]
-        == "myfield_name,field_name,item,component_id,multiselect"
+        == "myfield_name,field_name,item,component_prefix,multiselect"
     )
-    assert options[0].attrs["hx-include"] == "#component_name"
-    assert "component_name__item__" in options[0].attrs["id"]
+    assert options[0].attrs["hx-include"] == "#component_namemyfield_name"
+    assert "component_namemyfield_name__item__" in options[0].attrs["id"]
     assert not options[1].attrs["id"] == options[0].attrs["id"]
 
     # now add abcdefg as member and try again,

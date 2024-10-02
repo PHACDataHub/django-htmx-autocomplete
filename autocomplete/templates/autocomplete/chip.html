@@ -7,8 +7,8 @@ This template renders a selected item or chip.
     {% if not disabled %}
     <a
         hx-get="{% url 'autocomplete:toggle' ac_name=route_name %}"
-        hx-params="{{ field_name }},field_name,item,remove,component_id,multiselect,required"
-        hx-vals='{"field_name": "{{ field_name|escapejs }}", "component_id": "{{ component_id|escapejs }}", "remove": true, "multiselect": true, {% if required %} "required": true, {% endif %} "item": "{{ item.key|escapejs }}"}'
+        hx-params="{{ field_name }},field_name,item,remove,component_prefix,multiselect,required"
+        hx-vals='{"field_name": "{{ field_name|escapejs }}", "component_prefix": "{{ component_prefix|escapejs }}", "remove": true, "multiselect": true, {% if required %} "required": true, {% endif %} "item": "{{ item.key|escapejs }}"}'
         hx-include="#{{ component_id }}"
         hx-swap="delete"
         hx-target="this"

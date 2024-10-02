@@ -686,6 +686,7 @@ class Autocomplete:
     narrow_search_text = "Narrow your search for more results."
     minimum_search_length = 3
     max_results = 100
+    component_prefix = ""
 
     @classmethod
     def validate(cls):
@@ -751,12 +752,13 @@ class AutocompleteBaseView(View):
         # convert the request's QueryDict into a regular dict
         return self.request.GET.dict()
 
-    def get_component_id(self):
-        cpn_id = self.get_configurable_value("component_id")
-        if not cpn_id:
-            return self.ac_class.route_name
+    def get_field_name(self):
+        return self.request_dict["field_name"]
 
-        return cpn_id
+    def get_component_id(self):
+        prefix = self.get_configurable_value("component_prefix")
+
+        return prefix + self.get_field_name()
 
     def get_configurable_value(self, key):
         if key in self.request_dict:
@@ -780,13 +782,14 @@ class AutocompleteBaseView(View):
         return {
             "route_name": self.ac_class.route_name,
             #
-            "field_name": self.request_dict["field_name"],
+            "field_name": self.get_field_name(),
             "component_id": self.get_component_id(),
             "required": self.get_configurable_value("required"),
             "placeholder": self.get_configurable_value("placeholder"),
             "indicator": self.get_configurable_value("indicator"),
             "custom_strings": self.ac_class.get_custom_strings(),
             "multiselect": self.get_configurable_value("multiselect"),
+            "component_prefix": self.get_configurable_value("component_prefix"),
         }
 
 

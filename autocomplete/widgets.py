@@ -143,7 +143,7 @@ class AutocompleteWidget(Widget):
         "indicator",
         "multiselect",
         "label",
-        "component_id",
+        "component_prefix",
         # the below are also configurable from the AC class
         "placeholder",
         "no_result_text",
@@ -187,12 +187,10 @@ class AutocompleteWidget(Widget):
         # never known if the value is actually omitted.
         return []
 
-    def get_component_id(self):
-        cpn_id = self.config.get("component_id")
-        if not cpn_id:
-            return self.ac_class.route_name
+    def get_component_id(self, field_name):
+        prefix = self.get_configurable_value("component_prefix")
 
-        return cpn_id
+        return prefix + field_name
 
     def get_configurable_value(self, key):
         if key in self.config:
@@ -233,6 +231,7 @@ class AutocompleteWidget(Widget):
         # context["values"] = list(self.a_c.item_values(self.a_c, selected_options))
         context["values"] = [x["key"] for x in selected_options]
         context["selected_items"] = selected_options
-        context["component_id"] = self.get_component_id()
+        context["component_prefix"] = self.get_configurable_value("component_prefix")
+        context["component_id"] = self.get_component_id(name)
 
         return context
