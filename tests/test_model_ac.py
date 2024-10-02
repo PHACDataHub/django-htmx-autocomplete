@@ -4,6 +4,7 @@ from django.template import Context, Template, loader
 from django.urls import reverse
 
 from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete, register
+from autocomplete.autocomplete import ContextArg
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 
 from .utils_for_test import soup_from_str
@@ -20,7 +21,7 @@ def test_model_ac_search():
     p3 = PersonFactory(name="John3")
     p4 = PersonFactory(name="Jones")
 
-    results = PersonModelAC.search_items("Joh", {})
+    results = PersonModelAC.search_items("Joh", ContextArg(None, None))
 
     assert len(results) == 3
     assert results == [

@@ -17,14 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from autocomplete import HTMXAutoComplete
 from autocomplete import urls as autocomplete_urls
 from sample_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.index, name="index"),
     path("teams/<int:team_id>/edit/", views.edit_team, name="edit_team"),
-    # *HTMXAutoComplete.url_dispatcher("ac"),
     path("ac/", autocomplete_urls),
 ]

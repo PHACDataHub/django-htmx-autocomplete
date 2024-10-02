@@ -3,40 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
 
-from autocomplete.autocomplete import Autocomplete, register
-from autocomplete.widgets import Autocomplete as LegacyAutocompleteWidget
-from autocomplete.widgets import AutocompleteWidget
+from autocomplete import Autocomplete, AutocompleteWidget, register
 
-from . import ac_controls
-from .forms import (
-    MultipleFormGetItem,
-    MultipleFormModel,
-    SingleFormGetItem,
-    SingleFormModel,
-)
 from .models import Person, Team
-
-
-def index(request):
-    # example with 4 ACs
-    template = loader.get_template("index.html")
-    single_form_get_item = SingleFormGetItem({"name": "Team Pickle", "company": [2]})
-    single_form_model = SingleFormModel({"name": "Team Pickles", "members": [1]})
-    multi_form_get_item = MultipleFormGetItem(
-        {"name": "Team Pickle", "members": [1, 2, 3, 21]}
-    )
-    multi_form_model = MultipleFormModel(request.POST or None)
-    return HttpResponse(
-        template.render(
-            {
-                "single_form_model": single_form_model,
-                "single_form_get_item": single_form_get_item,
-                "multi_form_get_item": multi_form_get_item,
-                "multi_form_model": multi_form_model,
-            },
-            request,
-        )
-    )
 
 
 @register
