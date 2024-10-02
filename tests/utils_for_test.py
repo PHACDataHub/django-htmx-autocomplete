@@ -5,6 +5,10 @@ from django.test.client import MULTIPART_CONTENT, Client
 
 def get_soup(response):
     content = response.content
+    return soup_from_str(content)
+
+
+def soup_from_str(content):
     soup = BeautifulSoup(content, "html.parser")
     return soup
 

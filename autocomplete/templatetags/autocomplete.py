@@ -1,14 +1,14 @@
 """
 Django template tags to facilitate rendering of the component
 """
+
 import hashlib
 
-from django import template
-from django import urls
-from django.utils.http import urlencode
-from django.utils.html import escape, format_html
+from django import template, urls
 from django.template import loader
 from django.template.defaultfilters import stringfilter
+from django.utils.html import escape, format_html
+from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -92,6 +92,14 @@ def autocomplete(name, selected=None):
             "</div>"
         )
     )
+
+
+@register.filter
+def js_boolean(value):
+    """
+    Convert the value to a javascript boolean
+    """
+    return "true" if value else "false"
 
 
 @register.simple_tag

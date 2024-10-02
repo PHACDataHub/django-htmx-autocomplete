@@ -21,11 +21,11 @@
     onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ component_id|escapejs }}', {{ multiselect|yesno:'false,true' }})"
     onfocus="return phac_aspc_autocomplete_focus_handler(event)"
 
-    hx-get="{% url route_name method='items' %}"
+    hx-get="{% url 'autocomplete:items' ac_name=route_name %}"
     hx-trigger="phac_aspc_autocomplete_trigger"
     hx-include="#{{ component_id }}"
     hx-target="#{{ component_id }}__items"
-    hx-vals="js:{name: '{{ name|escapejs}}', component_id: '{{ component_id|escapejs }}', search: document.getElementById('{{ component_id|escapejs }}__textinput').value}"
+    hx-vals="js:{field_name: '{{ field_name|escapejs}}', component_id: '{{ component_id|escapejs }}', {% if multiselect %} multiselect: true, {% endif %} search: document.getElementById('{{ component_id|escapejs }}__textinput').value}"
     hx-swap="outerHTML"
     {% if indicator %}
     hx-indicator="#{{ component_id }}__container .htmx-indicator"

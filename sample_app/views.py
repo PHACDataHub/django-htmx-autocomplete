@@ -3,7 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
 
-from autocomplete.widgets import Autocomplete
+from autocomplete.autocomplete import Autocomplete, register
+from autocomplete.widgets import Autocomplete as LegacyAutocompleteWidget
+from autocomplete.widgets import AutocompleteWidget
 
 from . import ac_controls
 from .forms import (
@@ -37,23 +39,32 @@ def index(request):
     )
 
 
+@register
+class PersonAutocomplete(Autocomplete):
+    @classmethod
+    def search_items(cls, search, context):
+        qs = Person.objects.filter(name__icontains=search)
+
+        return [{"key": person.id, "label": person.name} for person in qs]
+
+    @classmethod
+    def get_items_from_keys(cls, keys, context):
+        qs = Person.objects.filter(id__in=keys)
+        return [{"key": person.id, "label": person.name} for person in qs]
+
+
 class TeamForm(forms.ModelForm):
     # this form isn't meant to work for saving, we're using different "names"
     class Meta:
         model = Team
         fields = ["team_lead", "members"]
         widgets = {
-            "team_lead": Autocomplete(
-                name="team_lead_ac",
-                options=dict(model=Person, minimum_search_length=0),
+            "team_lead": AutocompleteWidget(
+                ac_class=PersonAutocomplete,
             ),
-            "members": Autocomplete(
-                name="members_ac",
-                options=dict(
-                    multiselect=True,
-                    model=Person,
-                    minimum_search_length=0,
-                ),
+            "members": AutocompleteWidget(
+                ac_class=PersonAutocomplete,
+                options={"multiselect": True, "component_id": "members"},
             ),
         }
 
