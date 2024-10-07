@@ -4,7 +4,7 @@ This file enables the component to be used like other Django widgets
 
 from django.forms import Widget
 
-from .autocomplete import Autocomplete
+from .autocomplete import AC_CLASS_CONFIGURABLE_VALUES, Autocomplete
 
 
 class AutocompleteWidget(Widget):
@@ -23,7 +23,7 @@ class AutocompleteWidget(Widget):
         "narrow_search_text",
     ]
 
-    def __init__(self, ac_class: Autocomplete, attrs=None, options=None):
+    def __init__(self, ac_class, attrs=None, options=None):
         self.ac_class = ac_class
         super().__init__(attrs)
 
@@ -69,7 +69,7 @@ class AutocompleteWidget(Widget):
         if key in self.config:
             return self.config.get(key)
 
-        if hasattr(self.ac_class, key):
+        if key in AC_CLASS_CONFIGURABLE_VALUES and hasattr(self.ac_class, key):
             return getattr(self.ac_class, key)
 
         return None

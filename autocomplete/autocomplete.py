@@ -11,6 +11,18 @@ from django.views import View
 _ac_registry = {}
 
 
+AC_CLASS_CONFIGURABLE_VALUES = {
+    "disabled",
+    "no_result_text",
+    "narrow_search_text",
+    "minimum_search_length",
+    "max_results",
+    "component_prefix",
+    "placeholder",
+    "indicator",
+}
+
+
 def register(ac_class: type, route_name: str = None):
     if not route_name:
         route_name = ac_class.__name__
@@ -107,7 +119,7 @@ class AutocompleteBaseView(View):
         if key in self.request_dict:
             return self.request.GET.get(key)
 
-        if hasattr(self.ac_class, key):
+        if key in AC_CLASS_CONFIGURABLE_VALUES and hasattr(self.ac_class, key):
             return getattr(self.ac_class, key)
 
         return None
