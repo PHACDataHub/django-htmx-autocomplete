@@ -42,11 +42,17 @@
     {% if placeholder and selected_items|length == 0 %}
     placeholder="{{ placeholder }}"
     {% endif %}
+    
     {% if not multiselect and selected_items|length == 1 %}
     value="{{ selected_items.0.label }}"
     {% endif %}
+
     {% if required and selected_items|length == 0 %}
     required
+    {% endif %}
+
+    {% if disabled %}
+    disabled
     {% endif %}
 >
 {% endif %}

@@ -4,6 +4,7 @@ from django.http import HttpRequest, HttpResponseBadRequest, HttpResponseNotFoun
 from django.shortcuts import render
 from django.urls import path
 from django.utils.functional import cached_property
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 # This is the registry of registered autocomplete classes,
@@ -41,8 +42,8 @@ def register(ac_class: type, route_name: str = None):
 
 class Autocomplete:
 
-    no_result_text = "No results found."
-    narrow_search_text = "Narrow your search for more results."
+    no_result_text = _("No results found.")
+    narrow_search_text = _("Narrow your search for more results.")
     minimum_search_length = 3
     max_results = 100
     component_prefix = ""
@@ -139,12 +140,13 @@ class AutocompleteBaseView(View):
             #
             "field_name": self.get_field_name(),
             "component_id": self.get_component_id(),
-            "required": self.get_configurable_value("required"),
+            "required": bool(self.get_configurable_value("required")),
             "placeholder": self.get_configurable_value("placeholder"),
             "indicator": self.get_configurable_value("indicator"),
             "custom_strings": self.ac_class.get_custom_strings(),
-            "multiselect": self.get_configurable_value("multiselect"),
+            "multiselect": bool(self.get_configurable_value("multiselect")),
             "component_prefix": self.get_configurable_value("component_prefix"),
+            "disabled": bool(self.get_configurable_value("disabled")),
         }
 
 

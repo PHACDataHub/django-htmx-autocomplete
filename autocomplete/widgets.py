@@ -11,8 +11,6 @@ class AutocompleteWidget(Widget):
     template_name = "autocomplete/component.html"
 
     configurable_values = [
-        "disabled",
-        "required",
         "indicator",
         "multiselect",
         "label",
@@ -29,9 +27,6 @@ class AutocompleteWidget(Widget):
 
         if not options:
             options = {}
-
-        if not attrs:
-            attrs = {}
 
         self.config = {}
         for k, v in options.items():
@@ -81,6 +76,8 @@ class AutocompleteWidget(Widget):
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
 
+        proper_attrs = self.build_attrs(self.attrs, attrs)
+
         if value is None:
             selected_options = []
         else:
@@ -93,8 +90,8 @@ class AutocompleteWidget(Widget):
         context["id"] = attrs.get("id", self.attrs.get("id", None))
         context["route_name"] = self.ac_class.route_name
 
-        context["disabled"] = attrs.get("disabled", self.attrs.get("disabled", False))
-        context["required"] = attrs.get("required", self.attrs.get("required", False))
+        context["disabled"] = proper_attrs.get("disabled", False)
+        context["required"] = proper_attrs.get("required", False)
 
         context["indicator"] = self.get_configurable_value("indicator")
         context["multiselect"] = self.is_multi

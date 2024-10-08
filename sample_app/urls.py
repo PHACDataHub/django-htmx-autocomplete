@@ -23,6 +23,10 @@ from sample_app import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("teams/<int:team_id>/edit/", views.edit_team, name="edit_team"),
-    path("teams/<int:team_id>/edit/with_prefix/", views.edit_team, name="edit_team"),
+    path(
+        "teams/<int:team_id>/edit/with_prefix/",
+        views.example_with_prefix,
+        name="edit_team",
+    ),
     path("ac/", autocomplete_urls),
 ]

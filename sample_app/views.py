@@ -50,21 +50,28 @@ def edit_team(request, team_id=None):
     return render(request, "edit_team.html", {"form": form})
 
 
+@register
+class CustomPersonAutocomplete(PersonAutocomplete):
+    no_result_text = "Keine resultate"
+    narrow_search_text = "NARROW IT DOWN"
+    max_results = 1
+
+
 class TeamForm2(forms.ModelForm):
     # this form isn't meant to work for saving, we're using different "names"
     class Meta:
         model = Team
         fields = ["team_lead", "members"]
+        # fields = ["team_lead"]
         widgets = {
             "team_lead": AutocompleteWidget(
-                ac_class=PersonAutocomplete,
+                ac_class=CustomPersonAutocomplete,
                 options={
                     "component_prefix": "team_lead_prefix",
-                    "required": True,
                     "placeholder": "Select team lead",
-                    "label": "LABEL123",
-                    "no_result_text": "Keine resultate",
-                    "narrow_search_text": "NARROW IT DOWN",
+                },
+                attrs={
+                    "required": False,
                 },
             ),
             "members": AutocompleteWidget(
@@ -72,6 +79,13 @@ class TeamForm2(forms.ModelForm):
                 options={"multiselect": True},
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["team_lead"].required = False
+        self.fields["members"].required = False
+        self.fields["members"].disabled = True
+        self.fields["team_lead"].disabled = True
 
 
 def example_with_prefix(request, team_id=None):

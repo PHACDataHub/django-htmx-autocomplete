@@ -182,9 +182,9 @@ def test_render_widget_multi_non_empty():
     record = TeamFactory()
     record.members.set(people[:2])
 
-    create_form = FormWithMulti(instance=record)
+    edit_form = FormWithMulti(instance=record)
 
-    rendered = render_template(single_form_template, {"form": create_form})
+    rendered = render_template(single_form_template, {"form": edit_form})
 
     soup = soup_from_str(rendered)
 
@@ -275,3 +275,111 @@ def test_with_formset():
             assert hidden_input.attrs["value"] == str(people[ix].id)
         if ix == 2:
             assert not hidden_input
+
+
+def test_custom_options():
+    class FormWithSingle(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead"]
+
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAC4,
+                    attrs={
+                        "required": True,
+                        "disabled": True,
+                    },
+                    options={
+                        "component_prefix": "my_prefix",
+                        "placeholder": "my placeholder",
+                    },
+                )
+            }
+
+    create_form = FormWithSingle()
+
+    rendered = render_template(single_form_template, {"form": create_form})
+
+    soup = soup_from_str(rendered)
+
+    input = soup.select_one("ul li input[type='text']")
+
+    assert input.attrs["placeholder"] == "my placeholder"
+    assert "required" in input.attrs
+    assert "disabled" in input.attrs
+
+    hx_vals = input.attrs["hx-vals"]
+    assert '"placeholder": "my placeholder"' in hx_vals
+    assert '"required": true' in hx_vals
+    assert '"disabled": true' in hx_vals
+
+
+def test_custom_options_not_required():
+    class FormWithSingle(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead"]
+
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAC4,
+                )
+            }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields["team_lead"].required = False
+
+    create_form = FormWithSingle()
+
+    rendered = render_template(single_form_template, {"form": create_form})
+
+    soup = soup_from_str(rendered)
+
+    input = soup.select_one("ul li input[type='text']")
+
+    assert "required" not in input.attrs
+
+    hx_vals = input.attrs["hx-vals"]
+    assert "required" not in hx_vals
+
+
+def test_disabled_multi():
+
+    class FormWithMulti(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["members"]
+
+            widgets = {
+                "members": AutocompleteWidget(
+                    ac_class=PersonAC4, options={"multiselect": True}
+                )
+            }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields["members"].required = False
+            self.fields["members"].disabled = True
+
+    people = PersonFactory.create_batch(5)
+
+    record = TeamFactory()
+    record.members.set(people[:2])
+
+    edit_form = FormWithMulti()
+    edit_form = FormWithMulti(instance=record)
+
+    rendered = render_template(single_form_template, {"form": edit_form})
+
+    soup = soup_from_str(rendered)
+
+    ac_container = soup.select_one(".ac_container")
+    chips = ac_container.select("li.chip")
+    assert len(chips) == 2
+    for chip in chips:
+        assert not chip.select_one("a")
+    input_li = ac_container.select_one("li.input")
+    assert not input_li.select_one("input")
+    assert input_li.select_one("output#members__textinput")
