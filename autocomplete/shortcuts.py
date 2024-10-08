@@ -3,7 +3,7 @@ from functools import reduce
 
 from django.db.models import Q
 
-from .autocomplete import Autocomplete
+from .core import Autocomplete
 
 
 class ModelAutocomplete(Autocomplete):
@@ -28,6 +28,10 @@ class ModelAutocomplete(Autocomplete):
         return cls.get_model().objects.all()
 
     @classmethod
+    def get_label_for_record(cls, record):
+        return str(record)
+
+    @classmethod
     def get_query_filtered_queryset(cls, search, context):
         base_qs = cls.get_queryset()
         conditions = [
@@ -41,12 +45,52 @@ class ModelAutocomplete(Autocomplete):
     def search_items(cls, search, context):
         filtered_queryset = cls.get_query_filtered_queryset(search, context)
 
-        paged_records = filtered_queryset[: cls.max_results]
-        items = [{"key": obj.id, "label": str(obj)} for obj in paged_records]
+        items = QuerysetMappedIterable(
+            queryset=filtered_queryset, label_for_record=cls.get_label_for_record
+        )
         return items
 
     @classmethod
     def get_items_from_keys(cls, keys, context):
         queryset = cls.get_queryset()
         results = queryset.filter(id__in=keys)
+
         return [{"key": person.id, "label": person.name} for person in results]
+
+
+class QuerysetMappedIterable:
+    """
+    We want to return an iterable of dicts rather than ORM records
+
+    Using a list is inefficient for large datasets
+    But using something like a generator/map doesn't allow for slicing or len()
+
+    This class wraps a queryset's slice/len methods
+    """
+
+    def __init__(self, queryset, label_for_record):
+        self.queryset = queryset
+        self.label_for_record = label_for_record
+
+    def __getitem__(self, key):
+        # Handle both single index and slice objects
+        if isinstance(key, int):
+            records = [self.queryset[key]]
+        elif isinstance(key, slice):
+            records = self.queryset[key.start : key.stop : key.step]
+        else:
+            raise TypeError("Invalid argument type")
+
+        mapped = [
+            {"key": record.id, "label": self.label_for_record(record)}
+            for record in records
+        ]
+
+        if isinstance(key, int):
+            return mapped[0]
+
+        return mapped
+
+    def __len__(self):
+        # Return the length of the sequence
+        return self.queryset.count()

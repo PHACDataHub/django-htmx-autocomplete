@@ -4,7 +4,7 @@ from django.template import Context, Template, loader
 from django.urls import reverse
 
 from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete, register
-from autocomplete.autocomplete import ContextArg
+from autocomplete.core import ContextArg
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 
 from .utils_for_test import soup_from_str
@@ -24,7 +24,7 @@ def test_model_ac_search():
     results = PersonModelAC.search_items("Joh", ContextArg(None, None))
 
     assert len(results) == 3
-    assert results == [
+    assert list(results) == [
         {"label": "John1", "key": p1.id},
         {"label": "John2", "key": p2.id},
         {"label": "John3", "key": p3.id},
@@ -34,3 +34,19 @@ def test_model_ac_search():
         {"label": "John1", "key": p1.id},
         {"label": "John2", "key": p2.id},
     ]
+
+
+def test_model_ac_search_max_results():
+    class PersonModelAC(ModelAutocomplete):
+        model = Person
+        search_attrs = ["name"]
+        max_results = 2
+
+    p1 = PersonFactory(name="John1")
+    p2 = PersonFactory(name="John2")
+    p3 = PersonFactory(name="John3")
+    p4 = PersonFactory(name="Jones")
+
+    results = PersonModelAC.search_items("Joh", ContextArg(None, None))
+    # should still contain 3 results, the view is responsible for truncating
+    assert len(results) == 3
