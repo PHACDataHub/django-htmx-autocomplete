@@ -4,7 +4,7 @@ This file enables the component to be used like other Django widgets
 
 from django.forms import Widget
 
-from .autocomplete import AC_CLASS_CONFIGURABLE_VALUES, Autocomplete
+from .core import AC_CLASS_CONFIGURABLE_VALUES, Autocomplete
 
 
 class AutocompleteWidget(Widget):

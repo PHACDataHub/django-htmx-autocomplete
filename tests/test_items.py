@@ -1,26 +1,13 @@
 import json
 
-from django.http import QueryDict
+from django.http import HttpRequest, QueryDict
 from django.urls import reverse
 
-from autocomplete.autocomplete import Autocomplete, register
+from autocomplete.core import Autocomplete, register
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
+from tests.conftest import PersonAC
 
 from .utils_for_test import get_soup
-
-
-@register
-class PersonAC(Autocomplete):
-
-    @classmethod
-    def search_items(cls, search, context):
-        qs = Person.objects.filter(name__icontains=search)
-
-        return [{"key": person.id, "label": person.name} for person in qs]
-
-    @classmethod
-    def get_items_from_keys(cls, keys, context):
-        return Person.objects.filter(id__in=keys)
 
 
 def test_items_response_non_multi(client):
@@ -215,7 +202,7 @@ def test_limit_results(client):
     people = PersonFactory.create_batch(5)
     searchable_person = PersonFactory(name="abcdefg")
     searchable_person2 = PersonFactory(name="abcdxyz")
-    searchable_person3 = PersonFactory(name="abcdxyz")
+    searchable_person3 = PersonFactory(name="abcdxyz2")
 
     @register
     class LimitedPersonAC(PersonAC):

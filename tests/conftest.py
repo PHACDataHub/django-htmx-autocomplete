@@ -1,6 +1,8 @@
 import pytest
-
 from django.db import transaction
+
+from autocomplete import Autocomplete, ModelAutocomplete, register
+from sample_app.models import Person
 
 
 @pytest.fixture(autouse=True)
@@ -23,3 +25,9 @@ def globally_scoped_fixture_helper(django_db_setup, django_db_blocker):
                 raise Exception
         except Exception:
             pass
+
+
+@register
+class PersonAC(ModelAutocomplete):
+    model = Person
+    search_attrs = ["name"]

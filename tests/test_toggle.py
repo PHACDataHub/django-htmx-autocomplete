@@ -3,7 +3,7 @@ import json
 from django.http import QueryDict
 from django.urls import reverse
 
-from autocomplete.autocomplete import Autocomplete, register
+from autocomplete.core import Autocomplete, register
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 
 from .utils_for_test import get_soup
