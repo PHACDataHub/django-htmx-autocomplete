@@ -3,6 +3,7 @@ Django template tags to facilitate rendering of the component
 """
 
 import hashlib
+import json
 
 from django import template, urls
 from django.template import loader
@@ -142,3 +143,73 @@ def autocomplete_scripts(context, bootstrap=False, htmx=False, htmx_csrf=False):
             "htmx_csrf": htmx_csrf,
         }
     )
+
+
+@register.simple_tag
+def value_if_truthy(test, value, default=""):
+    """
+    Return the value if it is truthy, otherwise return the default
+    """
+    return value if test else default
+
+
+@register.simple_tag(takes_context=True)
+def base_configurable_values_hx_params(context):
+
+    field_name = context.get("field_name")
+    required = context.get("required")
+    disabled = context.get("disabled")
+    placeholder = context.get("placeholder")
+    multiselect = context.get("multiselect")
+
+    hx_params = f"{field_name},field_name,item,component_prefix"
+
+    if required:
+        hx_params += ",required"
+
+    if disabled:
+        hx_params += ",disabled"
+
+    if placeholder:
+        hx_params += ",placeholder"
+
+    if multiselect:
+        hx_params += ",multiselect"
+
+    return mark_safe(hx_params)
+
+
+@register.simple_tag(takes_context=True)
+def base_configurable_hx_vals(context):
+    """
+    json-like format
+    must be wrapped in curly braces
+    """
+
+    field_name = context.get("field_name")
+    required = context.get("required")
+    disabled = context.get("disabled")
+    placeholder = context.get("placeholder")
+    multiselect = context.get("multiselect")
+    component_prefix = context.get("component_prefix")
+
+    props = {
+        "field_name": escape(field_name),
+        "component_prefix": component_prefix,
+    }
+
+    if required:
+        props["required"] = bool(required)
+
+    if disabled:
+        props["disabled"] = bool(disabled)
+
+    if multiselect:
+        props["multiselect"] = bool(multiselect)
+
+    if placeholder:
+        props["placeholder"] = escape(placeholder)
+
+    hx_vals = json.dumps(props).replace("{", "").replace("}", "")
+
+    return mark_safe(hx_vals)

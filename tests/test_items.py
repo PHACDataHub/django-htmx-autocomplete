@@ -59,15 +59,11 @@ def test_items_response_non_multi(client):
         "field_name": "myfield_name",
         "component_prefix": "component_name",
         "item": str(searchable_person.id),
-        "required": False,
-        "multiselect": False,
     }
     assert json.loads(options[1].attrs["hx-vals"]) == {
         "field_name": "myfield_name",
         "component_prefix": "component_name",
         "item": str(searchable_person2.id),
-        "required": False,
-        "multiselect": False,
     }
 
     highlight_span = listbox.select_one("span.highlight")
@@ -137,14 +133,12 @@ def test_items_response_multi(client):
         "field_name": "myfield_name",
         "component_prefix": "component_name",
         "item": str(searchable_person.id),
-        "required": False,
         "multiselect": True,
     }
     assert json.loads(options[1].attrs["hx-vals"]) == {
         "field_name": "myfield_name",
         "component_prefix": "component_name",
         "item": str(searchable_person2.id),
-        "required": False,
         "multiselect": True,
     }
 

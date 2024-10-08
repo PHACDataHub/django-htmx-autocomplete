@@ -1,3 +1,5 @@
+{% load autocomplete %}
+
 {% comment %} 
 This template renders a selected item or chip.
 {% endcomment %}
@@ -7,8 +9,12 @@ This template renders a selected item or chip.
     {% if not disabled %}
     <a
         hx-get="{% url 'autocomplete:toggle' ac_name=route_name %}"
-        hx-params="{{ field_name }},field_name,item,remove,component_prefix,multiselect,required"
-        hx-vals='{"field_name": "{{ field_name|escapejs }}", "component_prefix": "{{ component_prefix|escapejs }}", "remove": true, "multiselect": true, {% if required %} "required": true, {% endif %} "item": "{{ item.key|escapejs }}"}'
+        hx-params="{% base_configurable_values_hx_params %},remove"
+        hx-vals='{
+            {% base_configurable_hx_vals %},
+            "remove": true, 
+            "item": "{{ item.key|escapejs }}"
+        }'
         hx-include="#{{ component_id }}"
         hx-swap="delete"
         hx-target="this"

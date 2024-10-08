@@ -153,7 +153,7 @@ class ToggleView(AutocompleteBaseView):
         field_name = self.request_dict["field_name"]
 
         current_items = self.request.GET.getlist(field_name)
-        if current_items == ["undefined"]:
+        if current_items == ["undefined"] or current_items == [""]:
             current_items = []
 
         key_to_toggle = request.GET.get("item")

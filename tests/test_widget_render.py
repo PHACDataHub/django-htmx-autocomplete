@@ -98,10 +98,10 @@ def test_render_widget_in_form_empty():
     assert actual_input_field.attrs["hx-include"] == "#team_lead"
     assert actual_input_field.attrs["hx-target"] == "#team_lead__items"
     assert (
-        "getElementById('team_lead__textinput')" in actual_input_field.attrs["hx-vals"]
+        'getElementById("team_lead__textinput")' in actual_input_field.attrs["hx-vals"]
     )
-    assert "component_prefix: '', " in actual_input_field.attrs["hx-vals"]
-    assert "field_name: 'team_lead', " in actual_input_field.attrs["hx-vals"]
+    assert '"component_prefix": "",' in actual_input_field.attrs["hx-vals"]
+    assert '"field_name": "team_lead",' in actual_input_field.attrs["hx-vals"]
     assert "value" not in actual_input_field.attrs
 
 
@@ -207,7 +207,7 @@ def test_render_widget_multi_non_empty():
         )
         assert (
             delete_button.attrs["hx-params"]
-            == "members,field_name,item,remove,component_prefix,multiselect,required"
+            == "members,field_name,item,component_prefix,required,multiselect,remove"
         )
         assert "multiselect" in delete_button.attrs["hx-vals"]
         assert delete_button.attrs["hx-vals"]

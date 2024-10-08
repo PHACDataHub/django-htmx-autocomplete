@@ -48,3 +48,39 @@ def edit_team(request, team_id=None):
         return HttpResponseRedirect(request.path)
 
     return render(request, "edit_team.html", {"form": form})
+
+
+class TeamForm2(forms.ModelForm):
+    # this form isn't meant to work for saving, we're using different "names"
+    class Meta:
+        model = Team
+        fields = ["team_lead", "members"]
+        widgets = {
+            "team_lead": AutocompleteWidget(
+                ac_class=PersonAutocomplete,
+                options={
+                    "component_prefix": "team_lead_prefix",
+                    "required": True,
+                    "placeholder": "Select team lead",
+                    "label": "LABEL123",
+                    "no_result_text": "Keine resultate",
+                    "narrow_search_text": "NARROW IT DOWN",
+                },
+            ),
+            "members": AutocompleteWidget(
+                ac_class=PersonAutocomplete,
+                options={"multiselect": True},
+            ),
+        }
+
+
+def example_with_prefix(request, team_id=None):
+    team = Team.objects.get(id=team_id)
+
+    form = TeamForm2(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})
