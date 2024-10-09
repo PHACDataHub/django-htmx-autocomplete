@@ -24,9 +24,6 @@ class AutocompleteBaseView(View):
 
         return super().dispatch(request, *args, **kwargs)
 
-    def get_items(self, item_keys):
-        return self.ac_class.get_items_from_keys(item_keys)
-
     @cached_property
     def request_dict(self):
         # convert the request's QueryDict into a regular dict

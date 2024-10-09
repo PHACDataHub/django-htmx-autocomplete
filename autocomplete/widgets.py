@@ -17,8 +17,6 @@ class AutocompleteWidget(Widget):
         "component_prefix",
         # the below are also configurable from the AC class
         "placeholder",
-        "no_result_text",
-        "narrow_search_text",
     ]
 
     def __init__(self, ac_class, attrs=None, options=None):
