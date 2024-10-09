@@ -49,12 +49,6 @@ class AutocompleteBaseView(View):
 
         return None
 
-    def get_custom_strings(self):
-        return {
-            "no_results": self.ac_class.no_result_text,
-            "more_results": self.ac_class.narrow_search_text,
-        }
-
     def get_template_context(self):
         # many things will come from the request
         # others will be picked up from the AC class
@@ -160,11 +154,16 @@ class ItemsView(AutocompleteBaseView):
         field_name = self.get_configurable_value("field_name")
         selected_keys = request.GET.getlist(field_name)
 
-        show = len(search_query) >= self.ac_class.minimum_search_length
+        query_too_short = len(search_query) < self.ac_class.minimum_search_length
 
-        total_results = len(search_results)
-        if len(search_results) > self.ac_class.max_results:
-            search_results = search_results[: self.ac_class.max_results]
+        if query_too_short:
+            total_results = 0
+            search_results = []
+
+        else:
+            total_results = len(search_results)
+            if len(search_results) > self.ac_class.max_results:
+                search_results = search_results[: self.ac_class.max_results]
 
         items = self.ac_class.map_search_results(search_results, selected_keys)
 
@@ -175,10 +174,12 @@ class ItemsView(AutocompleteBaseView):
             {
                 # note: name -> field_name
                 **self.get_template_context(),
-                "show": show,
+                "show": not (query_too_short),
+                "query_too_short": query_too_short,
                 "search": search_query,
                 "items": items,
                 "total_results": total_results,
+                "minimum_search_length": self.ac_class.minimum_search_length,
             },
         )
 

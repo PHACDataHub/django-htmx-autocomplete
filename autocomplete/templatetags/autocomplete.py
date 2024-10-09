@@ -62,6 +62,15 @@ def use_string(context, name, strings):
 
 
 @register.simple_tag
+def substitute_string(template_str, **kwargs):
+    """
+    Substitute the template string with the kwargs
+    """
+    as_strings = {k: str(v) for k, v in kwargs.items()}
+    return template_str % as_strings
+
+
+@register.simple_tag
 def autocomplete(name, selected=None):
     """
     Tag used to render autocomplete component in a Django Template

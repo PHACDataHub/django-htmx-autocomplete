@@ -41,7 +41,10 @@ def register(ac_class: type, route_name: str = None):
 class Autocomplete:
 
     no_result_text = _("No results found.")
-    narrow_search_text = _("Narrow your search for more results.")
+    narrow_search_text = _(
+        "Showing %(page_size)s of %(total)s items. Narrow your search for more results."
+    )
+    type_at_least_n_characters = _("Type at least %(n)s characters")
     minimum_search_length = 3
     max_results = 100
     component_prefix = ""
@@ -92,6 +95,7 @@ class Autocomplete:
         return {
             "no_results": cls.no_result_text,
             "more_results": cls.narrow_search_text,
+            "type_at_least_n_characters": cls.type_at_least_n_characters,
         }
 
 

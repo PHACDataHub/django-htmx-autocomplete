@@ -256,3 +256,32 @@ def test_no_results(client):
     items = listbox.select("span.item")
     assert len(items) == 1
     assert "NO RESULTS" in items[0].get_text()
+
+
+def test_query_too_short(client):
+    base_url = reverse("autocomplete:items", kwargs={"ac_name": "PersonAC"})
+
+    qs_dict = QueryDict(mutable=True)
+    qs_dict.update(
+        {
+            "field_name": "myfield_name",
+            "component_prefix": "component_name",
+            "search": "s",
+            "placeholder": "my placeholder",
+            "required": True,
+            "disabled": True,
+        }
+    )
+    full_url = f"{base_url}?{qs_dict.urlencode()}"
+
+    response = client.get(full_url)
+    assert response.status_code == 200
+
+    soup = get_soup(response)
+
+    listbox = soup.select_one("div[role='listbox']")
+    results = listbox.select("a")
+    assert len(results) == 0
+    items = listbox.select("span.item")
+    assert len(items) == 1
+    assert "Type at least 3 characters" in items[0].get_text()
