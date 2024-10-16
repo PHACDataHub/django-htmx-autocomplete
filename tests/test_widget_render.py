@@ -383,3 +383,33 @@ def test_disabled_multi():
     input_li = ac_container.select_one("li.input")
     assert not input_li.select_one("input")
     assert input_li.select_one("output#members__textinput")
+
+
+def test_extra_hx_vals():
+    @register
+    class PersonAC4WithHxVals(PersonAC4):
+        @classmethod
+        def get_extra_hx_vals(cls):
+            return {"extra": "value"}
+
+    class FormWithSingle(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead"]
+
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAC4WithHxVals,
+                )
+            }
+
+    create_form = FormWithSingle()
+
+    rendered = render_template(single_form_template, {"form": create_form})
+
+    soup = soup_from_str(rendered)
+
+    input = soup.select_one("ul li input[type='text']")
+    hx_vals = input.attrs["hx-vals"]
+
+    assert '"extra": "value"' in hx_vals

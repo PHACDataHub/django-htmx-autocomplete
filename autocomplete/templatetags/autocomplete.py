@@ -222,3 +222,30 @@ def base_configurable_hx_vals(context):
     hx_vals = json.dumps(props).replace("{", "").replace("}", "")
 
     return mark_safe(hx_vals)
+
+
+@register.simple_tag(takes_context=True)
+def text_input_hx_vals(context):
+    """
+    items has augments hx-vals,
+    - it adds JS value of the search input
+    - users can add more values in their class
+    """
+
+    base_hx_vals_str = base_configurable_hx_vals(context)
+
+    component_id_escape = escape(context.get("component_id"))
+
+    val = (
+        "js:{"
+        f"{base_hx_vals_str},"
+        f'search: document.getElementById("{component_id_escape}__textinput").value'
+    )
+
+    extra_hx_vals = context.get("ac_class").get_extra_text_input_hx_vals()
+    if extra_hx_vals:
+        val = f"{val}, {extra_hx_vals}"
+
+    val = val + "}"
+
+    return mark_safe(val)

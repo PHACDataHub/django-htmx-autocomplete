@@ -84,6 +84,7 @@ class AutocompleteWidget(Widget):
             else:
                 selected_options = self.ac_class.get_items_from_keys([value], None)
 
+        context["ac_class"] = self.ac_class
         context["field_name"] = name
         context["id"] = attrs.get("id", self.attrs.get("id", None))
         context["route_name"] = self.ac_class.route_name

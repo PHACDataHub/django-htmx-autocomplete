@@ -27,10 +27,7 @@
     hx-trigger="phac_aspc_autocomplete_trigger"
     hx-include="#{{ component_id }}"
     hx-target="#{{ component_id }}__items"
-    hx-vals='js:{
-        {% base_configurable_hx_vals %},
-        search: document.getElementById("{{ component_id|escapejs }}__textinput").value
-    }'
+    hx-vals='{% text_input_hx_vals %}'
     hx-swap="outerHTML"
     {% if indicator %}
     hx-indicator="#{{ component_id }}__container .htmx-indicator"

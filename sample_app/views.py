@@ -55,6 +55,36 @@ class CustomPersonAutocomplete(PersonAutocomplete):
     no_result_text = "Keine resultate"
     narrow_search_text = "NARROW IT DOWN"
     max_results = 1
+    placeholder = "Select team lead!"
+
+
+@register
+class CustomPersonAutocomplete2(PersonAutocomplete):
+    """
+    this AC is meant to be used in a form with a 'team_lead' field
+
+    the extra-hx vals will submit an additional field when searching
+
+    this extra param will be used by the search method
+    to filter out the team_lead from the members
+    """
+
+    @classmethod
+    def get_extra_text_input_hx_vals(cls):
+        # need to escape the quotes
+        # double backslash is needed for a single \ to render in html
+        selector = '[name=\\"team_lead\\"]'
+        return f'related_team_lead: document.querySelector("{selector}")?.value || "" '
+
+    @classmethod
+    def search_items(cls, search, context):
+        qs = Person.objects.filter(name__icontains=search)
+
+        related_team_lead = context.client_kwargs.get("related_team_lead", None)
+        if related_team_lead:
+            qs = qs.exclude(id=related_team_lead)
+
+        return [{"key": person.id, "label": person.name} for person in qs]
 
 
 class TeamForm2(forms.ModelForm):
@@ -68,14 +98,14 @@ class TeamForm2(forms.ModelForm):
                 ac_class=CustomPersonAutocomplete,
                 options={
                     "component_prefix": "team_lead_prefix",
-                    "placeholder": "Select team lead",
+                    # "placeholder": "Select team lead",
                 },
                 attrs={
                     "required": False,
                 },
             ),
             "members": AutocompleteWidget(
-                ac_class=PersonAutocomplete,
+                ac_class=CustomPersonAutocomplete2,
                 options={"multiselect": True},
             ),
         }
@@ -83,9 +113,9 @@ class TeamForm2(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["team_lead"].required = False
-        self.fields["members"].required = False
-        self.fields["members"].disabled = True
-        self.fields["team_lead"].disabled = True
+        # self.fields["members"].required = False
+        # self.fields["members"].disabled = True
+        # self.fields["team_lead"].disabled = True
 
 
 def example_with_prefix(request, team_id=None):

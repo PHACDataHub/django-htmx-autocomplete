@@ -98,6 +98,15 @@ class Autocomplete:
             "type_at_least_n_characters": cls.type_at_least_n_characters,
         }
 
+    @classmethod
+    def get_extra_text_input_hx_vals(cls):
+        """
+        must return a snippet of json, e.g. "key": "value"
+        without any leading comma, trailing comma or closing }
+        """
+
+        return ""
+
 
 @dataclass
 class ContextArg:

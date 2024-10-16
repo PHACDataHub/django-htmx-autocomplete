@@ -52,7 +52,7 @@ class AutocompleteBaseView(View):
 
         return {
             "route_name": self.ac_class.route_name,
-            #
+            "ac_class": self.ac_class,
             "field_name": self.get_field_name(),
             "component_id": self.get_component_id(),
             "required": bool(self.get_configurable_value("required")),
