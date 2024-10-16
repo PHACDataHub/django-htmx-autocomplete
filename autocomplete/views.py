@@ -111,10 +111,8 @@ class ToggleView(AutocompleteBaseView):
 
         def sort_items(item):
             try:
-                print(item, current_items.index(f"{item['key']}"))
                 return current_items.index(f"{item['key']}")
             except ValueError:
-                print(item, len(current_items))
                 return len(new_items)
 
         new_items = sorted(new_items, key=sort_items)
