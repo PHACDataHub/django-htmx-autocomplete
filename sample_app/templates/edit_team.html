@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load autocomplete %}
+{% block content %}
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                {{ form.team_lead.label_tag }}
+                <div class="team_lead-field-container">
+                    {{ form.team_lead }}
+                </div>
+            </div>
+            <div>
+                {{ form.members.label_tag }}
+                <div class="members-field-container">
+                    {{ form.members }}
+                </div>
+            </div>
+
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,14 +1,15 @@
 """
 Django template tags to facilitate rendering of the component
 """
-import hashlib
 
-from django import template
-from django import urls
-from django.utils.http import urlencode
-from django.utils.html import escape, format_html
+import hashlib
+import json
+
+from django import template, urls
 from django.template import loader
 from django.template.defaultfilters import stringfilter
+from django.utils.html import escape, format_html
+from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -61,6 +62,15 @@ def use_string(context, name, strings):
 
 
 @register.simple_tag
+def substitute_string(template_str, **kwargs):
+    """
+    Substitute the template string with the kwargs
+    """
+    as_strings = {k: str(v) for k, v in kwargs.items()}
+    return template_str % as_strings
+
+
+@register.simple_tag
 def autocomplete(name, selected=None):
     """
     Tag used to render autocomplete component in a Django Template
@@ -92,6 +102,14 @@ def autocomplete(name, selected=None):
             "</div>"
         )
     )
+
+
+@register.filter
+def js_boolean(value):
+    """
+    Convert the value to a javascript boolean
+    """
+    return "true" if value else "false"
 
 
 @register.simple_tag
@@ -134,3 +152,110 @@ def autocomplete_scripts(context, bootstrap=False, htmx=False, htmx_csrf=False):
             "htmx_csrf": htmx_csrf,
         }
     )
+
+
+@register.simple_tag
+def value_if_truthy(test, value, default=""):
+    """
+    Return the value if it is truthy, otherwise return the default
+    """
+    return value if test else default
+
+
+@register.simple_tag(takes_context=True)
+def base_configurable_values_hx_params(context):
+
+    field_name = context.get("field_name")
+    required = context.get("required")
+    disabled = context.get("disabled")
+    placeholder = context.get("placeholder")
+    multiselect = context.get("multiselect")
+
+    hx_params = f"{field_name},field_name,item,component_prefix"
+
+    if required:
+        hx_params += ",required"
+
+    if disabled:
+        hx_params += ",disabled"
+
+    if placeholder:
+        hx_params += ",placeholder"
+
+    if multiselect:
+        hx_params += ",multiselect"
+
+    return mark_safe(hx_params)
+
+
+@register.simple_tag(takes_context=True)
+def base_configurable_hx_vals(context):
+    """
+    json-like format
+    must be wrapped in curly braces
+    """
+
+    field_name = context.get("field_name")
+    required = context.get("required")
+    disabled = context.get("disabled")
+    placeholder = context.get("placeholder")
+    multiselect = context.get("multiselect")
+    component_prefix = context.get("component_prefix")
+
+    props = {
+        "field_name": escape(field_name),
+        "component_prefix": component_prefix,
+    }
+
+    if required:
+        props["required"] = bool(required)
+
+    if disabled:
+        props["disabled"] = bool(disabled)
+
+    if multiselect:
+        props["multiselect"] = bool(multiselect)
+
+    if placeholder:
+        props["placeholder"] = escape(placeholder)
+
+    hx_vals = json.dumps(props).replace("{", "").replace("}", "")
+
+    return mark_safe(hx_vals)
+
+
+def stringify_extra_hx_vals(extra_hx_vals_dict):
+    if any("'" in val for val in extra_hx_vals_dict.values()):
+        raise ValueError(
+            "Extra hx vals cannot contain single quotes, consider backticks for JS expressions or escaping double-quotes"
+        )
+
+    return ",".join([f' "{key}": {val}' for key, val in extra_hx_vals_dict.items()])
+
+
+@register.simple_tag(takes_context=True)
+def text_input_hx_vals(context):
+    """
+    items has augments hx-vals,
+    - it adds JS value of the search input
+    - users can add more values in their class
+    """
+
+    base_hx_vals_str = base_configurable_hx_vals(context)
+
+    component_id_escape = escape(context.get("component_id"))
+
+    val = (
+        "js:{"
+        f"{base_hx_vals_str},"
+        f'search: document.getElementById("{component_id_escape}__textinput").value'
+    )
+
+    extra_hx_vals = context.get("ac_class").get_extra_text_input_hx_vals()
+    if extra_hx_vals:
+        extra_hx_val_str = stringify_extra_hx_vals(extra_hx_vals)
+        val = f"{val}, {extra_hx_val_str}"
+
+    val = val + "}"
+
+    return mark_safe(val)

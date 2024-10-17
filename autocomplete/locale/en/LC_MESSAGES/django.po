@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-08 20:30+0000\n"
+"POT-Creation-Date: 2024-10-09 09:57-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: core.py:43
+msgid "No results found."
+msgstr ""
+
+#: core.py:45
+#, python-format
+msgid ""
+"Showing %(page_size)s of %(total)s items. Narrow your search for more "
+"results."
+msgstr ""
+
+#: core.py:47
+#, python-format
+msgid "Type at least %(n)s characters"
+msgstr ""
 
 #: templates/autocomplete/strings/available_results.html:2
 #, python-format
@@ -34,26 +50,14 @@ msgstr ""
 msgid "%(item)s selected,"
 msgstr ""
 
-#: templates/autocomplete/strings/selected.html:2
-#, python-format
-msgid "selected."
-msgstr ""
-
-#: templates/autocomplete/strings/more_results.html:2
-#, python-format
-msgid "Displaying maximum %(count)s out of %(total_results)s results."
-msgid_plural "Displaying maximum %(count)s out of %(total_results)s results."
-msgstr[0] ""
-msgstr[1] ""
-
-#: templates/autocomplete/strings/multiselect.html:2
+#: templates/autocomplete/strings/multiselect.html:1
 msgid "multiselect"
-msgstr ""
-
-#: templates/autocomplete/strings/no_results.html:2
-msgid "No results found."
 msgstr ""
 
 #: templates/autocomplete/strings/nothing_selected.html:2
 msgid "Nothing selected."
+msgstr ""
+
+#: templates/autocomplete/strings/selected.html:2
+msgid "selected."
 msgstr ""

@@ -70,7 +70,7 @@ This is the main component template that creates the basic HTML structure.
     data-componentid="{{ component_id }}"
     data-css="{% static 'autocomplete/css/autocomplete.css' %}"
     data-js="{% static "autocomplete/js/autocomplete.js" %}"
-    data-toggleurl="{% url route_name method='toggle' %}"
+    data-toggleurl="{% url 'autocomplete:toggle' route_name %}"
 >
     (function () {
         const { componentid, css, js, toggleurl } = document.currentScript.dataset;
