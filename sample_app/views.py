@@ -71,10 +71,13 @@ class CustomPersonAutocomplete2(PersonAutocomplete):
 
     @classmethod
     def get_extra_text_input_hx_vals(cls):
-        # need to escape the quotes
-        # double backslash is needed for a single \ to render in html
-        selector = '[name=\\"team_lead\\"]'
-        return f'related_team_lead: document.querySelector("{selector}")?.value || "" '
+        # single quotes not allowed here, backticks used as 2nd level quotes
+        selector = '[name="team_lead"]'
+        return {
+            "related_team_lead": f'document.querySelector(`{selector}`)?.value || "" ',
+            # "literal": "foo", # note that this causes 'ReferenceError: foo is not defined'
+            "literal": '"foo"',  # wrapping in double quotes works
+        }
 
     @classmethod
     def search_items(cls, search, context):

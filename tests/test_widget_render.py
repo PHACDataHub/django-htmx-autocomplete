@@ -389,8 +389,8 @@ def test_extra_hx_vals():
     @register
     class PersonAC4WithHxVals(PersonAC4):
         @classmethod
-        def get_extra_hx_vals(cls):
-            return {"extra": "value"}
+        def get_extra_text_input_hx_vals(cls):
+            return {"extra": '"value"'}
 
     class FormWithSingle(forms.ModelForm):
         class Meta:

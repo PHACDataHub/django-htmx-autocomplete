@@ -101,11 +101,12 @@ class Autocomplete:
     @classmethod
     def get_extra_text_input_hx_vals(cls):
         """
-        must return a snippet of json, e.g. "key": "value"
-        without any leading comma, trailing comma or closing }
+        returns a dict of key/vals to go in the hx-vals attribute of the text input
+        - must not contain single quotes
+        - to support inline JS expressions, values are not quoted
         """
 
-        return ""
+        return {}
 
 
 @dataclass

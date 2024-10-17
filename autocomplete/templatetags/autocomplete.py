@@ -224,6 +224,15 @@ def base_configurable_hx_vals(context):
     return mark_safe(hx_vals)
 
 
+def stringify_extra_hx_vals(extra_hx_vals_dict):
+    if any("'" in val for val in extra_hx_vals_dict.values()):
+        raise ValueError(
+            "Extra hx vals cannot contain single quotes, consider backticks for JS expressions or escaping double-quotes"
+        )
+
+    return ",".join([f' "{key}": {val}' for key, val in extra_hx_vals_dict.items()])
+
+
 @register.simple_tag(takes_context=True)
 def text_input_hx_vals(context):
     """
@@ -244,7 +253,8 @@ def text_input_hx_vals(context):
 
     extra_hx_vals = context.get("ac_class").get_extra_text_input_hx_vals()
     if extra_hx_vals:
-        val = f"{val}, {extra_hx_vals}"
+        extra_hx_val_str = stringify_extra_hx_vals(extra_hx_vals)
+        val = f"{val}, {extra_hx_val_str}"
 
     val = val + "}"
 
