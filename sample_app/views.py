@@ -72,9 +72,8 @@ class CustomPersonAutocomplete2(PersonAutocomplete):
     @classmethod
     def get_extra_text_input_hx_vals(cls):
         # single quotes not allowed here, backticks used as 2nd level quotes
-        selector = '[name="team_lead"]'
         return {
-            "related_team_lead": f'document.querySelector(`{selector}`)?.value || "" ',
+            "related_team_lead": 'document.querySelector(`[name="team_lead"]`)?.value || "" ',
             # "literal": "foo", # note that this causes 'ReferenceError: foo is not defined'
             "literal": '"foo"',  # wrapping in double quotes works
         }
