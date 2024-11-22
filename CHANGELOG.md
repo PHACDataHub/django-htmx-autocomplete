@@ -1,7 +1,12 @@
 # Changelog
 
-## [0.6.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.0...v0.6.0) (2024-11-22)
+## [1.0.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.0...v0.6.0) (2024-11-22)
 
+### Bug Fixes
+
+* fix issue when model-autocomplete is used with a model that doesn't have `name` property
+
+## [1.0.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.4...v1.0.0) (2024-11-22)
 
 ### ⚠ BREAKING CHANGES
 
@@ -54,16 +59,6 @@
 
 * add missing imports in readme ([b61cb85](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/b61cb85eddfe363f177b445329bd131e9dc99285))
 
-## [1.0.0](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.4...v1.0.0) (2024-11-22)
-
-
-### ⚠ BREAKING CHANGES
-
-* major API and routing changes ([#60](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/60))
-
-### Features
-
-* major API and routing changes ([#60](https://github.com/PHACDataHub/django-htmx-autocomplete/issues/60)) ([0208d64](https://github.com/PHACDataHub/django-htmx-autocomplete/commit/0208d64e86dd0e89e1b9a09704638b60f5af6e85))
 
 ## [0.8.4](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v0.8.3...v0.8.4) (2024-07-30)
 
