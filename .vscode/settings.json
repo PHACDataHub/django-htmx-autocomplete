@@ -1,11 +1,15 @@
 {
-    "markdown-preview-github-styles.colorTheme": "light",
     "editor.rulers": [
         88
     ],
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.formatting.provider": "black",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.tabSize": 4
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
     "cSpell.words": [
         "htmx",
         "textinput"

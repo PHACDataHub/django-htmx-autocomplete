@@ -364,3 +364,62 @@ function phac_aspc_autocomplete_keydown_handler(event) {
     phac_aspc_autocomplete_clear_focus(container, true);
     return true;
 }
+
+class AbstractAutocompleteHelper {
+    /*
+        this is a helper class to manipulate autocomplete components
+        creating instances has zero side-effects
+        it's assumed you may instantiate the same component multiple times
+    */ 
+    constructor(fieldName, componentPrefix="") {
+        this.fieldName = fieldName;
+        this.componentPrefix = componentPrefix;
+    }
+    getComponentId(){
+        return this.componentPrefix + this.fieldName;
+    }
+    getContainer(){
+        return document.getElementById(`${this.getComponentId()}__container`);
+    }
+    getInput(){
+        return this.getContainer().querySelector(`#${this.getComponentId()}__textinput`);
+    }
+    getInputWrapper(){
+        return this.getContainer().querySelector(`#${this.getComponentId()}`);
+    }
+    getResultItems(){
+        return this.getContainer().querySelector(`#${this.getComponentId()}__items`);
+    }
+    getInfo(){
+        return this.getContainer().querySelector(`#${this.getComponentId()}__info`);
+    }
+    getDataContainer(){
+        return this.getContainer().querySelector(`#${this.getComponentId()}__data`);
+    }
+    // behavioral methods
+    clear(){
+        this.getInput().value = '';
+        this.getInputWrapper().innerHTML = '';
+        this.getResultItems().innerHTML = '';
+        this.getInfo().innerHTML = '';
+        this.getDataContainer().removeAttribute('data-phac-aspc-autocomplete');
+    }
+}
+
+class SingleAutocompleteHelper extends AbstractAutocompleteHelper {}
+
+class MultiAutocompleteHelper extends AbstractAutocompleteHelper {
+    getSrDescription(){
+        return this.getContainer().querySelector(`#${this.getComponentId()}__sr_description`);
+    }
+
+    getChips(){
+        return this.getContainer().querySelectorAll(`#${this.getComponentId()}_ac_container li.chip`);
+    }
+
+    clear(){
+        super.clear();
+        this.getChips().forEach(chip => chip.remove());
+        this.getSrDescription().innerHTML = '';
+    }
+}

@@ -1,3 +1,5 @@
+{% load autocomplete %}
+
 {% if not disabled or not multiselect %}
 <input
     class="textinput"
@@ -21,11 +23,11 @@
     onblur="return phac_aspc_autocomplete_blur_handler(event, '{{ component_id|escapejs }}', {{ multiselect|yesno:'false,true' }})"
     onfocus="return phac_aspc_autocomplete_focus_handler(event)"
 
-    hx-get="{% url route_name method='items' %}"
+    hx-get="{% url 'autocomplete:items' ac_name=route_name %}"
     hx-trigger="phac_aspc_autocomplete_trigger"
     hx-include="#{{ component_id }}"
     hx-target="#{{ component_id }}__items"
-    hx-vals="js:{name: '{{ name|escapejs}}', component_id: '{{ component_id|escapejs }}', search: document.getElementById('{{ component_id|escapejs }}__textinput').value}"
+    hx-vals='{% text_input_hx_vals %}'
     hx-swap="outerHTML"
     {% if indicator %}
     hx-indicator="#{{ component_id }}__container .htmx-indicator"
@@ -37,11 +39,17 @@
     {% if placeholder and selected_items|length == 0 %}
     placeholder="{{ placeholder }}"
     {% endif %}
+    
     {% if not multiselect and selected_items|length == 1 %}
     value="{{ selected_items.0.label }}"
     {% endif %}
+
     {% if required and selected_items|length == 0 %}
     required
+    {% endif %}
+
+    {% if disabled %}
+    disabled
     {% endif %}
 >
 {% endif %}
