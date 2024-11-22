@@ -55,7 +55,10 @@ class ModelAutocomplete(Autocomplete):
         queryset = cls.get_queryset()
         results = queryset.filter(id__in=keys)
 
-        return [{"key": person.id, "label": person.name} for person in results]
+        return [
+            {"key": record.id, "label": cls.get_label_for_record(record)}
+            for record in results
+        ]
 
 
 class QuerysetMappedIterable:
