@@ -157,7 +157,7 @@ class ItemsView(AutocompleteBaseView):
 
         else:
             total_results = len(search_results)
-            if len(search_results) > self.ac_class.max_results:
+            if total_results > self.ac_class.max_results:
                 search_results = search_results[: self.ac_class.max_results]
 
         items = self.ac_class.map_search_results(search_results, selected_keys)
