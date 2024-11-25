@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 from autocomplete import urls as autocomplete_urls
 from sample_app import views
@@ -29,4 +29,5 @@ urlpatterns = [
         name="edit_team",
     ),
     path("ac/", autocomplete_urls),
+    path("app/__debug__/", include("debug_toolbar.urls")),
 ]
