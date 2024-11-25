@@ -75,6 +75,12 @@ class QuerysetMappedIterable:
         self.queryset = queryset
         self.label_for_record = label_for_record
 
+    def __iter__(self, *args, **kwargs):
+        return (self.map_record(r) for r in self.queryset)
+
+    def map_record(self, record):
+        return {"key": record.id, "label": self.label_for_record(record)}
+
     def __getitem__(self, key):
         # Handle both single index and slice objects
         if isinstance(key, int):
@@ -84,10 +90,7 @@ class QuerysetMappedIterable:
         else:
             raise TypeError("Invalid argument type")
 
-        mapped = [
-            {"key": record.id, "label": self.label_for_record(record)}
-            for record in records
-        ]
+        mapped = [self.map_record(r) for r in records]
 
         if isinstance(key, int):
             return mapped[0]

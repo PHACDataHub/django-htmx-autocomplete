@@ -36,7 +36,7 @@ def test_model_ac_search():
     ]
 
 
-def test_model_ac_search_max_results():
+def test_model_ac_search_max_results(django_assert_max_num_queries):
     class PersonModelAC(ModelAutocomplete):
         model = Person
         search_attrs = ["name"]
@@ -47,6 +47,22 @@ def test_model_ac_search_max_results():
     p3 = PersonFactory(name="John3")
     p4 = PersonFactory(name="Jones")
 
-    results = PersonModelAC.search_items("Joh", ContextArg(None, None))
+    with django_assert_max_num_queries(1):
+        results = PersonModelAC.search_items("Joh", ContextArg(None, None))
     # should still contain 3 results, the view is responsible for truncating
     assert len(results) == 3
+
+
+def test_num_queries(django_assert_max_num_queries):
+    """
+    regression: the queryset iterable wrapper was repeatedly evaluating the queryset
+    """
+
+    p1 = PersonFactory(name="John1")
+    p2 = PersonFactory(name="John2")
+    p3 = PersonFactory(name="John3")
+    p4 = PersonFactory(name="Jones")
+
+    with django_assert_max_num_queries(1):
+        results = PersonModelAC.search_items("Joh", ContextArg(None, None))
+        mapped_results = PersonModelAC.map_search_results(results, [])
