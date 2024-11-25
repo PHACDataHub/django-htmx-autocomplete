@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
 
-from autocomplete import Autocomplete, AutocompleteWidget, register
+from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete, register
 
 from .models import Person, Team
 
@@ -124,6 +124,35 @@ def example_with_prefix(request, team_id=None):
     team = Team.objects.get(id=team_id)
 
     form = TeamForm2(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})
+
+
+@register
+class CustomPersonAutocomplete3(ModelAutocomplete):
+    model = Person
+    search_attrs = ["name"]
+
+
+class AnotherPersonForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ["team_lead"]
+        widgets = {
+            "team_lead": AutocompleteWidget(
+                ac_class=CustomPersonAutocomplete3,
+            )
+        }
+
+
+def example_with_model(request, team_id=None):
+    team = Team.objects.get(id=team_id)
+
+    form = AnotherPersonForm(instance=team, data=request.POST or None)
 
     if request.POST and form.is_valid():
         form.save()
