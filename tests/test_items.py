@@ -4,6 +4,7 @@ from django.http import HttpRequest, QueryDict
 from django.urls import reverse
 
 from autocomplete.core import Autocomplete, register
+from autocomplete.views import replace_or_toggle, toggle_set
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 from tests.conftest import PersonAC
 
@@ -285,3 +286,23 @@ def test_query_too_short(client):
     items = listbox.select("span.item")
     assert len(items) == 1
     assert "Type at least 3 characters" in items[0].get_text()
+
+
+def test_toggle_set():
+    assert toggle_set({1, 2, "3"}, 1) == {2, "3"}
+
+    assert toggle_set({1, 2, "3"}, "1") == {2, "3"}
+
+    assert toggle_set({1, 2, "3"}, 3) == {1, 2}
+
+    assert toggle_set({1, 2, "3"}, "3") == {1, 2}
+
+    assert toggle_set({1, 2, "3"}, 4) == {1, 2, "3", 4}
+
+
+def test_replace_or_toggle():
+
+    assert replace_or_toggle({1}, 1) == set()
+    assert replace_or_toggle({1}, "1") == set()
+    assert replace_or_toggle({"1"}, 1) == set()
+    assert replace_or_toggle({1}, 2) == {2}

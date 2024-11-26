@@ -65,6 +65,42 @@ class AutocompleteBaseView(View):
         }
 
 
+def toggle_set(_set, item):
+    s = _set.copy()
+
+    if item in s:
+        s.remove(item)
+
+    elif str(item) in s:
+        s.remove(str(item))
+
+    elif item in {str(x) for x in s}:
+        s = {x for x in s if str(x) != item}
+
+    else:
+        s.add(item)
+
+    return s
+
+
+def replace_or_toggle(_set, item):
+    """
+    in the case of 'toggling' one item
+    we remove it if the item is already selected
+    otherwise we replace the item with the new different one
+    """
+
+    if len(_set) > 1:
+        raise Exception("this function is only for sets with one item")
+
+    toggled = toggle_set(_set, item)
+
+    if len(toggled) > 1:
+        return {item}
+
+    return toggled
+
+
 class ToggleView(AutocompleteBaseView):
     def get(self, request, *args, **kwargs):
         field_name = self.request_dict["field_name"]
@@ -78,21 +114,12 @@ class ToggleView(AutocompleteBaseView):
         if key_to_toggle is None:
             return HttpResponseBadRequest()
 
-        new_selected_keys = list(current_items)
-
         is_multi = self.get_configurable_value("multiselect")
 
         if is_multi:
-            if key_to_toggle in current_items:
-                new_selected_keys.remove(key_to_toggle)
-            else:
-                new_selected_keys.append(key_to_toggle)
+            new_selected_keys = toggle_set(set(current_items), key_to_toggle)
         else:
-            if new_selected_keys == []:
-                new_selected_keys = [key_to_toggle]
-            else:
-                new_selected_keys = []
-
+            new_selected_keys = replace_or_toggle(set(current_items), key_to_toggle)
         keys_to_fetch = set(new_selected_keys).union({key_to_toggle})
 
         context_obj = ContextArg(request=request, client_kwargs=request.GET)
