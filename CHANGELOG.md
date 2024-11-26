@@ -1,12 +1,18 @@
 # Changelog
 
-## [1.0.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.0...v0.6.0) (2024-11-22)
+## [1.0.3](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.2...v1.0.3) (2024-11-22)
+
+### Bug Fixes
+
+- fix issue with lazy placeholder strings causing a json serialization exception
+
+## [1.0.2](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.1...v1.0.2) (2024-11-22)
 
 ### Bug Fixes
 
 - fix issue with model-autocomplete repeatedly evaluating queryset, causing N queries for N items
 
-## [1.0.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.0...v0.6.0) (2024-11-22)
+## [1.0.1](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.0...v1.0.1) (2024-11-22)
 
 ### Bug Fixes
 
