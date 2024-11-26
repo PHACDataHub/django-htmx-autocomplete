@@ -217,7 +217,7 @@ def base_configurable_hx_vals(context):
         props["multiselect"] = bool(multiselect)
 
     if placeholder:
-        props["placeholder"] = escape(placeholder)
+        props["placeholder"] = escape(str(placeholder))
 
     hx_vals = json.dumps(props).replace("{", "").replace("}", "")
 

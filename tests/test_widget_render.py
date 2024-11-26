@@ -413,3 +413,33 @@ def test_extra_hx_vals():
     hx_vals = input.attrs["hx-vals"]
 
     assert '"extra": "value"' in hx_vals
+
+
+def test_widget_with_lazy_string_placeholder():
+    from django.utils.functional import lazy
+
+    lazy_str = lazy(lambda: "lazy placeholder", str)
+
+    class FormWithLazyPlaceholder(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead"]
+
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAC4,
+                    options={"placeholder": lazy_str()},
+                )
+            }
+
+    form = FormWithLazyPlaceholder()
+    rendered = render_template(single_form_template, {"form": form})
+
+    soup = soup_from_str(rendered)
+
+    input = soup.select_one("ul li input[type='text']")
+
+    assert input.attrs["placeholder"] == "lazy placeholder"
+
+    hx_vals = input.attrs["hx-vals"]
+    assert '"placeholder": "lazy placeholder"' in hx_vals
