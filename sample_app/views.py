@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.models import modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
@@ -149,6 +150,21 @@ class AnotherPersonForm(forms.ModelForm):
         }
 
 
+class SimplestPersonFormBothFields(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ["team_lead", "members"]
+        widgets = {
+            "team_lead": AutocompleteWidget(
+                ac_class=CustomPersonAutocomplete3,
+            ),
+            "members": AutocompleteWidget(
+                ac_class=CustomPersonAutocomplete3,
+                options={"multiselect": True},
+            ),
+        }
+
+
 def example_with_model(request, team_id=None):
     team = Team.objects.get(id=team_id)
 
@@ -159,3 +175,48 @@ def example_with_model(request, team_id=None):
         return HttpResponseRedirect(request.path)
 
     return render(request, "edit_team.html", {"form": form})
+
+
+def static_formset_example(request):
+    first_3_teams_ids = {t.pk for t in Team.objects.all()[:3]}
+    qs = Team.objects.filter(pk__in=first_3_teams_ids)
+    formset_factory = modelformset_factory(
+        Team, form=SimplestPersonFormBothFields, extra=0
+    )
+
+    if request.method == "POST":
+        formset = formset_factory(request.POST, queryset=qs)
+    else:
+        formset = formset_factory(queryset=qs)
+
+    if request.POST:
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(request.path)
+        else:
+            print(formset.errors)
+
+    return render(request, "static_formset_example.html", {"formset": formset})
+
+
+def dynamic_formset_example(request):
+    # first_3_teams_ids = {t.pk for t in Team.objects.all()}
+    # qs = Team.objects.filter(pk__in=first_3_teams_ids)
+    qs = Team.objects.all()
+    formset_factory = modelformset_factory(
+        Team, form=SimplestPersonFormBothFields, extra=0
+    )
+
+    if request.method == "POST":
+        formset = formset_factory(request.POST, queryset=qs, prefix="teams")
+    else:
+        formset = formset_factory(queryset=qs, prefix="teams")
+
+    if request.POST:
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(request.path)
+        else:
+            print(formset.errors)
+
+    return render(request, "dynamic_formset_example.html", {"formset": formset})
