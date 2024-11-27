@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% load autocomplete %}
+{% block content %}
+    <div class="container">
+
+
+        <div class="d-none" id="form-template">
+            <div class="formset-item">
+                <hr class="my-5"/>
+                {{ formset.empty_form.as_p }}
+            </div>
+        </div>
+
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div id="formlist">
+            {% for form in formset %}
+                <div class="formset-item">
+                    <hr class="my-5"/>
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+            </div>
+            <div class="my-5">
+            <button id="add-another" type="button" class="add-row btn btn-primary">Add another form</button>
+            </div>
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+class DynamicFormsetManager {
+    constructor({ formsetPrefix, formListSelector, templateContainerSelector, addButtonSelector }) {
+        this.formsetPrefix = formsetPrefix;
+        // this.formClass = formClass;
+        this.formListSelector = formListSelector;
+        this.templateContainerSelector = templateContainerSelector;
+        this.addButtonSelector = addButtonSelector;
+
+
+        // trigger validation checks
+        this.getAddButton();
+        this.getTemplateContainer();
+
+    }
+
+    activate() {
+        //only public method
+        this.getAddButton().addEventListener('click', this.addForm.bind(this));
+    }
+
+    // "private" methods:
+    getTemplateContainer() {
+        const node = document.querySelector(this.templateContainerSelector);
+        if (!node) {
+            throw new Error(`No element found with selector ${this.templateContainerSelector} (templateContainerSelector)`);
+        }
+        if (node.children.length !== 1) {
+            throw new Error(`The templateContainer should contain a single child node, which is the template`);
+        }
+        return node;
+    }
+    getFormTemplateNode() {
+        return this.getTemplateContainer().children[0];
+    }
+
+    getAddButton() {
+        const node = document.querySelector(this.addButtonSelector)
+        if (!node) {
+            throw new Error(`No element found with selector ${this.addButtonSelector} (addButtonSelector)`);
+        }
+        return node;
+    }
+
+    setTotalFormsCount(numForms) {
+        return document.querySelector(`#id_${this.formsetPrefix}-TOTAL_FORMS`).setAttribute('value', `${numForms}`);
+    }
+
+    getFormNodes() {
+        //override in case your have extra nodes that don't correspond to forms
+
+        // these aren't <forms>, but rather the container that is duplicated for each form and contains a single form's inputs
+        // return Array.from(document.querySelectorAll(`.${this.formClass}`)).filter(node => node !== this.getFormTemplateNode());
+        return Array.from(this.getFormListContainer().children);
+    }
+
+    getFormListContainer() {
+        // return this.getFormNodes()[0].parentNode;
+        const node = document.querySelector(this.formListSelector);
+        if (!node) {
+            throw new Error(`No element found with selector ${this.formListSelector} (formListSelector)`);
+        }
+        return node;
+    }
+
+    getNewHtmlForForm(newFormIndex) {
+        const { formsetPrefix } = this;
+        const formTemplateNode = this.getFormTemplateNode();
+        const fieldFormRegex = RegExp(`${formsetPrefix}-__prefix__-`, 'g')
+        const fragmentsFormRegex = RegExp(`fragment-${formsetPrefix}-__prefix__`, 'g')
+
+        const newFormHtml = formTemplateNode.outerHTML
+            .replace(fieldFormRegex, `${formsetPrefix}-${newFormIndex}-`)
+            // note the fragment IDs don't have a '-' suffix
+            .replace(fragmentsFormRegex, `fragment-${formsetPrefix}-${newFormIndex}`);
+
+
+        return newFormHtml
+    }
+
+    createNewFormNode(formIndex) {
+        // override in case, e.g. index needs to be used in text
+
+
+        // It would be easier to write the parent's innerHTML
+        // but that would risk losing event listeners, potentially the addButton! 
+        // Also, since we don't know what nodeType the form is
+        // we use a dummy parent rather than createElement(unknownNodeType)
+        const dummyContainer = document.createElement('div')
+        dummyContainer.innerHTML = this.getNewHtmlForForm(formIndex)
+        const newForm = dummyContainer.children[0]
+
+        return newForm;
+    }
+
+    addForm(e) {
+        e.preventDefault();
+
+        const previousNumForms = this.getFormNodes().length
+        const newFormIndex = previousNumForms; // indexing starts at 0
+        const newNumForms = previousNumForms + 1; //total forms after addition
+        const formListContainer = this.getFormListContainer()
+
+        const newFormNode = this.createNewFormNode(newFormIndex);
+
+        formListContainer.appendChild(newFormNode)
+
+        this.setTotalFormsCount(newNumForms)
+
+        // these lines below are the only autocomplete related code
+
+        // htmx by default processes nodes it adds
+        // but since JS is adding these forms, we need to manually process them
+        htmx.process(newFormNode)
+        this.manuallyExecuteScripts(newFormNode)
+    }
+
+    manuallyExecuteScripts(container){
+        /* 
+            when you insert new scripts via innerHTML, they're not executed automatically
+            so we have to recreate these script tags and insert them via the DOM api
+        */ 
+        // Find all <script> tags in the newly inserted content
+        const scripts = container.querySelectorAll('script');
+
+        // Reinsert each <script> tag
+        scripts.forEach(originalScript => {
+            parent = originalScript.parentNode
+            const newScript = document.createElement('script');
+            // Copy the script content or src attribute
+            if (originalScript.src) {
+                newScript.src = originalScript.src; // External script
+            } else {
+                newScript.textContent = originalScript.textContent; // Inline script
+            }
+            // Copy any attributes (e.g., type, async, etc.)
+            Array.from(originalScript.attributes).forEach(attr =>
+                newScript.setAttribute(attr.name, attr.value)
+            );
+
+            // Append the new script to the document
+            parent.appendChild(newScript);
+
+        });
+
+    }
+
+}
+    </script>
+    <script>
+        const formsetManager = new DynamicFormsetManager({
+            formsetPrefix: "teams",
+            //formClass: "formset-item",
+            formListSelector: "#formlist",
+            templateContainerSelector: '#form-template',
+            addButtonSelector: '#add-another',
+        })
+        formsetManager.activate();
+    </script>
+
+{% endblock %}

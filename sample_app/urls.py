@@ -28,7 +28,19 @@ urlpatterns = [
         views.example_with_prefix,
         name="edit_team_w_prefix",
     ),
-    path("teams/<int:team_id>/edit3/", views.example_with_model, name="edit_team3"),
+    path(
+        "teams/<int:team_id>/edit3/", views.example_with_model, name="edit_team_w_model"
+    ),
+    path(
+        "static_formset_example/",
+        views.static_formset_example,
+        name="static_formset_example",
+    ),
+    path(
+        "dynamic_formset_example/",
+        views.dynamic_formset_example,
+        name="dynamic_formset_example",
+    ),
     path("ac/", autocomplete_urls),
     path("app/__debug__/", include("debug_toolbar.urls")),
 ]
