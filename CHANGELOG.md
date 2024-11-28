@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.5](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.4...v1.0.5) (2024-11-27)
+
+### Bug Fixes
+
+- fix issue with dynamic formsets
+
 ## [1.0.4](https://github.com/PHACDataHub/django-htmx-autocomplete/compare/v1.0.3...v1.0.4) (2024-11-26)
 
 ### Bug Fixes
