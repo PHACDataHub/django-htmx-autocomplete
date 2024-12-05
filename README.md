@@ -34,7 +34,7 @@ This Django app provides an autocomplete widiget component powered by
    ```python
    from django forms
    from django.db import models
-   from autocomplete import Autocomplete, AutocompleteWidget
+   from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete
 
    class Person(models.Model):
        name = models.CharField(max_length=60)
