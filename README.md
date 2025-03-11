@@ -5,7 +5,13 @@ This Django app provides an autocomplete widiget component powered by
 
 ## Quick start
 
-1. Add "autocomplete" to your `INSTALLED_APPS` setting like this:
+1. Install the `django-htmx-autocomplete` package
+
+   ```shell
+   pip install django-htmx-autocomplete
+   ```
+
+2. Add "autocomplete" to your `INSTALLED_APPS` setting like this:
 
    ```python
    # settings.py
@@ -16,7 +22,7 @@ This Django app provides an autocomplete widiget component powered by
    ]
    ```
 
-1. Include the autocomplete urls like this:
+3. Include the autocomplete urls like this:
 
    ```python
    # urls.py
@@ -29,7 +35,7 @@ This Django app provides an autocomplete widiget component powered by
    ]
    ```
 
-1. Create an autocomplete class that extends `autocomplete.ModelAutocomplete`,
+4. Create an autocomplete class that extends `autocomplete.ModelAutocomplete`,
 
    ```python
    from django forms
@@ -68,7 +74,7 @@ This Django app provides an autocomplete widiget component powered by
            }
    ```
 
-1. Make sure your templates include HTMX.
+5. Make sure your templates include HTMX.
 
    > **Note**
    > Bootstrap is included in this example styling, however it is not required.
