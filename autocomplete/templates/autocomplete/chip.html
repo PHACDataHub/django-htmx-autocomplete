@@ -5,7 +5,7 @@ This template renders a selected item or chip.
 {% endcomment %}
 
 <li class="chip" aria-hidden="true">
-    <span>{{ item.label }}</span>
+    <span>{% get_chip_label item %}</span>
     {% if not disabled %}
     <a
         hx-get="{% url 'autocomplete:toggle' ac_name=route_name %}"

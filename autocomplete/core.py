@@ -108,6 +108,24 @@ class Autocomplete:
 
         return {}
 
+    @classmethod
+    def get_input_value(cls, key, label):
+        """
+        in single-select mode,
+        this is the value that will be shown in the text input
+        override is useful if labels have HTML, or need shortening
+        """
+        return label
+
+    @classmethod
+    def get_chip_label(cls, key, label):
+        """
+        in multi-select mode,
+        this is the value that will be shown in the chip
+        override is useful if options are big and need shortening
+        """
+        return label
+
 
 @dataclass
 class ContextArg:

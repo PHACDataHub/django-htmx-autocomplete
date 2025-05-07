@@ -18,7 +18,7 @@ This is the main component template that creates the basic HTML structure.
     <span
       id="{{ component_id }}__data"
       {% if not multiselect and selected_items|length == 1 %}
-      data-phac-aspc-autocomplete="{{ selected_items.0.label }}"
+      data-phac-aspc-autocomplete="{% get_input_value selected_items %}"
       {% endif %}
     ></span>
 

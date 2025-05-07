@@ -3,6 +3,7 @@ from django.forms.models import modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
+from django.utils.html import mark_safe
 
 from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete, register
 
@@ -220,3 +221,63 @@ def dynamic_formset_example(request):
             print(formset.errors)
 
     return render(request, "dynamic_formset_example.html", {"formset": formset})
+
+
+@register
+class AutocompleteWithCustomHtmlLabels(ModelAutocomplete):
+    model = Person
+    search_attrs = ["name"]
+
+    @classmethod
+    def get_label_for_record(cls, record):
+        # this is a custom label for the autocomplete
+        # it will be used in the dropdown
+        # and in the selected items
+        return mark_safe(
+            f"""
+            <div>
+                <div>{record.name}</div>
+                <div style='color: red;'>{record.name.upper()}</div>
+            </div>
+            """
+        )
+
+    @classmethod
+    def get_input_value(cls, key, label):
+        return Person.objects.get(id=key).name
+
+    @classmethod
+    def get_chip_label(cls, key, label):
+        name = Person.objects.get(id=key).name
+        return mark_safe(
+            f"""
+            <span style='color: red;'>{name.upper()}</span>
+            """
+        )
+
+
+class CustomTeamFormWithHtmlAC(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ["team_lead", "members"]
+        widgets = {
+            "team_lead": AutocompleteWidget(
+                ac_class=AutocompleteWithCustomHtmlLabels,
+            ),
+            "members": AutocompleteWidget(
+                ac_class=AutocompleteWithCustomHtmlLabels,
+                options={"multiselect": True},
+            ),
+        }
+
+
+def example_w_html(request, team_id=None):
+    team = Team.objects.get(id=team_id)
+
+    form = CustomTeamFormWithHtmlAC(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})
