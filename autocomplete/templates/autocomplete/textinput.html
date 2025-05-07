@@ -41,7 +41,7 @@
     {% endif %}
     
     {% if not multiselect and selected_items|length == 1 %}
-    value="{{ selected_items.0.label }}"
+    value="{% get_input_value selected_items %}"
     {% endif %}
 
     {% if required and selected_items|length == 0 %}

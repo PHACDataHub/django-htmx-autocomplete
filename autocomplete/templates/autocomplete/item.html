@@ -55,7 +55,7 @@
             <span
             id="{{ component_id }}__data"
             hx-swap-oob="outerHTML:#{{ component_id }}__data"
-            data-phac-aspc-autocomplete="{{ item.label }}"
+            data-phac-aspc-autocomplete="{% get_input_value item_as_list %}"
             ></span>
         {% else %}
             {% include "./textinput.html" with swap_oob=True %}        

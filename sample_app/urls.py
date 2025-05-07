@@ -41,6 +41,11 @@ urlpatterns = [
         views.dynamic_formset_example,
         name="dynamic_formset_example",
     ),
+    path(
+        "teams/<int:team_id>/example_w_custom_html/",
+        views.example_w_html,
+        name="example_w_custom_html",
+    ),
     path("ac/", autocomplete_urls),
     path("app/__debug__/", include("debug_toolbar.urls")),
 ]

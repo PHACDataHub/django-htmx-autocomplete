@@ -10,7 +10,7 @@ from django.template import loader
 from django.template.defaultfilters import stringfilter
 from django.utils.html import escape, format_html
 from django.utils.http import urlencode
-from django.utils.safestring import mark_safe
+from django.utils.safestring import SafeString, mark_safe
 
 register = template.Library()
 
@@ -26,6 +26,11 @@ def make_id(value):
 @stringfilter
 def search_highlight(value, search):
     """Surround the section of text matching the search with a classed span"""
+
+    # if the value has HTML, don't bother to highlight anything
+    if isinstance(value, SafeString) and escape(value) != value:
+        return value
+
     if search == "":
         return value
     try:
@@ -259,3 +264,23 @@ def text_input_hx_vals(context):
     val = val + "}"
 
     return mark_safe(val)
+
+
+@register.simple_tag(takes_context=True)
+def get_input_value(context, selected_options):
+    if not selected_options:
+        return ""
+
+    ac_class = context.get("ac_class")
+    return ac_class.get_input_value(
+        selected_options[0]["key"], selected_options[0]["label"]
+    )
+
+
+@register.simple_tag(takes_context=True)
+def get_chip_label(context, selected_option):
+    if not selected_option:
+        return ""
+
+    ac_class = context.get("ac_class")
+    return ac_class.get_chip_label(selected_option["key"], selected_option["label"])
