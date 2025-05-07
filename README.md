@@ -35,12 +35,16 @@ This Django app provides an autocomplete widiget component powered by
    ]
    ```
 
-4. Create an autocomplete class that extends `autocomplete.ModelAutocomplete`,
+
+4. Create an `@register`d autocomplete class that extends `autocomplete.ModelAutocomplete`,
+
+Registration allows views to reach your class. If you have abstract autocomplete classes, don't register those.
 
    ```python
    from django forms
    from django.db import models
-   from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete
+   import autocomplete
+
 
    class Person(models.Model):
        name = models.CharField(max_length=60)
@@ -52,7 +56,8 @@ This Django app provides an autocomplete widiget component powered by
 
        members = models.ManyToManyField(Person)
 
-   class PersonAutocomplete(ModelAutocomplete):
+   @autocomplete.register
+   class PersonAutocomplete(autocomplete.ModelAutocomplete):
        model = Person
        search_attrs = [ 'name' ]
 
@@ -64,10 +69,10 @@ This Django app provides an autocomplete widiget component powered by
            model = Team
            fields = ['team_lead', 'members']
            widgets = {
-                'team_lead': AutocompleteWidget(
+                'team_lead': autocomplete.AutocompleteWidget(
                     ac_class=PersonAutocomplete,
                 ),
-               'members': AutocompleteWidget(
+               'members': autocomplete.AutocompleteWidget(
                     ac_class=PersonAutocomplete,
                     options={"multiselect": True},
                )
@@ -178,6 +183,9 @@ class MyAC(Autocomplete):
 Autocomplete adds 2 new views that any user, including non-authenticated users, can access. Autocomplete classes have a `auth_check` method you can override to add authentication checks. For example, if you want to restrict access to a certain autocomplete to only authenticated users, you can do the following,
 
 ```python
+from autocomplete import Autocomplete, register
+
+@register
 class MyAC(Autocomplete):
     # ...
 
