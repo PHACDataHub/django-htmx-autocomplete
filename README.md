@@ -29,12 +29,12 @@ This Django app provides an autocomplete widiget component powered by
    ]
    ```
 
-1. Create an autocomplete class that extends `autocomplete.ModelAutocomplete`,
+1. Create an `@register`d autocomplete class that extends `autocomplete.ModelAutocomplete`,
 
    ```python
    from django forms
    from django.db import models
-   from autocomplete import Autocomplete, AutocompleteWidget
+   from autocomplete import Autocomplete, AutocompleteWidget, register
 
    class Person(models.Model):
        name = models.CharField(max_length=60)
@@ -46,6 +46,7 @@ This Django app provides an autocomplete widiget component powered by
 
        members = models.ManyToManyField(Person)
 
+   @register
    class PersonAutocomplete(ModelAutocomplete):
        model = Person
        search_attrs = [ 'name' ]
@@ -172,6 +173,9 @@ class MyAC(Autocomplete):
 Autocomplete adds 2 new views that any user, including non-authenticated users, can access. Autocomplete classes have a `auth_check` method you can override to add authentication checks. For example, if you want to restrict access to a certain autocomplete to only authenticated users, you can do the following,
 
 ```python
+from autocomplete import Autocomplete, register
+
+@register
 class MyAC(Autocomplete):
     # ...
 
