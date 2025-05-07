@@ -5,7 +5,13 @@ This Django app provides an autocomplete widiget component powered by
 
 ## Quick start
 
-1. Add "autocomplete" to your `INSTALLED_APPS` setting like this:
+1. Install the `django-htmx-autocomplete` package
+
+   ```shell
+   pip install django-htmx-autocomplete
+   ```
+
+2. Add "autocomplete" to your `INSTALLED_APPS` setting like this:
 
    ```python
    # settings.py
@@ -16,7 +22,7 @@ This Django app provides an autocomplete widiget component powered by
    ]
    ```
 
-1. Include the autocomplete urls like this:
+3. Include the autocomplete urls like this:
 
    ```python
    # urls.py
@@ -29,12 +35,16 @@ This Django app provides an autocomplete widiget component powered by
    ]
    ```
 
-1. Create an `@register`d autocomplete class that extends `autocomplete.ModelAutocomplete`,
+
+4. Create an `@register`d autocomplete class that extends `autocomplete.ModelAutocomplete`,
+
+Registration allows views to reach your class. If you have abstract autocomplete classes, don't register those.
 
    ```python
    from django forms
    from django.db import models
-   from autocomplete import Autocomplete, AutocompleteWidget, register
+   import autocomplete
+
 
    class Person(models.Model):
        name = models.CharField(max_length=60)
@@ -46,8 +56,8 @@ This Django app provides an autocomplete widiget component powered by
 
        members = models.ManyToManyField(Person)
 
-   @register
-   class PersonAutocomplete(ModelAutocomplete):
+   @autocomplete.register
+   class PersonAutocomplete(autocomplete.ModelAutocomplete):
        model = Person
        search_attrs = [ 'name' ]
 
@@ -59,17 +69,17 @@ This Django app provides an autocomplete widiget component powered by
            model = Team
            fields = ['team_lead', 'members']
            widgets = {
-                'team_lead': AutocompleteWidget(
+                'team_lead': autocomplete.AutocompleteWidget(
                     ac_class=PersonAutocomplete,
                 ),
-               'members': AutocompleteWidget(
+               'members': autocomplete.AutocompleteWidget(
                     ac_class=PersonAutocomplete,
                     options={"multiselect": True},
                )
            }
    ```
 
-1. Make sure your templates include HTMX.
+5. Make sure your templates include HTMX.
 
    > **Note**
    > Bootstrap is included in this example styling, however it is not required.
