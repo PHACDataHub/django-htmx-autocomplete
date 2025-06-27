@@ -196,7 +196,7 @@ class MyAC(Autocomplete):
 
 ```
 
-This is a common enough use case that we've added a setting shortcut. Add `AUTOCOMPLETE_BLOCK_UNAUTHENTICATED=False` in your settings and all autocomplete views will require authentication by default.
+This is a common enough use case that we've added a setting shortcut. Add `AUTOCOMPLETE_BLOCK_UNAUTHENTICATED=True` in your settings to make the base autocomplete class block unauthenticated users.
 
 ## Non model approach
 
