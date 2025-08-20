@@ -269,9 +269,10 @@
     outline: 2px solid #000;
 }
 
-.phac_aspc_form_autocomplete .results .item.selected {
-    display: list-item;
-    color: #ccc;
+.phac_aspc_form_autocomplete .results .item.selected::after {
+    content: "✓";
+    position: absolute;
+    right: 0.75rem;
 }
 
 .phac_aspc_form_autocomplete li.input.ac-active {
