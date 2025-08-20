@@ -167,27 +167,39 @@ class ItemsView(AutocompleteBaseView):
         context_obj = ContextArg(request=request, client_kwargs=request.GET)
 
         search_query = request.GET.get("search", "")
-        search_results = self.ac_class.search_items(
-            # or whatever
-            search_query,
-            context_obj,
-        )
-
         field_name = self.get_configurable_value("field_name")
         selected_keys = request.GET.getlist(field_name)
+        if selected_keys == [""]:
+            selected_keys = []
+
+        if selected_keys:
+            selected_items = self.ac_class.get_items_from_keys(
+                selected_keys, context_obj
+            )
+        else:
+            selected_items = []
 
         query_too_short = len(search_query) < self.ac_class.minimum_search_length
 
         if query_too_short:
-            total_results = 0
             search_results = []
-
         else:
-            total_results = len(search_results)
-            if total_results > self.ac_class.max_results:
-                search_results = search_results[: self.ac_class.max_results]
+            search_results = self.ac_class.search_items(
+                search_query,
+                context_obj,
+            )
 
-        items = self.ac_class.map_search_results(search_results, selected_keys)
+        all_items = [*selected_items]
+        for i in search_results:
+            if str(i["key"]) not in selected_keys:
+                all_items.append(i)
+
+        total_results = len(all_items)
+        cutoff = self.ac_class.max_results + len(selected_keys)
+        if total_results > cutoff:
+            all_items = all_items[:cutoff]
+
+        mapped_items = self.ac_class.map_search_results(all_items, selected_keys)
 
         # render items ...
         return render(
@@ -199,7 +211,7 @@ class ItemsView(AutocompleteBaseView):
                 "show": not (query_too_short),
                 "query_too_short": query_too_short,
                 "search": search_query,
-                "items": items,
+                "items": mapped_items,
                 "total_results": total_results,
                 "minimum_search_length": self.ac_class.minimum_search_length,
             },
