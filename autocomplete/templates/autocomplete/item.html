@@ -18,6 +18,7 @@
    {% if swap_oob %} hx-swap-oob="outerHTML:#{{ component_id }}__item__{{ item.key|make_id }}" {% else %} hx-target="this" {% endif %}
 >
     {{ item.label|search_highlight:search }}
+    <span class="phac_aspc_form_autocomplete__item__spaceholder" aria-hidden="true"></span>
 </a>
 
 {% if toggle is not None %}

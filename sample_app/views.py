@@ -281,3 +281,47 @@ def example_w_html(request, team_id=None):
         return HttpResponseRedirect(request.path)
 
     return render(request, "edit_team.html", {"form": form})
+
+
+@register
+class AutocompleteDistinctSearchById(ModelAutocomplete):
+    """
+    The goal here is to show that we always show selected items,
+    even if the existing value doesn't match the search
+    """
+
+    model = Person
+    minimum_search_length = 1
+
+    @classmethod
+    def search_items(cls, search, context):
+        all_ppl = Person.objects.all()
+        matches = [p for p in all_ppl if search in str(p.id)]
+        return [{"label": cls.get_label_for_record(p), "key": p.id} for p in matches]
+
+
+class FormWithSearchByIdAC(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ["team_lead", "members"]
+        widgets = {
+            "team_lead": AutocompleteWidget(
+                ac_class=AutocompleteDistinctSearchById,
+            ),
+            "members": AutocompleteWidget(
+                ac_class=AutocompleteDistinctSearchById,
+                options={"multiselect": True},
+            ),
+        }
+
+
+def example_w_id_search(request, team_id=None):
+    team = Team.objects.get(id=team_id)
+
+    form = FormWithSearchByIdAC(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})

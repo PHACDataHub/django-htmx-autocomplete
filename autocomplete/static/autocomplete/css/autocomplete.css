@@ -275,6 +275,13 @@
     right: 0.75rem;
 }
 
+.phac_aspc_form_autocomplete .results .item .phac_aspc_form_autocomplete__item__spaceholder {
+    /* makes room for the checkmark */
+    display:inline-block;
+    width: 0.75rem;
+    content: " ";
+}
+
 .phac_aspc_form_autocomplete li.input.ac-active {
     min-width: 50px !important;
 }

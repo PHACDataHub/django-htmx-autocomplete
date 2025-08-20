@@ -81,7 +81,8 @@ def test_items_response_multi(client):
 
         @classmethod
         def get_items_from_keys(cls, keys, context):
-            return Person.objects.filter(id__in=keys)
+            qs = Person.objects.filter(id__in=keys)
+            return [{"key": person.id, "label": person.name} for person in qs]
 
     register(PersonAC2)
 
