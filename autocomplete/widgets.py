@@ -67,6 +67,12 @@ class AutocompleteWidget(Widget):
 
         return None
 
+    def get_autocomplete_attr(self):
+        if self.get_configurable_value("autocomplete_attr"):
+            return self.get_configurable_value("autocomplete_attr")
+
+        return "off"
+
     @property
     def is_multi(self):
         return self.get_configurable_value("multiselect")
@@ -102,5 +108,7 @@ class AutocompleteWidget(Widget):
         context["selected_items"] = selected_options
         context["component_prefix"] = self.get_configurable_value("component_prefix")
         context["component_id"] = self.get_component_id(name)
+
+        context["autocomplete_attr_value"] = self.get_autocomplete_attr()
 
         return context

@@ -325,3 +325,37 @@ def example_w_id_search(request, team_id=None):
         return HttpResponseRedirect(request.path)
 
     return render(request, "edit_team.html", {"form": form})
+
+
+@register
+class AutocompleteWithCustomAttr(ModelAutocomplete):
+    model = Person
+    autocomplete_attr = "email"
+    search_attrs = ["name"]
+
+
+def example_w_custom_autocomplete_attr(request, team_id=None):
+
+    class TeamFormWithCustomAutocompleteAttr(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead", "members"]
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=AutocompleteWithCustomAttr,
+                ),
+                "members": AutocompleteWidget(
+                    ac_class=AutocompleteWithCustomAttr,
+                    options={"multiselect": True},
+                ),
+            }
+
+    team = Team.objects.get(id=team_id)
+
+    form = TeamFormWithCustomAutocompleteAttr(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})

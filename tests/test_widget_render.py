@@ -443,3 +443,46 @@ def test_widget_with_lazy_string_placeholder():
 
     hx_vals = input.attrs["hx-vals"]
     assert '"placeholder": "lazy placeholder"' in hx_vals
+
+
+def test_base_autocomplete_attr_value():
+    class MyForm(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead"]
+
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAC4,
+                )
+            }
+
+    form = MyForm()
+    rendered = render_template(single_form_template, {"form": form})
+    soup = soup_from_str(rendered)
+    input = soup.select_one("ul li input[type='text']")
+    assert input.attrs["autocomplete"] == "off"
+
+
+def test_custom_autocomplete_attr_value():
+
+    @register
+    class PersonAC4WithAutocompleteAttr(PersonAC4):
+        autocomplete_attr = "email"
+
+    class MyFormWithCustomAttr(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead"]
+
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAC4WithAutocompleteAttr,
+                )
+            }
+
+    form = MyFormWithCustomAttr()
+    rendered = render_template(single_form_template, {"form": form})
+    soup = soup_from_str(rendered)
+    input = soup.select_one("ul li input[type='text']")
+    assert input.attrs["autocomplete"] == "email"

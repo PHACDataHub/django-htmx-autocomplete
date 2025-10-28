@@ -46,6 +46,15 @@ class AutocompleteBaseView(View):
 
         return None
 
+    def get_autocomplete_attr(self):
+        """Return the value for the autocomplete attribute."""
+        autocomplete_value = self.get_configurable_value("autocomplete_attr")
+
+        if autocomplete_value is not None:
+            return autocomplete_value
+
+        return "off"
+
     def get_template_context(self):
         # many things will come from the request
         # others will be picked up from the AC class
@@ -62,6 +71,7 @@ class AutocompleteBaseView(View):
             "multiselect": bool(self.get_configurable_value("multiselect")),
             "component_prefix": self.get_configurable_value("component_prefix"),
             "disabled": bool(self.get_configurable_value("disabled")),
+            "autocomplete_attr_value": self.get_autocomplete_attr(),
         }
 
 

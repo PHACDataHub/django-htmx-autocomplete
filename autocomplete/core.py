@@ -12,6 +12,8 @@ _ac_registry = {}
 
 AC_CLASS_CONFIGURABLE_VALUES = {
     "disabled",
+    # autocomplete_attr is the <input> attribute, used by browser to suggest values
+    "autocomplete_attr",
     "no_result_text",
     "narrow_search_text",
     "minimum_search_length",

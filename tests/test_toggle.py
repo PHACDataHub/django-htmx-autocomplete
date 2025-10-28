@@ -26,6 +26,11 @@ class PersonAC3(Autocomplete):
 register(PersonAC3)
 
 
+@register
+class PersonAC3WithAutocompleteAttr(PersonAC3):
+    autocomplete_attr = "new-autocomplete-value"
+
+
 def test_toggle_response_select_from_empty_non_multi(client):
     """
     first, try adding selectin a person when none is selected
@@ -66,6 +71,7 @@ def test_toggle_response_select_from_empty_non_multi(client):
     text_input = soup.select_one("input#component_namemyfield_name__textinput")
     assert text_input.attrs["hx-vals"]
     assert "multiselect" not in text_input.attrs["hx-vals"]
+    assert text_input.attrs["autocomplete"] == "off"
 
     assert text_input.attrs["value"] == to_add.name
 
@@ -247,3 +253,37 @@ def test_toggle_multi_untoggle(client):
         "div#component_namemyfield_name input[type='hidden'][name='myfield_name']"
     )
     assert len(hidden_inputs) == 0
+
+
+def test_toggle_with_custom_autocomplete_attr(client):
+    to_add = PersonFactory()
+
+    base_url = reverse(
+        "autocomplete:toggle", kwargs={"ac_name": "PersonAC3WithAutocompleteAttr"}
+    )
+    qs_dict = QueryDict(mutable=True)
+    qs_dict.update(
+        {
+            "field_name": "myfield_name",
+            "component_prefix": "component_name",
+            "item": to_add.id,
+        }
+    )
+
+    response = client.get(f"{base_url}?{qs_dict.urlencode()}")
+    assert response.status_code == 200
+
+    soup = get_soup(response)
+
+    text_input = soup.select_one("input#component_namemyfield_name__textinput")
+    assert text_input.attrs["autocomplete"] == "new-autocomplete-value"
+
+    # now try it with multiselect
+    qs_dict.update({"multiselect": True})
+
+    response = client.get(f"{base_url}?{qs_dict.urlencode()}")
+    assert response.status_code == 200
+    soup = get_soup(response)
+
+    text_input = soup.select_one("input#component_namemyfield_name__textinput")
+    assert text_input.attrs["autocomplete"] == "new-autocomplete-value"
