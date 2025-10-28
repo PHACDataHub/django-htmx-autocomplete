@@ -51,6 +51,11 @@ urlpatterns = [
         views.example_w_id_search,
         name="example_w_id_search",
     ),
+    path(
+        "teams/<int:team_id>/example_w_custom_autocomplete_attr/",
+        views.example_w_custom_autocomplete_attr,
+        name="example_w_custom_autocomplete_attr",
+    ),
     path("ac/", autocomplete_urls),
     path("app/__debug__/", include("debug_toolbar.urls")),
 ]
