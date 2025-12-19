@@ -307,6 +307,7 @@ def test_custom_options():
 
     assert input.attrs["placeholder"] == "my placeholder"
     assert "required" in input.attrs
+    assert "aria-required" in input.attrs
     assert "disabled" in input.attrs
 
     hx_vals = input.attrs["hx-vals"]

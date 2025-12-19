@@ -44,8 +44,18 @@
     value="{% get_input_value selected_items %}"
     {% endif %}
 
+    {% comment %}
+        TODO: figure out why we check length here - does it break multiselect?
+        the required attribute drops after selection, which breaks a11y 
+        in the meantime, we use aria-required
+    {% endcomment %}
+    
     {% if required and selected_items|length == 0 %}
     required
+    {% endif %}
+
+    {% if required %}
+    aria-required="true"
     {% endif %}
 
     {% if disabled %}
