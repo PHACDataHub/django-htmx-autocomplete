@@ -52,6 +52,11 @@ urlpatterns = [
         name="example_w_id_search",
     ),
     path(
+        "teams/<int:team_id>/example_w_placeholder/",
+        views.example_w_placeholder,
+        name="example_w_placeholder",
+    ),
+    path(
         "teams/<int:team_id>/example_w_custom_autocomplete_attr/",
         views.example_w_custom_autocomplete_attr,
         name="example_w_custom_autocomplete_attr",
