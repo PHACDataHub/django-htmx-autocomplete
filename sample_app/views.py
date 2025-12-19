@@ -359,3 +359,33 @@ def example_w_custom_autocomplete_attr(request, team_id=None):
         return HttpResponseRedirect(request.path)
 
     return render(request, "edit_team.html", {"form": form})
+
+
+def example_w_placeholder(request, team_id=None):
+    class TeamFormWithPlaceholder(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead", "members"]
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAutocomplete,
+                    options={"placeholder": "Select team lead here"},
+                ),
+                "members": AutocompleteWidget(
+                    ac_class=PersonAutocomplete,
+                    options={
+                        "multiselect": True,
+                        "placeholder": "Select team members here",
+                    },
+                ),
+            }
+
+    team = Team.objects.get(id=team_id)
+
+    form = TeamFormWithPlaceholder(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})
