@@ -23,17 +23,38 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-django[0] }}
+    
+    - name: Install system deps
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gettext
+
+
     - name: Configure locales
       run: |
         sudo locale-gen en_CA.UTF-8 fr_CA.UTF-8
+
     - name: Install dependencies
       run: |
         python -m pip install -U pip setuptools wheel
         python -m pip install -r requirements.txt "Django==${{ matrix.python-django[1] }}"
         python -m pip install .
+
+    - name: Compile translations
+      run: |
+        python manage.py compilemessages -v 1
+    
+
     - name: Test
       run: |
         pytest
+
+
+    - name: Ensure translations are committed
+      run: |
+        git diff --exit-code
+
+
 
   lint:
     runs-on: ubuntu-latest
