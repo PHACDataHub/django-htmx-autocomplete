@@ -35,7 +35,8 @@ class ModelAutocomplete(Autocomplete):
     def get_query_filtered_queryset(cls, search, context):
         base_qs = cls.get_queryset()
         conditions = [
-            Q(**{f"{attr}__icontains": search}) for attr in cls.get_search_attrs()
+            Q(**{f"{attr}__icontains": search})
+            for attr in cls.get_search_attrs()
         ]
         condition_filter = reduce(operator.or_, conditions)
         queryset = base_qs.filter(condition_filter)
@@ -46,7 +47,8 @@ class ModelAutocomplete(Autocomplete):
         filtered_queryset = cls.get_query_filtered_queryset(search, context)
 
         items = QuerysetMappedIterable(
-            queryset=filtered_queryset, label_for_record=cls.get_label_for_record
+            queryset=filtered_queryset,
+            label_for_record=cls.get_label_for_record,
         )
         return items
 

@@ -1,5 +1,6 @@
-import factory
 from django.db import models
+
+import factory
 
 
 class Person(models.Model):

@@ -86,9 +86,13 @@ class AutocompleteWidget(Widget):
             selected_options = []
         else:
             if self.is_multi:
-                selected_options = self.ac_class.get_items_from_keys(value, None)
+                selected_options = self.ac_class.get_items_from_keys(
+                    value, None
+                )
             else:
-                selected_options = self.ac_class.get_items_from_keys([value], None)
+                selected_options = self.ac_class.get_items_from_keys(
+                    [value], None
+                )
 
         context["ac_class"] = self.ac_class
         context["field_name"] = name
@@ -106,7 +110,9 @@ class AutocompleteWidget(Widget):
         # context["values"] = list(self.a_c.item_values(self.a_c, selected_options))
         context["values"] = [x["key"] for x in selected_options]
         context["selected_items"] = selected_options
-        context["component_prefix"] = self.get_configurable_value("component_prefix")
+        context["component_prefix"] = self.get_configurable_value(
+            "component_prefix"
+        )
         context["component_id"] = self.get_component_id(name)
 
         context["autocomplete_attr_value"] = self.get_autocomplete_attr()

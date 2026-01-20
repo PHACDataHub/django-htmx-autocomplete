@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from autocomplete import urls as autocomplete_urls
+
 from sample_app import views
 
 urlpatterns = [
@@ -29,7 +30,9 @@ urlpatterns = [
         name="edit_team_w_prefix",
     ),
     path(
-        "teams/<int:team_id>/edit3/", views.example_with_model, name="edit_team_w_model"
+        "teams/<int:team_id>/edit3/",
+        views.example_with_model,
+        name="edit_team_w_model",
     ),
     path(
         "static_formset_example/",

@@ -127,13 +127,15 @@ def autocomplete_head(bootstrap=False):
         bootstrap   Set to true if the bootstrap css should be loaded from cdn
                     Defaults to False.
     """
-    return loader.get_template("autocomplete/head.html", using="django").render(
-        {"bootstrap": bootstrap}
-    )
+    return loader.get_template(
+        "autocomplete/head.html", using="django"
+    ).render({"bootstrap": bootstrap})
 
 
 @register.simple_tag(takes_context=True)
-def autocomplete_scripts(context, bootstrap=False, htmx=False, htmx_csrf=False):
+def autocomplete_scripts(
+    context, bootstrap=False, htmx=False, htmx_csrf=False
+):
     """
     Renders the required script tags for the component
 
@@ -149,7 +151,9 @@ def autocomplete_scripts(context, bootstrap=False, htmx=False, htmx_csrf=False):
                     Defaults to False.
 
     """
-    return loader.get_template("autocomplete/scripts.html", using="django").render(
+    return loader.get_template(
+        "autocomplete/scripts.html", using="django"
+    ).render(
         {
             "csrf_token": context.get("csrf_token", ""),
             "bootstrap": bootstrap,
@@ -235,7 +239,9 @@ def stringify_extra_hx_vals(extra_hx_vals_dict):
             "Extra hx vals cannot contain single quotes, consider backticks for JS expressions or escaping double-quotes"
         )
 
-    return ",".join([f' "{key}": {val}' for key, val in extra_hx_vals_dict.items()])
+    return ",".join(
+        [f' "{key}": {val}' for key, val in extra_hx_vals_dict.items()]
+    )
 
 
 @register.simple_tag(takes_context=True)
@@ -283,4 +289,6 @@ def get_chip_label(context, selected_option):
         return ""
 
     ac_class = context.get("ac_class")
-    return ac_class.get_chip_label(selected_option["key"], selected_option["label"])
+    return ac_class.get_chip_label(
+        selected_option["key"], selected_option["label"]
+    )

@@ -1,6 +1,7 @@
-from bs4 import BeautifulSoup
 from django.http import QueryDict
 from django.test.client import MULTIPART_CONTENT, Client
+
+from bs4 import BeautifulSoup
 
 
 def get_soup(response):

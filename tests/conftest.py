@@ -1,7 +1,9 @@
-import pytest
 from django.db import transaction
 
+import pytest
+
 from autocomplete import Autocomplete, ModelAutocomplete, register
+
 from sample_app.models import Person
 
 
