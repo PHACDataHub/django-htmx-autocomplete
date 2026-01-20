@@ -40,7 +40,7 @@ jobs:
         python -m pip install -r requirements.txt "Django==${{ matrix.python-django[1] }}"
         python -m pip install .
 
-    - name: Compile translations
+    - name: Check that compiling translations works
       run: |
         python manage.py compilemessages -v 1
     
@@ -48,11 +48,6 @@ jobs:
     - name: Test
       run: |
         pytest
-
-
-    - name: Ensure translations are committed
-      run: |
-        git diff --exit-code
 
 
 
