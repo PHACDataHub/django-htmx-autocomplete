@@ -1,9 +1,11 @@
-import pytest
 from django import forms
 from django.template import Context, Template, loader
 from django.urls import reverse
 
+import pytest
+
 from autocomplete import Autocomplete, AutocompleteWidget, register
+
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 
 from .utils_for_test import soup_from_str
@@ -24,11 +26,9 @@ class PersonAC4(Autocomplete):
         return [{"key": person.id, "label": person.name} for person in qs]
 
 
-single_form_template = Template(
-    """
+single_form_template = Template("""
         {{ form.as_p }}
-    """
-)
+    """)
 
 
 def render_template(template, ctx_dict):
@@ -98,7 +98,8 @@ def test_render_widget_in_form_empty():
     assert actual_input_field.attrs["hx-include"] == "#team_lead"
     assert actual_input_field.attrs["hx-target"] == "#team_lead__items"
     assert (
-        'getElementById("team_lead__textinput")' in actual_input_field.attrs["hx-vals"]
+        'getElementById("team_lead__textinput")'
+        in actual_input_field.attrs["hx-vals"]
     )
     assert '"component_prefix": "",' in actual_input_field.attrs["hx-vals"]
     assert '"field_name": "team_lead",' in actual_input_field.attrs["hx-vals"]
@@ -239,8 +240,7 @@ def test_with_formset():
 
     forms.modelformset_factory(Team, form=FormWithSingle)
 
-    template = Template(
-        """
+    template = Template("""
         <div id='empty-form-container'>
         {{ formset.empty_form }}
         </div>
@@ -252,8 +252,7 @@ def test_with_formset():
             {{ form.as_p }}
             </div>
         {% endfor %}
-    """
-    )
+    """)
 
     formset = forms.modelformset_factory(Team, form=FormWithSingle, extra=0)(
         queryset=Team.objects.all()

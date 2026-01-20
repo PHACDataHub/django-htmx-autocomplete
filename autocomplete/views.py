@@ -17,7 +17,9 @@ class AutocompleteBaseView(View):
             return _ac_registry[ac_name]
 
         except KeyError as e:
-            raise ValueError(f"No registered autocomplete with name {ac_name}") from e
+            raise ValueError(
+                f"No registered autocomplete with name {ac_name}"
+            ) from e
 
     def dispatch(self, request, *args, **kwargs):
         self.ac_class.auth_check(request)
@@ -69,7 +71,9 @@ class AutocompleteBaseView(View):
             "indicator": self.get_configurable_value("indicator"),
             "custom_strings": self.ac_class.get_custom_strings(),
             "multiselect": bool(self.get_configurable_value("multiselect")),
-            "component_prefix": self.get_configurable_value("component_prefix"),
+            "component_prefix": self.get_configurable_value(
+                "component_prefix"
+            ),
             "disabled": bool(self.get_configurable_value("disabled")),
             "autocomplete_attr_value": self.get_autocomplete_attr(),
         }
@@ -129,11 +133,15 @@ class ToggleView(AutocompleteBaseView):
         if is_multi:
             new_selected_keys = toggle_set(set(current_items), key_to_toggle)
         else:
-            new_selected_keys = replace_or_toggle(set(current_items), key_to_toggle)
+            new_selected_keys = replace_or_toggle(
+                set(current_items), key_to_toggle
+            )
         keys_to_fetch = set(new_selected_keys).union({key_to_toggle})
 
         context_obj = ContextArg(request=request, client_kwargs=request.GET)
-        all_values = self.ac_class.get_items_from_keys(keys_to_fetch, context_obj)
+        all_values = self.ac_class.get_items_from_keys(
+            keys_to_fetch, context_obj
+        )
 
         items = self.ac_class.map_search_results(all_values, new_selected_keys)
 
@@ -142,7 +150,9 @@ class ToggleView(AutocompleteBaseView):
         # if it is currently in the dropdown list
         swap_oob = request.GET.get("remove", False)
 
-        target_item = next((x for x in items if x["key"] == key_to_toggle), None)
+        target_item = next(
+            (x for x in items if x["key"] == key_to_toggle), None
+        )
 
         new_items = [x for x in items if x["key"] in new_selected_keys]
 
@@ -189,7 +199,9 @@ class ItemsView(AutocompleteBaseView):
         else:
             selected_items = []
 
-        query_too_short = len(search_query) < self.ac_class.minimum_search_length
+        query_too_short = (
+            len(search_query) < self.ac_class.minimum_search_length
+        )
 
         if query_too_short:
             search_results = []
@@ -209,7 +221,9 @@ class ItemsView(AutocompleteBaseView):
         if total_results > cutoff:
             all_items = all_items[:cutoff]
 
-        mapped_items = self.ac_class.map_search_results(all_items, selected_keys)
+        mapped_items = self.ac_class.map_search_results(
+            all_items, selected_keys
+        )
 
         # render items ...
         return render(
@@ -230,8 +244,16 @@ class ItemsView(AutocompleteBaseView):
 
 urls = (
     [
-        path("autocomplete/<str:ac_name>/items", ItemsView.as_view(), name="items"),
-        path("autocomplete/<str:ac_name>/toggle", ToggleView.as_view(), name="toggle"),
+        path(
+            "autocomplete/<str:ac_name>/items",
+            ItemsView.as_view(),
+            name="items",
+        ),
+        path(
+            "autocomplete/<str:ac_name>/toggle",
+            ToggleView.as_view(),
+            name="toggle",
+        ),
     ],
     "autocomplete",
     "autocomplete",

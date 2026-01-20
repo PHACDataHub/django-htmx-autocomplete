@@ -5,7 +5,12 @@ from django.shortcuts import render
 from django.template import loader
 from django.utils.html import mark_safe
 
-from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete, register
+from autocomplete import (
+    Autocomplete,
+    AutocompleteWidget,
+    ModelAutocomplete,
+    register,
+)
 
 from .models import Person, Team
 
@@ -84,7 +89,9 @@ class CustomPersonAutocomplete2(PersonAutocomplete):
     def search_items(cls, search, context):
         qs = Person.objects.filter(name__icontains=search)
 
-        related_team_lead = context.client_kwargs.get("related_team_lead", None)
+        related_team_lead = context.client_kwargs.get(
+            "related_team_lead", None
+        )
         if related_team_lead:
             qs = qs.exclude(id=related_team_lead)
 
@@ -220,7 +227,9 @@ def dynamic_formset_example(request):
         else:
             print(formset.errors)
 
-    return render(request, "dynamic_formset_example.html", {"formset": formset})
+    return render(
+        request, "dynamic_formset_example.html", {"formset": formset}
+    )
 
 
 @register
@@ -233,14 +242,12 @@ class AutocompleteWithCustomHtmlLabels(ModelAutocomplete):
         # this is a custom label for the autocomplete
         # it will be used in the dropdown
         # and in the selected items
-        return mark_safe(
-            f"""
+        return mark_safe(f"""
             <div>
                 <div>{record.name}</div>
                 <div style='color: red;'>{record.name.upper()}</div>
             </div>
-            """
-        )
+            """)
 
     @classmethod
     def get_input_value(cls, key, label):
@@ -249,11 +256,9 @@ class AutocompleteWithCustomHtmlLabels(ModelAutocomplete):
     @classmethod
     def get_chip_label(cls, key, label):
         name = Person.objects.get(id=key).name
-        return mark_safe(
-            f"""
+        return mark_safe(f"""
             <span style='color: red;'>{name.upper()}</span>
-            """
-        )
+            """)
 
 
 class CustomTeamFormWithHtmlAC(forms.ModelForm):
@@ -297,7 +302,10 @@ class AutocompleteDistinctSearchById(ModelAutocomplete):
     def search_items(cls, search, context):
         all_ppl = Person.objects.all()
         matches = [p for p in all_ppl if search in str(p.id)]
-        return [{"label": cls.get_label_for_record(p), "key": p.id} for p in matches]
+        return [
+            {"label": cls.get_label_for_record(p), "key": p.id}
+            for p in matches
+        ]
 
 
 class FormWithSearchByIdAC(forms.ModelForm):
@@ -352,7 +360,9 @@ def example_w_custom_autocomplete_attr(request, team_id=None):
 
     team = Team.objects.get(id=team_id)
 
-    form = TeamFormWithCustomAutocompleteAttr(instance=team, data=request.POST or None)
+    form = TeamFormWithCustomAutocompleteAttr(
+        instance=team, data=request.POST or None
+    )
 
     if request.POST and form.is_valid():
         form.save()

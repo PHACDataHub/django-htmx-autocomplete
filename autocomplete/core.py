@@ -31,7 +31,9 @@ def register(ac_class: type, route_name: str = None):
     ac_class.validate()
 
     if route_name in _ac_registry:
-        raise ValueError(f"Autocomplete with name '{name}' is already registered.")
+        raise ValueError(
+            f"Autocomplete with name '{name}' is already registered."
+        )
 
     ac_class.route_name = route_name
 
@@ -71,7 +73,9 @@ class Autocomplete:
             raise ValueError("You must implement a search_items method.")
 
         if not hasattr(cls, "get_items_from_keys"):
-            raise ValueError("You must implement a get_items_from_keys method.")
+            raise ValueError(
+                "You must implement a get_items_from_keys method."
+            )
 
     @classmethod
     def map_search_results(cls, items_iterable, selected_keys=None):
@@ -87,7 +91,8 @@ class Autocomplete:
             {  # this is the default mapping
                 "key": str(i["key"]),
                 "label": i["label"],
-                "selected": i["key"] in selected_keys or str(i["key"]) in selected_keys,
+                "selected": i["key"] in selected_keys
+                or str(i["key"]) in selected_keys,
             }
             for i in items_iterable
         ]

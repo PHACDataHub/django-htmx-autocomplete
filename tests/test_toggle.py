@@ -4,6 +4,7 @@ from django.http import QueryDict
 from django.urls import reverse
 
 from autocomplete.core import Autocomplete, register
+
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 
 from .utils_for_test import get_soup
@@ -161,7 +162,9 @@ def test_toggle_multi(client):
     assert len(input_li) == 1
 
     # 4. The "info", I think this is a11y stuff
-    info_text = soup.select_one("div#component_namemyfield_name__info").get_text()
+    info_text = soup.select_one(
+        "div#component_namemyfield_name__info"
+    ).get_text()
     assert p1.name in info_text
 
     # 5. screen reader description, kinda redundant with 4
@@ -259,7 +262,8 @@ def test_toggle_with_custom_autocomplete_attr(client):
     to_add = PersonFactory()
 
     base_url = reverse(
-        "autocomplete:toggle", kwargs={"ac_name": "PersonAC3WithAutocompleteAttr"}
+        "autocomplete:toggle",
+        kwargs={"ac_name": "PersonAC3WithAutocompleteAttr"},
     )
     qs_dict = QueryDict(mutable=True)
     qs_dict.update(

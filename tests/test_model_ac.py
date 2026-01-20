@@ -1,10 +1,17 @@
-import pytest
 from django import forms
 from django.template import Context, Template, loader
 from django.urls import reverse
 
-from autocomplete import Autocomplete, AutocompleteWidget, ModelAutocomplete, register
+import pytest
+
+from autocomplete import (
+    Autocomplete,
+    AutocompleteWidget,
+    ModelAutocomplete,
+    register,
+)
 from autocomplete.core import ContextArg
+
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 
 from .utils_for_test import soup_from_str

@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from autocomplete.core import Autocomplete, register
 from autocomplete.views import replace_or_toggle, toggle_set
+
 from sample_app.models import Person, PersonFactory, Team, TeamFactory
 from tests.conftest import PersonAC
 
@@ -61,7 +62,8 @@ def test_items_response_non_multi(client):
         "autocomplete:toggle", kwargs={"ac_name": "PersonAC"}
     )
     assert (
-        options[0].attrs["hx-params"] == "myfield_name,field_name,item,component_prefix"
+        options[0].attrs["hx-params"]
+        == "myfield_name,field_name,item,component_prefix"
     )
     assert options[0].attrs["hx-include"] == "#component_namemyfield_name"
     assert "component_namemyfield_name__item__" in options[0].attrs["id"]
@@ -211,7 +213,9 @@ def test_limit_results(client):
         max_results = 2
         narrow_search_text = "NARROW IT DOWN"
 
-    base_url = reverse("autocomplete:items", kwargs={"ac_name": "LimitedPersonAC"})
+    base_url = reverse(
+        "autocomplete:items", kwargs={"ac_name": "LimitedPersonAC"}
+    )
     qs_dict = QueryDict(mutable=True)
     qs_dict.update(
         {
@@ -239,7 +243,9 @@ def test_no_results(client):
         max_results = 2
         no_result_text = "NO RESULTS"
 
-    base_url = reverse("autocomplete:items", kwargs={"ac_name": "NoResultsPersonAC"})
+    base_url = reverse(
+        "autocomplete:items", kwargs={"ac_name": "NoResultsPersonAC"}
+    )
     qs_dict = QueryDict(mutable=True)
     qs_dict.update(
         {
