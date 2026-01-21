@@ -17,16 +17,31 @@ def enable_db_access_for_all_tests(db):
 
 
 @pytest.fixture(scope="session")
-def globally_scoped_fixture_helper(django_db_setup, django_db_blocker):
-    with django_db_blocker.unblock():
-        # Wrap in try + atomic block to do non crashing rollback
-        # This means we don't have to re-create a test DB each time
-        try:
-            with transaction.atomic():
-                yield
-                raise Exception
-        except Exception:
-            pass
+def globally_scoped_fixture_helper(
+    django_db_setup, django_db_blocker, request
+):
+
+    # If ANY collected test is marked selenium, don't do the global atomic trick.
+    if (
+        request.config.getoption("-m", default="")
+        and "selenium" in request.config.getoption("-m")
+        and "not selenium" not in request.config.getoption("-m")
+    ):
+        print("Activating selenium transaction mode")
+        with django_db_blocker.unblock():
+            yield
+        return
+
+    else:
+        with django_db_blocker.unblock():
+            # Wrap in try + atomic block to do non crashing rollback
+            # This means we don't have to re-create a test DB each time
+            try:
+                with transaction.atomic():
+                    yield
+                    raise Exception
+            except Exception:
+                pass
 
 
 @register

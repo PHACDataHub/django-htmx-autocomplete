@@ -35,49 +35,48 @@ This Django app provides an autocomplete widiget component powered by
    ]
    ```
 
-
 4. Create an `@register`d autocomplete class that extends `autocomplete.ModelAutocomplete`,
 
 Registration allows views to reach your class. If you have abstract autocomplete classes, don't register those.
 
-   ```python
-   from django forms
-   from django.db import models
-   import autocomplete
+```python
+from django forms
+from django.db import models
+import autocomplete
 
 
-   class Person(models.Model):
-       name = models.CharField(max_length=60)
+class Person(models.Model):
+    name = models.CharField(max_length=60)
 
-   class Team(models.Model):
-        team_lead = models.ForeignKey(
-            Person, null=True, on_delete=models.SET_NULL, related_name="lead_teams"
-        )
+class Team(models.Model):
+     team_lead = models.ForeignKey(
+         Person, null=True, on_delete=models.SET_NULL, related_name="lead_teams"
+     )
 
-       members = models.ManyToManyField(Person)
+    members = models.ManyToManyField(Person)
 
-   @autocomplete.register
-   class PersonAutocomplete(autocomplete.ModelAutocomplete):
-       model = Person
-       search_attrs = [ 'name' ]
+@autocomplete.register
+class PersonAutocomplete(autocomplete.ModelAutocomplete):
+    model = Person
+    search_attrs = [ 'name' ]
 
 
-   class MultipleFormModel(forms.ModelForm):
-   """Multiple select example form using a model"""
-       class Meta:
-           """Meta class that configures the form"""
-           model = Team
-           fields = ['team_lead', 'members']
-           widgets = {
-                'team_lead': autocomplete.AutocompleteWidget(
-                    ac_class=PersonAutocomplete,
-                ),
-               'members': autocomplete.AutocompleteWidget(
-                    ac_class=PersonAutocomplete,
-                    options={"multiselect": True},
-               )
-           }
-   ```
+class MultipleFormModel(forms.ModelForm):
+"""Multiple select example form using a model"""
+    class Meta:
+        """Meta class that configures the form"""
+        model = Team
+        fields = ['team_lead', 'members']
+        widgets = {
+             'team_lead': autocomplete.AutocompleteWidget(
+                 ac_class=PersonAutocomplete,
+             ),
+            'members': autocomplete.AutocompleteWidget(
+                 ac_class=PersonAutocomplete,
+                 options={"multiselect": True},
+            )
+        }
+```
 
 5. Make sure your templates include HTMX.
 
@@ -234,11 +233,14 @@ To set up the development environment, follow these steps:
 # from root of project,
 pip install -r requirements.txt
 
-# running tests,
-python manage.py test tests/
-
 # running app locally
 python manage.py migrate
 python manage.py runscript sample_app.dev_script
 python manage.py runserver
 ```
+
+## Running tests
+
+`python manage.py test tests/` or `pytest`
+
+We also have selenium tests that are not run by default: `python manage.py test --selenium` or `pytest -m selenium`
