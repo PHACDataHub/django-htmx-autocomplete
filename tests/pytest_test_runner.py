@@ -12,18 +12,26 @@ class PytestTestRunner:
             help="remaps to -k test-selection argument in pytest",
         )
 
+        parser.add_argument(
+            "--selenium",
+            action="store_true",
+            help="run selenium tests",
+        )
+
     def __init__(
         self,
         verbosity=1,
         failfast=False,
         keepdb=True,
         select=None,
+        selenium=False,
         **kwargs,
     ):
         self.verbosity = verbosity
         self.failfast = failfast
         self.keepdb = keepdb
         self.select = select
+        self.selenium = selenium
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.
@@ -45,6 +53,8 @@ class PytestTestRunner:
             argv.append("--exitfirst")
         if self.keepdb:
             argv.append("--reuse-db")
+        if self.selenium:
+            argv.append("-m selenium")
 
         argv.extend(test_labels)
         return pytest.main(argv)
