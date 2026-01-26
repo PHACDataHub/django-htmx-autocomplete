@@ -26,9 +26,11 @@ class PersonAC4(Autocomplete):
         return [{"key": person.id, "label": person.name} for person in qs]
 
 
-single_form_template = Template("""
+single_form_template = Template(
+    """
         {{ form.as_p }}
-    """)
+    """
+)
 
 
 def render_template(template, ctx_dict):
@@ -78,10 +80,8 @@ def test_render_widget_in_form_empty():
     # 2. script
     scripts = soup.select("script")
     assert len(scripts) == 1
-    assert scripts[0].attrs["data-componentid"] == "team_lead"
-    assert scripts[0].attrs["data-toggleurl"] == reverse(
-        "autocomplete:toggle", args=["PersonAC4"]
-    )
+    assert scripts[0].attrs["data-js"]
+    assert scripts[0].attrs["data-css"]
 
     ac_container_ul = soup.select_one("ul#team_lead_ac_container.ac_container")
     assert ac_container_ul
@@ -104,6 +104,14 @@ def test_render_widget_in_form_empty():
     assert '"component_prefix": "",' in actual_input_field.attrs["hx-vals"]
     assert '"field_name": "team_lead",' in actual_input_field.attrs["hx-vals"]
     assert "value" not in actual_input_field.attrs
+
+    # 3 root and attributes
+    root = soup.select_one("div[data-autocomplete-root]")
+    assert root.attrs["data-autocomplete-componentid"] == "team_lead"
+    assert "data-autocomplete-multiselect" not in root.attrs
+    assert root.attrs["data-autocomplete-toggleurl"] == reverse(
+        "autocomplete:toggle", args=["PersonAC4"]
+    )
 
 
 def test_render_widget_in_form_non_empty():
@@ -240,7 +248,8 @@ def test_with_formset():
 
     forms.modelformset_factory(Team, form=FormWithSingle)
 
-    template = Template("""
+    template = Template(
+        """
         <div id='empty-form-container'>
         {{ formset.empty_form }}
         </div>
@@ -252,7 +261,8 @@ def test_with_formset():
             {{ form.as_p }}
             </div>
         {% endfor %}
-    """)
+    """
+    )
 
     formset = forms.modelformset_factory(Team, form=FormWithSingle, extra=0)(
         queryset=Team.objects.all()

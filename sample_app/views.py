@@ -242,12 +242,14 @@ class AutocompleteWithCustomHtmlLabels(ModelAutocomplete):
         # this is a custom label for the autocomplete
         # it will be used in the dropdown
         # and in the selected items
-        return mark_safe(f"""
+        return mark_safe(
+            f"""
             <div>
                 <div>{record.name}</div>
                 <div style='color: red;'>{record.name.upper()}</div>
             </div>
-            """)
+            """
+        )
 
     @classmethod
     def get_input_value(cls, key, label):
@@ -256,9 +258,11 @@ class AutocompleteWithCustomHtmlLabels(ModelAutocomplete):
     @classmethod
     def get_chip_label(cls, key, label):
         name = Person.objects.get(id=key).name
-        return mark_safe(f"""
+        return mark_safe(
+            f"""
             <span style='color: red;'>{name.upper()}</span>
-            """)
+            """
+        )
 
 
 class CustomTeamFormWithHtmlAC(forms.ModelForm):
@@ -393,6 +397,39 @@ def example_w_placeholder(request, team_id=None):
     team = Team.objects.get(id=team_id)
 
     form = TeamFormWithPlaceholder(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})
+
+
+def example_w_disabled(request, team_id=None):
+    class TeamFormWithDisabledFields(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead", "members"]
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAutocomplete,
+                ),
+                "members": AutocompleteWidget(
+                    ac_class=PersonAutocomplete,
+                    options={
+                        "multiselect": True,
+                    },
+                ),
+            }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields["team_lead"].disabled = True
+            self.fields["members"].disabled = True
+
+    team = Team.objects.get(id=team_id)
+
+    form = TeamFormWithDisabledFields(instance=team, data=request.POST or None)
 
     if request.POST and form.is_valid():
         form.save()

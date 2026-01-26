@@ -23,4 +23,21 @@
             </div>
         </form>
     </div>
+    <div id="team_lead_change_events"></div>
+    <div id="members_change_events"></div>
+    <script>
+        document.body.addEventListener("change", function(event){
+            if(event.target.getAttribute("id") === "team_lead__textinput"){
+                const container = document.getElementById("team_lead_change_events");
+                const newEvent = document.createElement("div");
+                newEvent.innerText = `Team lead changed`;
+                container.appendChild(newEvent);
+            } else if(event.target.getAttribute("id") === "members__textinput"){
+                const container = document.getElementById("members_change_events");
+                const newEvent = document.createElement("div");
+                newEvent.innerText = `Members changed`;
+                container.appendChild(newEvent);
+            }
+        });
+    </script>
 {% endblock %}

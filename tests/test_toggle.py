@@ -80,12 +80,6 @@ def test_toggle_response_select_from_empty_non_multi(client):
     data_span = soup.select_one("span#component_namemyfield_name__data")
     assert data_span.attrs["data-phac-aspc-autocomplete"] == str(to_add.name)
 
-    # 5. some script tag to keep events updated,
-    script_tag = soup.select_one(
-        "script[data-componentid='component_namemyfield_name']"
-    )
-    assert "phac_aspc_autocomplete_trigger_change" in script_tag.get_text()
-
 
 def test_toggle_response_unselect_non_multi(client):
     """

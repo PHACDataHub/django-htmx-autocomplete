@@ -17,11 +17,17 @@ def click_button(driver, selector):
     driver.execute_script("arguments[0].click();", element)
 
 
-def wait_until_selector(driver, selector):
+def wait_until_selector(driver, selector, **options):
     from selenium.webdriver.support import expected_conditions
     from selenium.webdriver.support.ui import WebDriverWait
 
-    WebDriverWait(driver, 0.5, poll_frequency=0.1).until(
+    kwargs = {
+        "timeout": 0.5,
+        "poll_frequency": 0.1,
+    }
+    if options:
+        kwargs.update(options)
+    WebDriverWait(driver, **kwargs).until(
         expected_conditions.presence_of_element_located(
             ("css selector", selector)
         )
