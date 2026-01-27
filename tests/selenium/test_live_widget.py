@@ -23,7 +23,8 @@ def test_single_select_live_widget(live_server, driver):
     p1 = PersonFactory(name="Sample Leader")
     p2 = PersonFactory(name="Sample Member 2")
     p3 = PersonFactory(name="Sample Member 3")
-    t1 = TeamFactory(team_lead=p1)
+    t1 = TeamFactory(team_lead=p2)
+    t1.members.set([p2, p3])
 
     url = reverse("edit_team", args=[t1.pk])
 
@@ -83,6 +84,12 @@ def test_single_select_live_widget(live_server, driver):
     # and that the invisible input has the correct value
     hidden_input = get_element(driver, "input[name='team_lead']")
     assert hidden_input.get_attribute("value") == str(p1.pk)
+
+    # finally, submit the form and check the value is saved
+    click_button(driver, "input[type='submit']")
+
+    team = Team.objects.get(pk=t1.pk)
+    assert team.team_lead == p1
 
 
 def test_multi_select_live_widget(live_server, driver):
@@ -160,3 +167,27 @@ def test_multi_select_live_widget(live_server, driver):
     assert not hidden_inputs[0].get_attribute("value")
 
     assert "" == get_sr_text().strip()
+
+    # finally, select a member and save
+
+    click_button(driver, "input#members__textinput")
+
+    input = get_element(driver, "input#members__textinput")
+    input.send_keys("Sample")
+    wait_until_selector(
+        driver, "div[role='listbox'] a[role='option']:nth-child(1)"
+    )
+    click_button(
+        driver, "div[role='listbox'] a[role='option']:nth-child(1)"
+    )  # p1
+
+    wait_until_selector_gone(driver, "#members__items.show")
+
+    # now check the input is cleared
+    input = get_element(driver, "input#members__textinput")
+    assert input.get_attribute("value") == ""
+
+    click_button(driver, "input[type='submit']")
+
+    team = Team.objects.get(pk=t1.pk)
+    assert list(team.members.all()) == [p1]

@@ -399,3 +399,36 @@ def example_w_placeholder(request, team_id=None):
         return HttpResponseRedirect(request.path)
 
     return render(request, "edit_team.html", {"form": form})
+
+
+def example_w_disabled(request, team_id=None):
+    class TeamFormWithDisabledFields(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead", "members"]
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAutocomplete,
+                ),
+                "members": AutocompleteWidget(
+                    ac_class=PersonAutocomplete,
+                    options={
+                        "multiselect": True,
+                    },
+                ),
+            }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields["team_lead"].disabled = True
+            self.fields["members"].disabled = True
+
+    team = Team.objects.get(id=team_id)
+
+    form = TeamFormWithDisabledFields(instance=team, data=request.POST or None)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return HttpResponseRedirect(request.path)
+
+    return render(request, "edit_team.html", {"form": form})

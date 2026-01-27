@@ -122,6 +122,11 @@
     cursor: pointer;
 }
 
+.phac_aspc_form_autocomplete ul.ac_container li input.textinput[disabled],
+.phac_aspc_form_autocomplete[data-autocomplete-disabled] ul.ac_container li input.textinput {
+    cursor: default;
+}
+
 .phac_aspc_form_autocomplete .ac_required_input {
     opacity: 0;
     position: absolute;
