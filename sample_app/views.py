@@ -242,14 +242,12 @@ class AutocompleteWithCustomHtmlLabels(ModelAutocomplete):
         # this is a custom label for the autocomplete
         # it will be used in the dropdown
         # and in the selected items
-        return mark_safe(
-            f"""
+        return mark_safe(f"""
             <div>
                 <div>{record.name}</div>
                 <div style='color: red;'>{record.name.upper()}</div>
             </div>
-            """
-        )
+            """)
 
     @classmethod
     def get_input_value(cls, key, label):
@@ -258,11 +256,9 @@ class AutocompleteWithCustomHtmlLabels(ModelAutocomplete):
     @classmethod
     def get_chip_label(cls, key, label):
         name = Person.objects.get(id=key).name
-        return mark_safe(
-            f"""
+        return mark_safe(f"""
             <span style='color: red;'>{name.upper()}</span>
-            """
-        )
+            """)
 
 
 class CustomTeamFormWithHtmlAC(forms.ModelForm):

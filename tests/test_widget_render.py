@@ -26,11 +26,9 @@ class PersonAC4(Autocomplete):
         return [{"key": person.id, "label": person.name} for person in qs]
 
 
-single_form_template = Template(
-    """
+single_form_template = Template("""
         {{ form.as_p }}
-    """
-)
+    """)
 
 
 def render_template(template, ctx_dict):
@@ -248,8 +246,7 @@ def test_with_formset():
 
     forms.modelformset_factory(Team, form=FormWithSingle)
 
-    template = Template(
-        """
+    template = Template("""
         <div id='empty-form-container'>
         {{ formset.empty_form }}
         </div>
@@ -261,8 +258,7 @@ def test_with_formset():
             {{ form.as_p }}
             </div>
         {% endfor %}
-    """
-    )
+    """)
 
     formset = forms.modelformset_factory(Team, form=FormWithSingle, extra=0)(
         queryset=Team.objects.all()
