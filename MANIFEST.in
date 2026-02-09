@@ -3,3 +3,5 @@ include README.md
 recursive-include autocomplete/templates *
 recursive-include autocomplete/static *
 recursive-include autocomplete/locale *
+prune tests
+prune sample_app
