@@ -48,6 +48,7 @@ dev = [
     "isort==7.0.0",
     "black==26.3.0",
     "djlint==1.35.2",
+    "mypy>=1.20.0",
 ]
 
 [tool.setuptools]
