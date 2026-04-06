@@ -1,6 +1,6 @@
 # django-htmx-autocomplete
 
-This Django app provides an autocomplete widiget component powered by
+This Django app provides an autocomplete widget component powered by
 [htmx](https://htmx.org/) featuring multiselect, search and is completely extensible.
 
 ## Quick start
