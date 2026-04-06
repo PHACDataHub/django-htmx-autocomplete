@@ -2,13 +2,70 @@
 requires = ['setuptools>=40.8.0', 'wheel']
 build-backend = 'setuptools.build_meta:__legacy__'
 
+[project]
+name = "django-htmx-autocomplete"
+version = "1.0.17"
+description = "A Django autocomplete component powered by htmx"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Luc Belliveau", email = "luc.belliveau@canada.ca"}
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dependencies = [
+    "django>=5.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/PHACDataHub/django-htmx-autocomplete"
+
+[dependency-groups]
+dev = [
+    "beautifulsoup4==4.12.3",
+    "django-extensions==3.2.3",
+    "coverage==7.1.0",
+    "ipython==8.10.0",
+    "pytest==7.2.1",
+    "pytest-django==4.8.0",
+    "factory-boy===3.2.1",
+    "django-debug-toolbar==4.4.6",
+    "selenium==4.39.0",
+    "flake8==6.1.0",
+    "isort==7.0.0",
+    "black==26.1.0",
+    "djlint==1.35.2",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = [
+    "tests",
+    "tests.*",
+    "sample_app",
+    "sample_app.*",
+]
 
 [tool.black]
 line-length = 79
 target-version = ['py313']
 include = '\.pyi?$'
 exclude = '''
-
 (
   /(
       \.eggs         # exclude a few common directories in the
@@ -18,12 +75,11 @@ exclude = '''
     | build
   )/
   # ignore auto-generated migrations, no one ever saves those manually
-  | migrations/.*.py 
-  | migrations/.*_initial.py 
-  | migrations/.*_auto_.*.py 
+  | migrations/.*.py
+  | migrations/.*_initial.py
+  | migrations/.*_auto_.*\.py
 )
 '''
-
 
 [tool.isort]
 profile = "black"
@@ -32,9 +88,6 @@ known_django = "django"
 known_proj = "autocomplete"
 sections=[ "FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "PROJ", "FIRSTPARTY", "LOCALFOLDER" ]
 skip_glob=['*/migrations/*.py']
-
-
-
 
 [tool.pylint]
 disable = [
