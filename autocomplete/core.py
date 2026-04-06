@@ -52,12 +52,13 @@ class Autocomplete:
     minimum_search_length = 3
     max_results = 100
     component_prefix = ""
+    permission_required: str | list[str] | None = None
 
     @classmethod
     def auth_check(cls, request):
         """
-        override to inspect request.user or whatever
-        raise a PermissionDenied or SuspiciousOperation exception if needed
+        Check if the user is authenticated and has the required permissions.
+        Raise PermissionDenied if checks fail.
         """
         if (
             getattr(settings, "AUTOCOMPLETE_BLOCK_UNAUTHENTICATED", False)
@@ -65,7 +66,16 @@ class Autocomplete:
         ):
             raise PermissionDenied("Must be logged in to use autocomplete")
 
-        pass
+        if cls.permission_required is not None:
+            if not request.user.is_authenticated:
+                raise PermissionDenied("Authentication required")
+
+            perms = cls.permission_required
+            if isinstance(perms, str):
+                perms = [perms]
+
+            if not request.user.has_perms(perms):
+                raise PermissionDenied(f"Insufficient permissions for accessing Autocomplete {cls.__name__}")
 
     @classmethod
     def validate(cls):
