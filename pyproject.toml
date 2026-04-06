@@ -73,6 +73,7 @@ exclude = '''
     | \.git          # root of the project
     | \.mypy_cache
     | venv
+    | .venv
     | build
   )/
   # ignore auto-generated migrations, no one ever saves those manually

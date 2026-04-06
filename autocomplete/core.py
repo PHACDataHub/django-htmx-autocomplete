@@ -60,7 +60,6 @@ def register(
     return ac_class
 
 
-
 @dataclass
 class ContextArg:
     """Context passed to autocomplete methods.
@@ -117,7 +116,9 @@ class Autocomplete:
             raise ValueError("You must implement a search_items method.")
 
         if not hasattr(cls, "get_items_from_keys"):
-            raise ValueError("You must implement a get_items_from_keys method.")
+            raise ValueError(
+                "You must implement a get_items_from_keys method."
+            )
 
     @classmethod
     def map_search_results(
@@ -148,7 +149,8 @@ class Autocomplete:
             {  # this is the default mapping
                 "key": str(i["key"]),
                 "label": i["label"],
-                "selected": i["key"] in selected_keys or str(i["key"]) in selected_keys,
+                "selected": i["key"] in selected_keys
+                or str(i["key"]) in selected_keys,
             }
             for i in items_iterable
         ]
@@ -212,7 +214,9 @@ class Autocomplete:
         return label
 
     @classmethod
-    def search_items(cls, search: str, context: ContextArg) -> Iterable[dict[str, Any]]:
+    def search_items(
+        cls, search: str, context: ContextArg
+    ) -> Iterable[dict[str, Any]]:
         """Search for items matching the query.
 
         Must be implemented by subclasses.
@@ -241,6 +245,6 @@ class Autocomplete:
         Returns:
             Iterable of item dictionaries with "key" and "label".
         """
-        raise NotImplementedError("Subclasses must implement get_items_from_keys")
-
-
+        raise NotImplementedError(
+            "Subclasses must implement get_items_from_keys"
+        )

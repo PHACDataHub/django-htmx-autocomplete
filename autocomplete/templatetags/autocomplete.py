@@ -187,7 +187,9 @@ def autocomplete_scripts(
     Returns:
         Rendered HTML for script tags.
     """
-    return loader.get_template("autocomplete/scripts.html", using="django").render(
+    return loader.get_template(
+        "autocomplete/scripts.html", using="django"
+    ).render(
         {
             "csrf_token": context.get("csrf_token", ""),
             "bootstrap": bootstrap,
@@ -304,7 +306,9 @@ def stringify_extra_hx_vals(extra_hx_vals_dict: dict[str, str]) -> str:
             "Extra hx vals cannot contain single quotes, consider backticks for JS expressions or escaping double-quotes"
         )
 
-    return ",".join([f' "{key}": {val}' for key, val in extra_hx_vals_dict.items()])
+    return ",".join(
+        [f' "{key}": {val}' for key, val in extra_hx_vals_dict.items()]
+    )
 
 
 @register.simple_tag(takes_context=True)
@@ -369,7 +373,9 @@ def get_input_value(
 
 
 @register.simple_tag(takes_context=True)
-def get_chip_label(context: Context, selected_option: dict[str, Any] | None) -> str:
+def get_chip_label(
+    context: Context, selected_option: dict[str, Any] | None
+) -> str:
     """Get the chip display label for multi-select mode.
 
     Args:
@@ -386,4 +392,6 @@ def get_chip_label(context: Context, selected_option: dict[str, Any] | None) -> 
     if ac_class is None:
         return ""
 
-    return ac_class.get_chip_label(selected_option["key"], selected_option["label"])
+    return ac_class.get_chip_label(
+        selected_option["key"], selected_option["label"]
+    )

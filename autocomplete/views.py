@@ -6,7 +6,12 @@ from django.urls import path
 from django.utils.functional import cached_property
 from django.views import View
 
-from .core import AC_CLASS_CONFIGURABLE_VALUES, Autocomplete, ContextArg, _ac_registry
+from .core import (
+    AC_CLASS_CONFIGURABLE_VALUES,
+    Autocomplete,
+    ContextArg,
+    _ac_registry,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -38,7 +43,9 @@ class AutocompleteBaseView(View):
                 f"No registered autocomplete with name {ac_name}"
             ) from e
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         """Dispatch the request after checking authentication."""
         self.ac_class.auth_check(request)
 
@@ -117,7 +124,9 @@ class AutocompleteBaseView(View):
             "indicator": self.get_configurable_value("indicator"),
             "custom_strings": self.ac_class.get_custom_strings(),
             "multiselect": bool(self.get_configurable_value("multiselect")),
-            "component_prefix": self.get_configurable_value("component_prefix"),
+            "component_prefix": self.get_configurable_value(
+                "component_prefix"
+            ),
             "disabled": bool(self.get_configurable_value("disabled")),
             "autocomplete_attr_value": self.get_autocomplete_attr(),
         }
@@ -183,7 +192,9 @@ def replace_or_toggle(_set: set[str], item: str) -> set[str]:
 class ToggleView(AutocompleteBaseView):
     """View to toggle selection of an autocomplete item."""
 
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         """Handle GET request to toggle an item selection."""
         field_name: str = self.request_dict["field_name"]
 
@@ -199,13 +210,19 @@ class ToggleView(AutocompleteBaseView):
         is_multi: bool = bool(self.get_configurable_value("multiselect"))
 
         if is_multi:
-            new_selected_keys: set[str] = toggle_set(set(current_items), key_to_toggle)
+            new_selected_keys: set[str] = toggle_set(
+                set(current_items), key_to_toggle
+            )
         else:
-            new_selected_keys = replace_or_toggle(set(current_items), key_to_toggle)
+            new_selected_keys = replace_or_toggle(
+                set(current_items), key_to_toggle
+            )
         keys_to_fetch: set[str] = set(new_selected_keys).union({key_to_toggle})
 
         context_obj = ContextArg(request=request, client_kwargs=request.GET)
-        all_values = self.ac_class.get_items_from_keys(keys_to_fetch, context_obj)
+        all_values = self.ac_class.get_items_from_keys(
+            keys_to_fetch, context_obj
+        )
 
         items = self.ac_class.map_search_results(all_values, new_selected_keys)
 
@@ -251,7 +268,9 @@ class ToggleView(AutocompleteBaseView):
 class ItemsView(AutocompleteBaseView):
     """View to search and list autocomplete items."""
 
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         """Handle GET request to search for items."""
         context_obj = ContextArg(request=request, client_kwargs=request.GET)
 
@@ -268,7 +287,9 @@ class ItemsView(AutocompleteBaseView):
         else:
             selected_items = []
 
-        query_too_short: bool = len(search_query) < self.ac_class.minimum_search_length
+        query_too_short: bool = (
+            len(search_query) < self.ac_class.minimum_search_length
+        )
 
         if query_too_short:
             search_results: Iterable[dict[str, Any]] = []
@@ -288,7 +309,9 @@ class ItemsView(AutocompleteBaseView):
         if total_results > cutoff:
             all_items = all_items[:cutoff]
 
-        mapped_items = self.ac_class.map_search_results(all_items, selected_keys)
+        mapped_items = self.ac_class.map_search_results(
+            all_items, selected_keys
+        )
 
         # render items ...
         return render(

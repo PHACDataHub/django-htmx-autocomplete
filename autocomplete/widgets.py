@@ -89,7 +89,9 @@ class AutocompleteWidget(Widget):
 
         return value
 
-    def value_omitted_from_data(self, data: Any, files: Any, name: str) -> bool:
+    def value_omitted_from_data(
+        self, data: Any, files: Any, name: str
+    ) -> bool:
         """Check if the value was omitted from the form data.
 
         An unselected <select multiple> doesn't appear in POST data.
@@ -179,7 +181,9 @@ class AutocompleteWidget(Widget):
             selected_options = []
         else:
             if self.is_multi:
-                selected_options = list(self.ac_class.get_items_from_keys(value, None))
+                selected_options = list(
+                    self.ac_class.get_items_from_keys(value, None)
+                )
             else:
                 selected_options = list(
                     self.ac_class.get_items_from_keys([value], None)

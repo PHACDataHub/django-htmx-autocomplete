@@ -78,7 +78,9 @@ class ModelAutocomplete(Autocomplete):
         return str(record)
 
     @classmethod
-    def get_query_filtered_queryset(cls, search: str, context: ContextArg) -> QuerySet:
+    def get_query_filtered_queryset(
+        cls, search: str, context: ContextArg
+    ) -> QuerySet:
         """Filter the queryset based on the search query.
 
         Args:
@@ -90,14 +92,17 @@ class ModelAutocomplete(Autocomplete):
         """
         base_qs: QuerySet = cls.get_queryset()
         conditions: list[Q] = [
-            Q(**{f"{attr}__icontains": search}) for attr in cls.get_search_attrs()
+            Q(**{f"{attr}__icontains": search})
+            for attr in cls.get_search_attrs()
         ]
         condition_filter: Q = reduce(operator.or_, conditions)
         queryset: QuerySet = base_qs.filter(condition_filter)
         return queryset
 
     @classmethod
-    def search_items(cls, search: str, context: ContextArg) -> Iterable[dict[str, Any]]:
+    def search_items(
+        cls, search: str, context: ContextArg
+    ) -> Iterable[dict[str, Any]]:
         """Search for model instances matching the query.
 
         Args:
@@ -107,7 +112,9 @@ class ModelAutocomplete(Autocomplete):
         Returns:
             Iterable of item dictionaries.
         """
-        filtered_queryset: QuerySet = cls.get_query_filtered_queryset(search, context)
+        filtered_queryset: QuerySet = cls.get_query_filtered_queryset(
+            search, context
+        )
 
         items: QuerysetMappedIterable = QuerysetMappedIterable(
             queryset=filtered_queryset,
@@ -185,7 +192,9 @@ class QuerysetMappedIterable:
         """
         return {"key": record.id, "label": self.label_for_record(record)}
 
-    def __getitem__(self, key: int | slice) -> dict[str, Any] | list[dict[str, Any]]:
+    def __getitem__(
+        self, key: int | slice
+    ) -> dict[str, Any] | list[dict[str, Any]]:
         """Get item(s) by index or slice.
 
         Args:
