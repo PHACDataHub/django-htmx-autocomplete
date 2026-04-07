@@ -32,7 +32,7 @@ def register(ac_class: type, route_name: str = None):
 
     if route_name in _ac_registry:
         raise ValueError(
-            f"Autocomplete with name '{name}' is already registered."
+            f"Autocomplete with name '{route_name}' is already registered."
         )
 
     ac_class.route_name = route_name
