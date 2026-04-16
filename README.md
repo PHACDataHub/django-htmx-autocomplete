@@ -1,6 +1,6 @@
 # django-htmx-autocomplete
 
-This Django app provides an autocomplete widiget component powered by
+This Django app provides an autocomplete widget component powered by
 [htmx](https://htmx.org/) featuring multiselect, search and is completely extensible.
 
 ## Quick start
@@ -120,7 +120,7 @@ class MultipleFormModel(forms.ModelForm):
   - component_prefix
     - this is for a niche use-case where you want multiple inputs with the same `name` attribute. In that case and you don't set unique prefixes, the autocomplete widget may not work correctly due to duplicate HTML IDs.
 
-Other options are set less dynamically, by customizing the the autocomplete class...
+Other options are set less dynamically, by customizing the autocomplete class...
 
 ## Autocomplete class customization
 
