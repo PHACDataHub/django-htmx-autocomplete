@@ -38,6 +38,9 @@ This is the main component template that creates the basic HTML structure.
     {% endif %}
 
     {% include "./ac_container.html" %}
+    {% if input_attrs_json %}
+    <template id="{{ component_id }}__input_attrs">{{ input_attrs_json }}</template>
+    {% endif %}
     <div
       class="results"
       role="listbox"

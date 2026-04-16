@@ -8,6 +8,7 @@ from .selenium_util import (
     click_button,
     get_element,
     get_elements,
+    wait_until_attribute,
     wait_until_selector,
     wait_until_selector_gone,
 )
@@ -26,9 +27,24 @@ def test_single_select_live_widget(live_server, driver):
     t1 = TeamFactory(team_lead=p2)
     t1.members.set([p2, p3])
 
-    url = reverse("edit_team", args=[t1.pk])
+    url = reverse("example_w_input_attrs", args=[t1.pk])
 
     driver.get(live_server.url + url)
+
+    wait_until_attribute(
+        driver,
+        "input#team_lead__textinput",
+        "aria-label",
+        "Team lead autocomplete",
+        timeout=2,
+    )
+    wait_until_attribute(
+        driver,
+        "input#team_lead__textinput",
+        "data-input-attrs",
+        "sample-app",
+        timeout=2,
+    )
 
     def get_info_txt():
         info = get_element(driver, "#team_lead__info")
@@ -78,7 +94,15 @@ def test_single_select_live_widget(live_server, driver):
     assert "selected" in get_info_txt()
 
     # now check that the selected option is in the input box
+    wait_until_attribute(
+        driver,
+        "input#team_lead__textinput",
+        "aria-label",
+        "Team lead autocomplete",
+        timeout=2,
+    )
     input = get_element(driver, "input#team_lead__textinput")
+    assert input.get_attribute("data-input-attrs") == "sample-app"
     assert input.get_attribute("value") == "Sample Leader"
 
     # and that the invisible input has the correct value
@@ -182,6 +206,13 @@ def test_multi_select_live_widget(live_server, driver):
     )  # p1
 
     wait_until_selector_gone(driver, "#members__items.show")
+    wait_until_attribute(
+        driver,
+        "input#members__textinput",
+        "value",
+        "",
+        timeout=2,
+    )
 
     # now check the input is cleared
     input = get_element(driver, "input#members__textinput")
