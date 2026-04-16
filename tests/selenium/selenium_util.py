@@ -45,6 +45,21 @@ def wait_until_selector_gone(driver, selector):
     )
 
 
+def wait_until_attribute(driver, selector, attribute, expected, **options):
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    kwargs = {
+        "timeout": 0.5,
+        "poll_frequency": 0.1,
+    }
+    if options:
+        kwargs.update(options)
+
+    WebDriverWait(driver, **kwargs).until(
+        lambda d: get_element(d, selector).get_attribute(attribute) == expected
+    )
+
+
 def wait_until_stale(driver, element):
     from selenium.webdriver.support import expected_conditions
     from selenium.webdriver.support.ui import WebDriverWait

@@ -2,7 +2,7 @@
 function phac_aspc_autocomplete_trigger_change(container_id) {
     setTimeout(() => {
         const container = document.getElementById(container_id);
-        const el = container.querySelector('.textinput');
+        const el = container.querySelector('[data-autocomplete-input]');
         el.dispatchEvent(new Event('change', { bubbles: true }));
     }, 0)
 }
@@ -13,13 +13,13 @@ function phac_aspc_autocomplete_clear_focus(container, activate_ring) {
         el.classList.remove('hasFocus');
     }
 
-    const el = container.querySelector('.textinput');
+    const el = container.querySelector('[data-autocomplete-input]');
     el.removeAttribute('aria-activedescendant');
 
     if (activate_ring) {
         container.closest('.phac_aspc_form_autocomplete_focus_ring')
             .classList.add('active');
-        container.querySelector('.textinput').focus();
+        container.querySelector('[data-autocomplete-input]').focus();
     } else {
         container.closest('.phac_aspc_form_autocomplete_focus_ring')
             .classList.remove('active');
@@ -28,7 +28,7 @@ function phac_aspc_autocomplete_clear_focus(container, activate_ring) {
 //private DONE
 function phac_aspc_autocomplete_hide_results(container) {
     const results = container.querySelector('.results');
-    const el = container.querySelector('.textinput');
+    const el = container.querySelector('[data-autocomplete-input]');
     el.setAttribute('aria-expanded', false);
     results.classList.remove('show');
 }
@@ -90,7 +90,7 @@ function phac_aspc_autocomplete_blur_handler(event, name, sync = false, item = f
             live.innerHTML = '';
 
             // Change the min-width of the text input back to the (small) default
-            parent.querySelector('.textinput')
+            parent.querySelector('[data-autocomplete-input]')
                 .parentElement.classList.remove('ac-active');
 
             // Ensure no elements remain 'focused', and set focus to input
@@ -130,7 +130,7 @@ function phac_aspc_autocomplete_set_initial_value(container, reset = false) {
     // stores current value of text input in variable
     // to enable restoring this value if a new value is not selected
     const id = container.getAttribute('id');
-    const el = container.querySelector('.textinput');
+    const el = container.querySelector('[data-autocomplete-input]');
     if (reset) {
         phac_aspc_autocomplete_initial_value[id] = undefined;
         return;
@@ -151,7 +151,7 @@ function phac_aspc_autocomplete_click_handler(event) {
     const id = container.getAttribute('id');
     const results = container.querySelector('.results');
     const open = results && results.classList.contains('show');
-    const text_box = container.querySelector('.textinput');
+    const text_box = container.querySelector('[data-autocomplete-input]');
 
     phac_aspc_autocomplete_set_initial_value(container);
     phac_aspc_autocomplete_clear_focus(container, true);
@@ -242,7 +242,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
     }
     const switchFocus = (element, container) => {
         phac_aspc_autocomplete_clear_focus(container);
-        const el = container.querySelector('.textinput');
+        const el = container.querySelector('[data-autocomplete-input]');
         el.setAttribute('aria-activedescendant', element.getAttribute('id'));
         element.classList.add('hasFocus');
         element.scrollIntoView({ block: 'nearest' })
@@ -466,9 +466,30 @@ class PhacAutocomplete {
         // in case consumer code is listening
         setTimeout(() => {
             const container = document.getElementById(containerId);
-            const el = container.querySelector('.textinput');
+            const el = container.querySelector('[data-autocomplete-input]');
             el.dispatchEvent(new Event('change', { bubbles: true }));
         }, 0)
+    }
+
+    static syncInputAttrsWithin(element){
+        if(!element){
+            return;
+        }
+
+        const roots = [];
+        if(element.matches && element.matches('[data-autocomplete-root]')){
+            roots.push(element);
+        }
+        if(element.querySelectorAll){
+            roots.push(...element.querySelectorAll('[data-autocomplete-root]'));
+        }
+
+        for(const root of roots){
+            const instance = this.getInstanceForElement(root);
+            if(instance){
+                instance.applyInputAttrsFromTemplate();
+            }
+        }
     }
 
     static focusInputHandler(event){
@@ -947,6 +968,62 @@ class PhacAutocomplete {
         return this.getContainer().querySelectorAll(`#${this.getComponentId()}_ac_container li.chip`);
     }
 
+    getInputAttrsTemplate(){
+        return document.getElementById(`${this.getComponentId()}__input_attrs`);
+    }
+
+    applyInputAttrsFromTemplate(){
+        const template = this.getInputAttrsTemplate();
+        const input = this.getInput();
+
+        if(!template || !input){
+            return;
+        }
+
+        const raw = template.content
+            ? template.content.textContent && template.content.textContent.trim()
+            : template.textContent && template.textContent.trim();
+        if(!raw){
+            return;
+        }
+
+        let inputAttrs;
+        try {
+            inputAttrs = JSON.parse(raw);
+        } catch (error) {
+            console.warn('Unable to parse autocomplete input attrs', error);
+            return;
+        }
+
+        for(const [name, value] of Object.entries(inputAttrs)){
+            if(value === null || value === undefined || value === false){
+                continue;
+            }
+
+            if(name === 'class'){
+                const classNames = Array.isArray(value)
+                    ? value
+                    : String(value).split(/\s+/);
+                for(const className of classNames){
+                    if(className){
+                        input.classList.add(className);
+                    }
+                }
+                continue;
+            }
+
+            // TODO: why skip existing ones?
+            //if(input.hasAttribute(name)){
+            //    continue;
+            //}
+
+            const attrValue = Array.isArray(value) || (typeof value === 'object' && value !== null)
+                ? JSON.stringify(value)
+                : String(value);
+            input.setAttribute(name, attrValue);
+        }
+    }
+
     clear(){
         this.getInput().value = '';
         this.getInputWrapper().innerHTML = '';
@@ -1016,6 +1093,7 @@ function initializeGlobalAutocompleteListeners(){
             if(!isEnabledAcRoot(ac_root)){
                 return;
             }
+            // PhacAutocomplete.syncInputAttrsWithin(ac_root);
             const componentId = ac_root.getAttribute('data-autocomplete-componentId');
             const toggleurl = ac_root.getAttribute('data-autocomplete-toggleurl');
 
@@ -1044,6 +1122,7 @@ function initializeGlobalAutocompleteListeners(){
                     if(instance){
                         // instance.storeExistingValue();
                         instance.resetExistingValue();
+                        //instance.applyInputAttrsFromTemplate();
                     }
                     //phac_aspc_autocomplete_set_initial_value(document.querySelector(`#${componentId}__container`), true);
                     const input = instance.getInput()
@@ -1070,6 +1149,23 @@ function initializeGlobalAutocompleteListeners(){
             }
         }
     });
+
+    function syncAttributesIfInput(evt){
+        const element = evt.detail.elt;
+        if(element.hasAttribute("data-autocomplete-input") || element.querySelector("[data-autocomplete-input]")){
+            const instance = PhacAutocomplete.getInstanceForElement(element);
+            if(instance){
+                instance.applyInputAttrsFromTemplate();
+            }
+        }
+    }
+    document.body.addEventListener('htmx:afterSwap', syncAttributesIfInput);
+
+    setTimeout(() => {
+        //initial rendering doesn't include custom input attributes
+        //only json into <template>
+        PhacAutocomplete.syncInputAttrsWithin(document);
+    }, 0);
 
 }
 

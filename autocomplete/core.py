@@ -14,6 +14,7 @@ AC_CLASS_CONFIGURABLE_VALUES = {
     "disabled",
     # autocomplete_attr is the <input> attribute, used by browser to suggest values
     "autocomplete_attr",
+    "input_attrs",
     "no_result_text",
     "narrow_search_text",
     "minimum_search_length",
@@ -52,6 +53,7 @@ class Autocomplete:
     minimum_search_length = 3
     max_results = 100
     component_prefix = ""
+    input_attrs = {}
 
     @classmethod
     def auth_check(cls, request):

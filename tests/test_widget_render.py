@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.template import Context, Template, loader
 from django.urls import reverse
@@ -492,3 +494,44 @@ def test_custom_autocomplete_attr_value():
     soup = soup_from_str(rendered)
     input = soup.select_one("ul li input[type='text']")
     assert input.attrs["autocomplete"] == "email"
+
+
+def test_input_attrs_template_merges_class_and_widget_options():
+    @register
+    class PersonAC4WithInputAttrs(PersonAC4):
+        input_attrs = {
+            "aria-label": "class label",
+            "data-from-class": "class",
+        }
+
+    class MyFormWithInputAttrs(forms.ModelForm):
+        class Meta:
+            model = Team
+            fields = ["team_lead"]
+
+            widgets = {
+                "team_lead": AutocompleteWidget(
+                    ac_class=PersonAC4WithInputAttrs,
+                    options={
+                        "input_attrs": {
+                            "aria-label": "option label",
+                            "data-from-option": "option",
+                        }
+                    },
+                )
+            }
+
+    form = MyFormWithInputAttrs()
+    rendered = render_template(single_form_template, {"form": form})
+    soup = soup_from_str(rendered)
+
+    template = soup.select_one("template#team_lead__input_attrs")
+    assert template
+    assert json.loads(template.text) == {
+        "aria-label": "option label",
+        "data-from-class": "class",
+        "data-from-option": "option",
+    }
+
+    input = soup.select_one("ul li input[type='text']")
+    assert "aria-label" not in input.attrs

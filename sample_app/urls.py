@@ -50,6 +50,11 @@ urlpatterns = [
         name="example_w_custom_html",
     ),
     path(
+        "teams/<int:team_id>/example_w_input_attrs/",
+        views.example_w_input_attrs,
+        name="example_w_input_attrs",
+    ),
+    path(
         "teams/<int:team_id>/example_w_id_search/",
         views.example_w_id_search,
         name="example_w_id_search",

@@ -2,6 +2,8 @@
 This file enables the component to be used like other Django widgets
 """
 
+import json
+
 from django.forms import Widget
 
 from .core import AC_CLASS_CONFIGURABLE_VALUES, Autocomplete
@@ -16,6 +18,7 @@ class AutocompleteWidget(Widget):
         "label",
         "component_prefix",
         # the below are also configurable from the AC class
+        "input_attrs",
         "placeholder",
     ]
 
@@ -59,6 +62,9 @@ class AutocompleteWidget(Widget):
         return prefix + field_name
 
     def get_configurable_value(self, key):
+        if key == "input_attrs":
+            return self.get_input_attrs()
+
         if key in self.config:
             return self.config.get(key)
 
@@ -72,6 +78,12 @@ class AutocompleteWidget(Widget):
             return self.get_configurable_value("autocomplete_attr")
 
         return "off"
+
+    def get_input_attrs(self):
+        class_input_attrs = getattr(self.ac_class, "input_attrs", {}) or {}
+        option_input_attrs = self.config.get("input_attrs", {}) or {}
+
+        return {**dict(class_input_attrs), **dict(option_input_attrs)}
 
     @property
     def is_multi(self):
@@ -107,6 +119,11 @@ class AutocompleteWidget(Widget):
 
         context["label"] = self.get_configurable_value("label")
         context["placeholder"] = self.get_configurable_value("placeholder")
+        input_attrs = self.get_input_attrs()
+        context["input_attrs"] = input_attrs
+        context["input_attrs_json"] = (
+            json.dumps(input_attrs, default=str) if input_attrs else None
+        )
         # context["values"] = list(self.a_c.item_values(self.a_c, selected_options))
         context["values"] = [x["key"] for x in selected_options]
         context["selected_items"] = selected_options
